@@ -21,7 +21,7 @@ stages:
     - pwsh: |
         $year = ([DateTime]"$(GitVersion.CommitDate)").Year
         Write-Host "##vso[task.setvariable variable=GitVersion.CommitYear]$year"
-        displayName: Get Commit Year
+      displayName: Get Commit Year
 
     - pwsh: |
         [PsCustomObject]@{
@@ -57,7 +57,6 @@ stages:
         } |
           ConvertTo-Json -Depth 2 |
           Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
-      name: $(GitVersion.OutputName)
       displayName: 'Store GitVersion Variables in [$(GitVersion.JsonFile)]'
 
     - task: CopyFiles@2
