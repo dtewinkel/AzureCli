@@ -57,7 +57,7 @@ stages:
         } |
           ConvertTo-Json -Depth 2 |
           Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
-      displayName: 'Store GitVersion Variables in [$(GitVersion.JsonFile)]'
+      displayName: 'Store GitVersion Variables in GitVersion Json file'
 
     - task: CopyFiles@2
       displayName: Copy GitVersion Json file
@@ -68,4 +68,4 @@ stages:
 
     - publish: $(GitVersion.ArtifactPath)
       artifact: $(GitVersion.ArtifactName)
-      displayName: Publish [$(GitVersion.ArtifactName)] Artifact
+      displayName: Publish Gitversion Artifact
