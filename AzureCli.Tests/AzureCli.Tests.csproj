@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyTitle>AzureCli.Tests</AssemblyTitle>
+    <Product>AzureCli</Product>
+    <Copyright>Copyright © 2020, Daniël te Winkel</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="AzureCli.Tests.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Invoke-Tests.ps1" />
+    <None Include="Start-Debug.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AzureCli\AzureCli.csproj" />
+  </ItemGroup>
+</Project>
