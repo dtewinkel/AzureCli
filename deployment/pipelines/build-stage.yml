@@ -13,8 +13,8 @@ stages:
     steps:
 
     - task: GitVersion@5
-        displayName: Determine Version using GitVersion
-        inputs:
+      displayName: Determine Version using GitVersion
+      inputs:
         runtime: core
         configFilePath: ${{ parameters.GitVersionFile }}
 
