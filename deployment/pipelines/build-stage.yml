@@ -1,0 +1,72 @@
+stages:
+- stage: build
+  displayName: Version and build
+  jobs:
+
+  - job: run_build
+    displayName: Build, publish AzureCli Module
+    variables:
+      GitVersion.ArtifactPath: $(build.artifactStagingDirectory)/GitVersion
+      GitVersion.JsonPath: $(build.artifactStagingDirectory)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+
+    - task: GitVersion@5
+        displayName: Determine Version using GitVersion
+        inputs:
+        runtime: core
+        configFilePath: ${{ parameters.GitVersionFile }}
+
+    - pwsh: |
+        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
+        Write-Host "##vso[task.setvariable variable=GitVersion.CommitYear]$year"
+        displayName: Get Commit Year
+
+    - pwsh: |
+        [PsCustomObject]@{
+          Major = '$(GitVersion.Major)'
+          Minor = '$(GitVersion.Minor)'
+          Patch = '$(GitVersion.Patch)'
+          PreReleaseTag = '$(GitVersion.PreReleaseTag)'
+          PreReleaseTagWithDash = '$(GitVersion.PreReleaseTagWithDash)'
+          PreReleaseLabel = '$(GitVersion.PreReleaseLabel)'
+          PreReleaseNumber = '$(GitVersion.PreReleaseNumber)'
+          BuildMetaData = '$(GitVersion.BuildMetaData)'
+          BuildMetaDataPadded = '$(GitVersion.BuildMetaDataPadded)'
+          FullBuildMetaData = '$(GitVersion.FullBuildMetaData)'
+          MajorMinorPatch = '$(GitVersion.MajorMinorPatch)'
+          SemVer = '$(GitVersion.SemVer)'
+          LegacySemVer = '$(GitVersion.LegacySemVer)'
+          LegacySemVerPadded = '$(GitVersion.LegacySemVerPadded)'
+          AssemblySemVer = '$(GitVersion.AssemblySemVer)'
+          AssemblySemFileVer = '$(GitVersion.AssemblySemFileVer)'
+          FullSemVer = '$(GitVersion.FullSemVer)'
+          InformationalVersion = '$(GitVersion.InformationalVersion)'
+          BranchName = '$(GitVersion.BranchName)'
+          Sha = '$(GitVersion.Sha)'
+          ShortSha = '$(GitVersion.ShortSha)'
+          NuGetVersionV2 = '$(GitVersion.NuGetVersionV2)'
+          NuGetVersion = '$(GitVersion.NuGetVersion)'
+          NuGetPreReleaseTagV2 = '$(GitVersion.NuGetPreReleaseTagV2)'
+          NuGetPreReleaseTag = '$(GitVersion.NuGetPreReleaseTag)'
+          CommitsSinceVersionSource = '$(GitVersion.CommitsSinceVersionSource)'
+          CommitsSinceVersionSourcePadded = '$(GitVersion.CommitsSinceVersionSourcePadded)'
+          CommitDate = '$(GitVersion.CommitDate)'
+          CommitYear = '$(GitVersion.CommitYear)'
+        } |
+          ConvertTo-Json -Depth 2 |
+          Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
+      name: $(GitVersion.OutputName)
+      displayName: 'Store GitVersion Variables in [$(GitVersion.JsonFile)]'
+
+    - task: CopyFiles@2
+      displayName: Copy GitVersion Json file
+      inputs:
+        SourceFolder: $(GitVersion.JsonPath)
+        Contents: $(GitVersion.JsonFile)
+        TargetFolder: $(GitVersion.ArtifactPath)
+
+    - publish: $(GitVersion.ArtifactPath)
+      artifact: $(GitVersion.ArtifactName)
+      displayName: Publish [$(GitVersion.ArtifactName)] Artifact

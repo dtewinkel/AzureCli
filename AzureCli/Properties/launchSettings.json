@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AzureCli": {
+      "commandName": "Executable",
+      "executablePath": "pwsh",
+      "commandLineArgs": "-NoExit -NoLogo -ExecutionPolicy RemoteSigned -command \". ..\\..\\Start-Debug.ps1\""
+    }
+  }
+}

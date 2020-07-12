@@ -1,0 +1,13 @@
+stages:
+- stage: tag
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: Tag Sources after Release
+  jobs:
+  - job: tag_build
+    displayName: Tag Sources
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+
+    - task: git-tag-on-release-task@9
+      displayName: Tag Sources
