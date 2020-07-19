@@ -47,7 +47,7 @@
         TargetFolder: $(Module.ArtifactPath)
 
     - pwsh: |
-        $modulePath = (Join-Path "$(Module.Path)" "$(Module.Name).psd1")
+        $modulePath = (Join-Path "$(Module.ArtifactPath)" "$(Module.Name).psd1")
         $year = ([DateTime]"$(GitVersion.CommitDate)").Year
         $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
         $updateParameters = @{
