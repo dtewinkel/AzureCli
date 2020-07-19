@@ -59,7 +59,8 @@
         }
         if("$(GitVersion.PreReleaseTag)" -ne "")
         {
-          $updateParameters.Add("Prerelease", '$(GitVersion.PreReleaseTag)')
+          $preReleaseTag = '$(GitVersion.PreReleaseTag)' -replace '[^a-zA-Z0-9]', ''
+          $updateParameters.Add("Prerelease", "${preReleaseTag}")
         }
         Update-ModuleManifest @updateParameters
       displayName: Update Module manifest
