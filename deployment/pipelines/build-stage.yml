@@ -1,4 +1,4 @@
-stages:
+﻿stages:
 - stage: build
   displayName: Version and build
   jobs:
@@ -8,7 +8,11 @@ stages:
     variables:
       GitVersion.ArtifactPath: $(build.artifactStagingDirectory)/GitVersion
       GitVersion.JsonPath: $(build.artifactStagingDirectory)
+      Module.Path: $(build.artifactStagingDirectory)/$(Module.Name)
+      Module.ArtifactPath: $(Module.Name)/$(Module.Name)
       SolutionFile: AzureCli.sln
+      CompanyName = Daniël te Winkel
+      Author = Daniël te Winkel
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -18,47 +22,6 @@ stages:
       inputs:
         runtime: core
         configFilePath: ${{ parameters.GitVersionFile }}
-
-    - pwsh: |
-        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
-        Write-Host "##vso[task.setvariable variable=GitVersion.CommitYear]$year"
-      displayName: Get Commit Year
-
-    - pwsh: |
-        [PsCustomObject]@{
-          Major = '$(GitVersion.Major)'
-          Minor = '$(GitVersion.Minor)'
-          Patch = '$(GitVersion.Patch)'
-          PreReleaseTag = '$(GitVersion.PreReleaseTag)'
-          PreReleaseTagWithDash = '$(GitVersion.PreReleaseTagWithDash)'
-          PreReleaseLabel = '$(GitVersion.PreReleaseLabel)'
-          PreReleaseNumber = '$(GitVersion.PreReleaseNumber)'
-          BuildMetaData = '$(GitVersion.BuildMetaData)'
-          BuildMetaDataPadded = '$(GitVersion.BuildMetaDataPadded)'
-          FullBuildMetaData = '$(GitVersion.FullBuildMetaData)'
-          MajorMinorPatch = '$(GitVersion.MajorMinorPatch)'
-          SemVer = '$(GitVersion.SemVer)'
-          LegacySemVer = '$(GitVersion.LegacySemVer)'
-          LegacySemVerPadded = '$(GitVersion.LegacySemVerPadded)'
-          AssemblySemVer = '$(GitVersion.AssemblySemVer)'
-          AssemblySemFileVer = '$(GitVersion.AssemblySemFileVer)'
-          FullSemVer = '$(GitVersion.FullSemVer)'
-          InformationalVersion = '$(GitVersion.InformationalVersion)'
-          BranchName = '$(GitVersion.BranchName)'
-          Sha = '$(GitVersion.Sha)'
-          ShortSha = '$(GitVersion.ShortSha)'
-          NuGetVersionV2 = '$(GitVersion.NuGetVersionV2)'
-          NuGetVersion = '$(GitVersion.NuGetVersion)'
-          NuGetPreReleaseTagV2 = '$(GitVersion.NuGetPreReleaseTagV2)'
-          NuGetPreReleaseTag = '$(GitVersion.NuGetPreReleaseTag)'
-          CommitsSinceVersionSource = '$(GitVersion.CommitsSinceVersionSource)'
-          CommitsSinceVersionSourcePadded = '$(GitVersion.CommitsSinceVersionSourcePadded)'
-          CommitDate = '$(GitVersion.CommitDate)'
-          CommitYear = '$(GitVersion.CommitYear)'
-        } |
-          ConvertTo-Json -Depth 2 |
-          Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
-      displayName: 'Store GitVersion Variables in GitVersion Json file'
 
     - task: DotNetCoreCLI@2
       displayName: Resore NuGet packages
@@ -76,12 +39,30 @@ stages:
         verbosityRestore: Normal
 
     - task: CopyFiles@2
-      displayName: Copy GitVersion Json file
+      displayName: Copy Module files
       inputs:
-        SourceFolder: $(GitVersion.JsonPath)
-        Contents: $(GitVersion.JsonFile)
-        TargetFolder: $(GitVersion.ArtifactPath)
+        SourceFolder: $(Module.Path)
+        Contents: '**'
+        TargetFolder: $(Module.ArtifactPath)
 
-    - publish: $(GitVersion.ArtifactPath)
-      artifact: $(GitVersion.ArtifactName)
-      displayName: Publish Gitversion Artifact
+    - pwsh: |
+        $modulePath = (Join-Path "$(Module.Path)" "${ProjectName}.psd1")
+        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
+        $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
+        $updateParameters = @{
+	        Path = $modulePath
+	        ModuleVersion = $(GitVersion.MajorMinorPatch)
+	        Copyright = $copyright
+	        Author = $(Author)
+	        CompanyName = $(CompanyName)
+        }
+        if("$(Giversion.PreReleaseTag)" -ne "")
+        {
+	        $updateParameters.Add("Prerelease", $(Giversion.PreReleaseTag))
+        }
+        Update-ModuleManifest @updateParameters
+      displayName: Update Module manifest
+
+    - publish: $(Module.ArtifactPath)
+      artifact: $(Module.ArtifactName)
+      displayName: Publish Module Artifact
