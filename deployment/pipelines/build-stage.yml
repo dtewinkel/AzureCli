@@ -11,8 +11,8 @@
       Module.Path: $(build.artifactStagingDirectory)/$(Module.Name)
       Module.ArtifactPath: $(Module.Name)/$(Module.Name)
       SolutionFile: AzureCli.sln
-      CompanyName = Daniël te Winkel
-      Author = Daniël te Winkel
+      CompanyName: Daniël te Winkel
+      Author: Daniël te Winkel
     pool:
       vmImage: ubuntu-latest
     steps:
