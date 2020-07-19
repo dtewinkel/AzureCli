@@ -6,6 +6,10 @@ trigger:
     include:
     - '*'
 
+variables:
+
+- template: global-variables.yml
+
 stages:
 
 - template: build-stage.yml
