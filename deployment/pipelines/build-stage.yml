@@ -50,15 +50,15 @@
         $year = ([DateTime]"$(GitVersion.CommitDate)").Year
         $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
         $updateParameters = @{
-	        Path = $modulePath
-	        ModuleVersion = $(GitVersion.MajorMinorPatch)
-	        Copyright = $copyright
-	        Author = $(Author)
-	        CompanyName = $(CompanyName)
+          Path = $modulePath
+          ModuleVersion = $(GitVersion.MajorMinorPatch)
+          Copyright = $copyright
+          Author = $(Author)
+          CompanyName = $(CompanyName)
         }
         if("$(Giversion.PreReleaseTag)" -ne "")
         {
-	        $updateParameters.Add("Prerelease", $(Giversion.PreReleaseTag))
+          $updateParameters.Add("Prerelease", $(Giversion.PreReleaseTag))
         }
         Update-ModuleManifest @updateParameters
       displayName: Update Module manifest
