@@ -21,4 +21,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" >
+    <Exec Command="pwsh -NonInteractive -NoProfile -ExecutionPolicy RemoteSigned -NoLogo -Command &quot;&amp; '$(ProjectDir)post-build1.ps1' -ConfigurationName '$(ConfigurationName)' -OutDir '$(OutDir)' -DevEnvDir '$(DevEnvDir)' -PlatformName '$(PlatformName)' -ProjectDir '$(ProjectDir)' -ProjectPath '$(ProjectPath)' -ProjectName '$(ProjectName)' -ProjectFileName '$(ProjectFileName)' -ProjectExt '$(ProjectExt)' -SolutionDir '$(SolutionDir)' -SolutionPath '$(SolutionPath)' -SolutionName '$(SolutionName)' -SolutionFileName '$(SolutionFileName)' -SolutionExt '$(SolutionExt)' -TargetDir '$(TargetDir)' -TargetPath '$(TargetPath)' -TargetName '$(TargetName)' -TargetFileName '$(TargetFileName)' -TargetExt '$(TargetExt)'&quot;"/>
+  </Target>
 </Project>
