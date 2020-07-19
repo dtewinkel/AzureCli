@@ -59,6 +59,21 @@ stages:
           Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
       displayName: 'Store GitVersion Variables in GitVersion Json file'
 
+    - task: DotNetCoreCLI@2
+      displayName: Resore NuGet packages
+      inputs:
+        command: restore
+        projects: AzureCli.sln
+        verbosityRestore: Normal
+
+    - task: DotNetCoreCLI@2
+      displayName: Build projects
+      inputs:
+        command: build
+        projects: AzureCli.sln
+        arguments: --no-restore --configuration $(Configuration)
+        verbosityRestore: Normal
+
     - task: CopyFiles@2
       displayName: Copy GitVersion Json file
       inputs:
