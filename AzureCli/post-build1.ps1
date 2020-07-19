@@ -76,6 +76,8 @@ $scriptDir = (Join-Path $SolutionDir deployment pipelines, scripts)
 $moduleDir = (Join-Path $TargetDir ${ProjectName})
 $modulePath = (Join-Path $moduleDir "${ProjectName}.psd1")
 
+$publishScript = (Join-Path $scriptDir Publish-PowerShellModule.ps1)
+
 try
 {
 	if(-not (Test-Path $repositoryPath))
@@ -97,9 +99,7 @@ try
 		Write-Host "Registered repository '${repositoryName}'."
 	}
 
-	Update-ModuleManifest -Path $modulePath -ModuleVersion $version -Prerelease $preRelease
-	Publish-Module -Path $moduleDir -Repository $repositoryName -Force
-	Write-Host "Pulished module '${ProjectName}' to '${repositoryName}' ('${nugetPath}')."
+	& $publishScript -ProjectName $ProjectName -ProjectDir $moduleDir -Repository $repositoryName -Version $version -Prerelease $preRelease
 }
 finally
 {
