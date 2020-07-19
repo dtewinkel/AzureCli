@@ -8,6 +8,7 @@ stages:
     variables:
       GitVersion.ArtifactPath: $(build.artifactStagingDirectory)/GitVersion
       GitVersion.JsonPath: $(build.artifactStagingDirectory)
+      SolutionFile: AzureCli.sln
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -63,14 +64,14 @@ stages:
       displayName: Resore NuGet packages
       inputs:
         command: restore
-        projects: AzureCli.sln
+        projects: $SolutionFile)
         verbosityRestore: Normal
 
     - task: DotNetCoreCLI@2
       displayName: Build projects
       inputs:
         command: build
-        projects: AzureCli.sln
+        projects: $SolutionFile)
         arguments: --no-restore --configuration $(Configuration)
         verbosityRestore: Normal
 
