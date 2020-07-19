@@ -64,14 +64,14 @@ stages:
       displayName: Resore NuGet packages
       inputs:
         command: restore
-        projects: $SolutionFile)
+        projects: $(SolutionFile)
         verbosityRestore: Normal
 
     - task: DotNetCoreCLI@2
       displayName: Build projects
       inputs:
         command: build
-        projects: $SolutionFile)
+        projects: $(SolutionFile)
         arguments: --no-restore --configuration $(Configuration)
         verbosityRestore: Normal
 
