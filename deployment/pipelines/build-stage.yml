@@ -18,6 +18,8 @@
 
     - task: GitVersion@5
       displayName: Determine Version using GitVersion
+      inputs:
+        configFilePath: GitVersion.yml
 
     - task: DotNetCoreCLI@2
       displayName: Resore NuGet packages
