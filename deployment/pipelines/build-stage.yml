@@ -6,8 +6,6 @@
   - job: run_build
     displayName: Build, publish AzureCli Module
     variables:
-      GitVersion.ArtifactPath: $(build.artifactStagingDirectory)/GitVersion
-      GitVersion.JsonPath: $(build.artifactStagingDirectory)
       Module.Path: $(Module.Name)/$(Module.Name)
       Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
       SolutionFile: AzureCli.sln

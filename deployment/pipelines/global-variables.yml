@@ -2,6 +2,4 @@
   Module.Name: AzureCli
   Module.ArtifactsName: AzureCli
   Configuration: Release
-  scripts.ArtifactsName: Scripts
-  GitVersion.ArtifactName: GitVersion
-  GitVersion.JsonFile: GitVersionVariables.json
+  scripts.ArtifactName: Scripts

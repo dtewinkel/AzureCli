@@ -4,4 +4,4 @@ continuous-delivery-fallback-tag: ''
 branches:
   master:
     increment: Minor
-next-version: 1.0
+next-version: 1.0.0
