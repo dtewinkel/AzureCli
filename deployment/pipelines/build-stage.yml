@@ -62,6 +62,10 @@
         Update-ModuleManifest @updateParameters
       displayName: Update Module manifest
 
+    - pwsh: |
+        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
+      displayName: Run PowerShell ScriptAnalyzer
+
     - publish: $(Module.ArtifactPath)
       artifact: $(Module.ArtifactName)
       displayName: Publish Module Artifact
