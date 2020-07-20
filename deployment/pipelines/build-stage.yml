@@ -63,7 +63,7 @@
       displayName: Update Module manifest
 
     - pwsh: |
-        Install-Module -Name PSScriptAnalyzer
+        Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
       displayName: Run PowerShell ScriptAnalyzer
 
