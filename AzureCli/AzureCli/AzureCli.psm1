@@ -1,11 +1,6 @@
-Push-Location $PSScriptRoot
+﻿Set-Location $PSScriptRoot
 
-$PackageRoot = $PSScriptRoot
+Get-ChildItem *.ps1 | ForEach-Object Name | Resolve-Path | Import-Module
 
-$LoadingModule = $true
-
-dir *.ps1 | % Name | Resolve-Path | Import-Module
-
-$LoadingModule = $false
-
-Pop-Location
+Export-ModuleMember -Function 'Invoke-AzCli'
+Export-ModuleMember -Alias 'iaz'

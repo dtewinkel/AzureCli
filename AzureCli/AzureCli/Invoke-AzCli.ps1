@@ -188,9 +188,3 @@
 }
 
 New-alias -Name iaz Invoke-AzCli
-
-if ($loadingModule)
-{
-	Export-ModuleMember -Function 'Invoke-AzCli'
-	Export-ModuleMember -Alias 'iaz'
-}
