@@ -85,9 +85,9 @@
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
 
-		$host = Get-Host
-		$ForegroundColor = $host.ui.rawui.ForegroundColor
-		$BackgroundColor = $host.ui.rawui.BackgroundColor
+		$hostInfo = Get-Host
+		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
+		$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
 
 		if ($Output)
 		{
@@ -157,8 +157,8 @@
 		if ($Raw.IsPresent)
 		{
 			az @Arguments @additionalArguments
-			$host.ui.rawui.ForegroundColor = $ForegroundColor
-			$host.ui.rawui.BackgroundColor = $BackgroundColor
+			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
 		else
 		{
@@ -169,13 +169,13 @@
 		{
 			if($null -ne $result)
 			{
-				Write-Host $result
+				$result
 				throw "Command exited with error code ${LASTEXITCODE}: ${result}"
 			}
 			throw "Command exited with error code ${LASTEXITCODE}"
 		}
-		$host.ui.rawui.ForegroundColor = $ForegroundColor
-		$host.ui.rawui.BackgroundColor = $BackgroundColor
+		$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+		$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		if ($helpRequested -or $outputRequested -or $Arguments.Length -eq 0)
 		{
 			$result
