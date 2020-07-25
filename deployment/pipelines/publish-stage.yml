@@ -11,15 +11,15 @@ stages:
     condition: ${{ parameters.Condition }}
     jobs:
 
-  - deployment: publish_${{ parameters.Repository.Name }}_job
-    displayName: Publish to ${{ parameters.Repository.Name }}
-    environment: $(Module.Name)-${{ parameters.Repository.Name }}
-    pool:
-      vmImage: windows-latest
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - pwsh: |
-              echo "Hello"
-            displayName: "Publish module to ${{ parameters.Repository.Name }} (${{ parameters.Repository.FeedUrl }})"
+    - deployment: publish_${{ parameters.Repository.Name }}_job
+      displayName: Publish to ${{ parameters.Repository.Name }}
+      environment: $(Module.Name)-${{ parameters.Repository.Name }}
+      pool:
+        vmImage: windows-latest
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - pwsh: |
+                echo "Hello"
+              displayName: "Publish module to ${{ parameters.Repository.Name }} (${{ parameters.Repository.FeedUrl }})"
