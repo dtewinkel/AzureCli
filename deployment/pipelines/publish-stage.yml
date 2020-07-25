@@ -1,8 +1,8 @@
 ﻿parameters:
   Condition: succeeded()
-  Repository.Name:
-  Repository.FeedUrl:
-  Repository.ApiKey:
+  Repository.Name: <set>
+  Repository.FeedUrl: <set>
+  Repository.ApiKey: <set>
 
 stages:
 

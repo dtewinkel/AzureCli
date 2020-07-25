@@ -16,15 +16,15 @@ stages:
 
 - template: publish-stage.yml
   parameters:
-    Repository.Name: TwiaMyGetPsGallery
-    Repository.FeedUrl: https://www.myget.org/F/twia-ps-dev/api/v2/package
-    Repository.ApiKey: $(MyGet.ApiKey)
+    RepositoryName: TwiaMyGetPsGallery
+    RepositoryFeedUrl: https://www.myget.org/F/twia-ps-dev/api/v2/package
+    RepositoryApiKey: $(MyGet.ApiKey)
 
 - template: publish-stage.yml
   parameters:
     Condition: and( succeeded(), or( eq(variables['Build.SourceBranch'], 'refs/heads/master'), in( variables['Build.Reason'], 'Manual', 'Schedule' ) ) )
-    Repository.Name: PsGallery
-    repository.FeedUrl: https://www.powershellgallery.com/api/v2/package
-    Repository.ApiKey: $(PsGallery.ApiKey)
+    RepositoryName: PsGallery
+    repositoryFeedUrl: https://www.powershellgallery.com/api/v2/package
+    RepositoryApiKey: $(PsGallery.ApiKey)
 
 - template: tag-stage.yml
