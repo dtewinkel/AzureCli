@@ -49,7 +49,7 @@
         Update-ModuleManifest @updateParameters
         # make sure the ModuleManifest is in the right encoding.
         $manifest = Get-Content $modulePath
-        $content | Out-File -Encoding utf8BOM $modulePath
+        $manifest | Out-File -Encoding utf8BOM $modulePath
       displayName: Update Module manifest
 
     - pwsh: |
