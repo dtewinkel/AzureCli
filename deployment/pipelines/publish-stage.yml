@@ -23,7 +23,7 @@ stages:
               displayName: Publish module to gallery feed
               inputs:
                 command: push
-                packagesToPush: $(Build.ArtifactStagingDirectory)/$(Repository.ArtifactName)/*.nupkg
+                packagesToPush: $(Pipeline.Workspace)/$(Repository.ArtifactName)/*.nupkg
                 nuGetFeedType: external
                 publishFeedCredentials: ${{ parameters.RepositoryConnection }}
                 verbosityPush: Normal
