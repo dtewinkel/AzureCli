@@ -1,6 +1,4 @@
 ﻿variables:
   Module.Name: AzureCli
-  Module.ArtifactsName: AzureCli
-  Repository.ArtifactsName: Repository
-  Configuration: Release
-  scripts.ArtifactName: Scripts
+  Module.ArtifactName: AzureCli
+  Repository.ArtifactName: Repository

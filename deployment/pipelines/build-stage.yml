@@ -69,8 +69,8 @@
 
     - publish: $(Module.ArtifactPath)
       artifact: $(Module.ArtifactName)
-      displayName: Publish Module Artifact
+      displayName: Publish $(Module.ArtifactName) Artifact
 
     - publish: $(Repository.ArtifactPath)
       artifact: $(Repository.ArtifactName)
-      displayName: Publish Repository Artifact
+      displayName: Publish $(Repository.ArtifactName) Artifact
