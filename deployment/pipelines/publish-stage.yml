@@ -1,0 +1,30 @@
+﻿parameters:
+  Condition: succeeded()
+  RepositoryConnection:
+  StageName:
+
+stages:
+
+  - stage: ${{ parameters.StageName }}
+    displayName: Publish to ${{ parameters.RepositoryConnection }}
+    condition: ${{ parameters.Condition }}
+    jobs:
+
+    - deployment: ${{ parameters.StageName }}_job
+      displayName: Publish to ${{ parameters.RepositoryConnection }}
+      environment: $(Module.Name)-${{ parameters.RepositoryConnection }}
+      pool:
+        vmImage: windows-latest
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+
+            - task: NuGetCommand@2
+              displayName: Publish module to gallery feed
+              inputs:
+                command: push
+                packagesToPush: $(Pipeline.Workspace)/$(Repository.ArtifactName)/*.nupkg
+                nuGetFeedType: external
+                publishFeedCredentials: ${{ parameters.RepositoryConnection }}
+                verbosityPush: Normal

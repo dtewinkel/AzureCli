@@ -1,0 +1,4 @@
+﻿variables:
+  Module.Name: AzureCli
+  Module.ArtifactName: AzureCli
+  Repository.ArtifactName: Repository

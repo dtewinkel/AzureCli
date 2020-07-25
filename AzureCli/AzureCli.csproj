@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyTitle>AzureCli</AssemblyTitle>
+    <Product>AzureCli</Product>
+    <Copyright>Copyright © 2020, Daniël te Winkel</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Start-Debug.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AzureCli\AzureCli.psd1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AzureCli\AzureCli.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AzureCli\Invoke-AzCli.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" >
+    <Exec Command="pwsh -NonInteractive -NoProfile -ExecutionPolicy RemoteSigned -NoLogo -Command &quot;&amp; '$(ProjectDir)post-build1.ps1' -ConfigurationName '$(ConfigurationName)' -OutDir '$(OutDir)' -DevEnvDir '$(DevEnvDir)' -PlatformName '$(PlatformName)' -ProjectDir '$(ProjectDir)' -ProjectPath '$(ProjectPath)' -ProjectName '$(ProjectName)' -ProjectFileName '$(ProjectFileName)' -ProjectExt '$(ProjectExt)' -SolutionDir '$(SolutionDir)' -SolutionPath '$(SolutionPath)' -SolutionName '$(SolutionName)' -SolutionFileName '$(SolutionFileName)' -SolutionExt '$(SolutionExt)' -TargetDir '$(TargetDir)' -TargetPath '$(TargetPath)' -TargetName '$(TargetName)' -TargetFileName '$(TargetFileName)' -TargetExt '$(TargetExt)'&quot;"/>
+  </Target>
+</Project>
