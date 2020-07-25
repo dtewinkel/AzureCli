@@ -1,8 +1,6 @@
 ﻿parameters:
   Condition: succeeded()
-  RepositoryName: <set>
-  RepositoryFeedUrl: <set>
-  RepositoryApiKey: <set>
+  RepositoryConnection:
 
 stages:
 
@@ -20,6 +18,12 @@ stages:
         runOnce:
           deploy:
             steps:
-            - pwsh: |
-                echo "Hello"
-              displayName: "Publish module to ${{ parameters.RepositoryName }} (${{ parameters.RepositoryFeedUrl }})"
+
+            - task: NuGetCommand@2
+              displayName: Publish module to gallery feed
+              inputs:
+                command: push
+                packagesToPush: $(Build.ArtifactStagingDirectory)/$(Repository.ArtifactName)/*.nupkg
+                nuGetFeedType: external
+                publishFeedCredentials: ${{ parameters.RepositoryConnection }}
+                verbosityPush: Normal
