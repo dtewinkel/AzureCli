@@ -1,17 +1,18 @@
 ﻿parameters:
   Condition: succeeded()
   RepositoryConnection:
+  StageName:
 
 stages:
 
-  - stage: publish_${{ parameters.RepositoryName }}
-    displayName: Publish to ${{ parameters.RepositoryName }}
+  - stage: ${{ parameters.StageName }}
+    displayName: Publish to ${{ parameters.RepositoryConnection }}
     condition: ${{ parameters.Condition }}
     jobs:
 
-    - deployment: publish_${{ parameters.RepositoryName }}_job
-      displayName: Publish to ${{ parameters.RepositoryName }}
-      environment: $(Module.Name)-${{ parameters.RepositoryName }}
+    - deployment: ${{ parameters.StageName }}_job
+      displayName: Publish to ${{ parameters.RepositoryConnection }}
+      environment: $(Module.Name)-${{ parameters.RepositoryConnection }}
       pool:
         vmImage: windows-latest
       strategy:

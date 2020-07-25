@@ -17,10 +17,12 @@ stages:
 - template: publish-stage.yml
   parameters:
     RepositoryConnection: MyGet_PsGallery
+    StageName: publish_myget
 
 - template: publish-stage.yml
   parameters:
     Condition: and( succeeded(), or( eq(variables['Build.SourceBranch'], 'refs/heads/master'), in( variables['Build.Reason'], 'Manual', 'Schedule' ) ) )
     RepositoryConnection: PsGallery
+    StageName: publish_psgallery
 
 - template: tag-stage.yml
