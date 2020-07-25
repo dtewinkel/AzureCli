@@ -1,4 +1,5 @@
-﻿param(
+﻿[CmdletBinding()]
+param(
 	# The name of the current project configuration, for example, "Debug".
 	[Parameter()] $ConfigurationName,
 
@@ -71,35 +72,23 @@ $preRelease = 'LocalBuild'
 $repositoryName  = "Local${ProjectName}PowerShell"
 $repositoryPath = (Join-Path $SolutionDir $repositoryName)
 $nugetPath = (join-Path $repositoryPath "${ProjectName}.${version}-${preRelease}.nupkg")
+$moduleDir = (Join-Path $TargetDir ${ProjectName})
 
 $scriptDir = (Join-Path $SolutionDir deployment pipelines, scripts)
-$moduleDir = (Join-Path $TargetDir ${ProjectName})
-$modulePath = (Join-Path $moduleDir "${ProjectName}.psd1")
-
+$repositoryScript = (Join-Path $scriptDir New-LocalRepository.ps1)
+$updateScript = (Join-Path $scriptDir Update-PowerShellModule.ps1)
 $publishScript = (Join-Path $scriptDir Publish-PowerShellModule.ps1)
 
 try
 {
-	if(-not (Test-Path $repositoryPath))
+	& $repositoryScript -RepositoryName $repositoryName -RepositoryDir $repositoryPath
+	if (Test-Path $nugetPath)
 	{
-		mkdir $repositoryPath
-	}
-	else
-	{
-		if (Test-Path $nugetPath)
-		{
-			rm $nugetPath
-		}
-	}
-	$repo = Get-PSRepository -Name $repositoryName -ErrorAction SilentlyContinue
-
-	if(-not $repo)
-	{
- 		Register-PSRepository -Name $repositoryName -SourceLocation $repositoryPath -InstallationPolicy Trusted
-		Write-Host "Registered repository '${repositoryName}'."
+		rm $nugetPath
 	}
 
-	& $publishScript -ProjectName $ProjectName -ProjectDir $moduleDir -Repository $repositoryName -Version $version -Prerelease $preRelease
+	& $updateScript -ProjectName $ProjectName -ProjectDir $moduleDir -Version $version -Prerelease $preRelease
+	& $publishScript -ProjectDir $moduleDir -Repository $repositoryName
 }
 finally
 {

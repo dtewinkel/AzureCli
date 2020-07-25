@@ -1,0 +1,25 @@
+﻿parameters:
+  Condition: succeeded()
+  Repository.Name:
+  Repository.FeedUrl:
+  Repository.ApiKey:
+
+stages:
+
+  - stage: publish_${{ parameters.RepositoryName }}
+    displayName: Publish to ${{ parameters.RepositoryName }}
+    condition: ${{ parameters.Condition }}
+    jobs:
+
+  - deployment: publish_${{ parameters.RepositoryName }}_job
+    displayName: Publish to ${{ parameters.RepositoryName }}
+    environment: $(Module.Name)-${{ parameters.RepositoryName }}
+    pool:
+      vmImage: windows-latest
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - pwsh: |
+              echo "Hello"
+            displayName: "Publish module to ${{ parameters.RepositoryName }} (${{ parameters.FeedUrl }})"

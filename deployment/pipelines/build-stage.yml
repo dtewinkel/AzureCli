@@ -7,7 +7,9 @@
     displayName: Build, publish AzureCli Module
     variables:
       Module.Path: $(Module.Name)/$(Module.Name)
-      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
+      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)/Src
+      Repository.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)/Repository
+      Repository.Name: Local$(Module.Name)PowerShell
       SolutionFile: AzureCli.sln
       CompanyName: Daniël te Winkel
       Author: Daniël te Winkel
@@ -20,21 +22,6 @@
       displayName: Determine Version using GitVersion
       inputs:
         configFilePath: GitVersion.yml
-
-    - task: DotNetCoreCLI@2
-      displayName: Resore NuGet packages
-      inputs:
-        command: restore
-        projects: $(SolutionFile)
-        verbosityRestore: Normal
-
-    - task: DotNetCoreCLI@2
-      displayName: Build projects
-      inputs:
-        command: build
-        projects: $(SolutionFile)
-        arguments: --no-restore --configuration $(Configuration)
-        verbosityRestore: Normal
 
     - task: CopyFiles@2
       displayName: Copy Module files
@@ -70,6 +57,20 @@
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
       displayName: Run PowerShell ScriptAnalyzer
 
+    - pwsh: |
+        if(-not (Test-Path $(Repository.ArtifactPath)))
+        {
+            New-Item -Path $(Repository.ArtifactPath) -ItemType Directory
+        }
+        Remove-Item (Join-Path $(Repository.ArtifactPath) "$(Module.Name)*.nupkg") -Force
+        Register-PSRepository -Name $(Repository.Name) -SourceLocation $(Repository.ArtifactPath) -InstallationPolicy Trusted
+        Publish-ModuleManifest -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
+      displayName: Run PowerShell ScriptAnalyzer
+
     - publish: $(Module.ArtifactPath)
       artifact: $(Module.ArtifactName)
-      displayName: Publish Module Artifact
+      displayName: Publish $(Repository.ArtifactName) Artifact
+
+    - publish: $(Repository.ArtifactPath)
+      artifact: $(Repository.ArtifactName)
+      displayName: Publish $(Repository.ArtifactName) Artifact
