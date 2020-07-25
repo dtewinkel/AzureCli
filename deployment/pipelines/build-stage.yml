@@ -7,8 +7,8 @@
     displayName: Build, publish AzureCli Module
     variables:
       Module.Path: $(Module.Name)/$(Module.Name)
-      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)/Src
-      Repository.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)/Repository
+      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
+      Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
       Repository.Name: Local$(Module.Name)PowerShell
       SolutionFile: AzureCli.sln
       CompanyName: Daniël te Winkel
