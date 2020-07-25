@@ -67,10 +67,6 @@
         Publish-Module -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
       displayName: Create NuGet package for Module
 
-    - publish: $(Module.ArtifactPath)
-      artifact: $(Module.ArtifactName)
-      displayName: Publish $(Module.ArtifactName) Artifact
-
     - publish: $(Repository.ArtifactPath)
       artifact: $(Repository.ArtifactName)
       displayName: Publish $(Repository.ArtifactName) Artifact
