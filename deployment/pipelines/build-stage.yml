@@ -43,7 +43,7 @@
         }
         if("$(GitVersion.PreReleaseTag)" -ne "")
         {
-          $preReleaseTag = '$(GitVersion.PreReleaseTag)' -replace '[^a-zA-Z0-9]', ''
+          $preReleaseTag = '$(GitVersion.NuGetPreReleaseTagV2)' -replace '[^a-zA-Z0-9]', ''
           $updateParameters.Add("Prerelease", "${preReleaseTag}")
         }
         Update-ModuleManifest @updateParameters
