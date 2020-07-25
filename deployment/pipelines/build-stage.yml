@@ -64,7 +64,7 @@
         }
         Remove-Item (Join-Path $(Repository.ArtifactPath) "$(Module.Name)*.nupkg") -Force
         Register-PSRepository -Name $(Repository.Name) -SourceLocation $(Repository.ArtifactPath) -InstallationPolicy Trusted
-        Publish-ModuleManifest -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
+        Publish-Module -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
       displayName: Create NuGet package for Module
 
     - publish: $(Module.ArtifactPath)
