@@ -1,6 +1,4 @@
-variables:
-  application.Name: AzureCli
-  application.ArtifactsName: AzureCli
-  scripts.ArtifactsName: Scripts
-  GitVersion.ArtifactName: GitVersion
-  GitVersion.JsonFile: GitVersionVariables.json
+﻿variables:
+  Module.Name: AzureCli
+  Module.ArtifactName: AzureCli
+  Repository.ArtifactName: Repository

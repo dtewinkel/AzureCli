@@ -2,9 +2,10 @@
 {
 	<#
 	.SYNOPSIS
-	Invokes the az cli from PowerShell providing better error handling and converts the output from JSON to  a custom object or a hash table.
+	Invokes the az cli from PowerShell, providing better error handling and converting the output from JSON to a custom object.
 
 	.DESCRIPTION
+
 	Invokes the az cli from PowerShell.
 
 	Unless specified otherwise, converts the output from JSON to a custom object. This make further dealing with the output in PowerShell much easier.
@@ -51,6 +52,11 @@
 
 	List all storage accounts in the given subscription.
 
+	.EXAMPLE
+	iaz version
+
+	Use the alias for Invoke-AzCli to get the verion information of az cli.
+
 	#>
 
 	<# Enable -Verbose, -Force and -WhatIf. #>
@@ -85,9 +91,9 @@
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
 
-		$host = Get-Host
-		$ForegroundColor = $host.ui.rawui.ForegroundColor
-		$BackgroundColor = $host.ui.rawui.BackgroundColor
+		$hostInfo = Get-Host
+		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
+		$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
 
 		if ($Output)
 		{
@@ -157,8 +163,8 @@
 		if ($Raw.IsPresent)
 		{
 			az @Arguments @additionalArguments
-			$host.ui.rawui.ForegroundColor = $ForegroundColor
-			$host.ui.rawui.BackgroundColor = $BackgroundColor
+			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
 		else
 		{
@@ -169,13 +175,13 @@
 		{
 			if($null -ne $result)
 			{
-				Write-Host $result
+				$result
 				throw "Command exited with error code ${LASTEXITCODE}: ${result}"
 			}
 			throw "Command exited with error code ${LASTEXITCODE}"
 		}
-		$host.ui.rawui.ForegroundColor = $ForegroundColor
-		$host.ui.rawui.BackgroundColor = $BackgroundColor
+		$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+		$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		if ($helpRequested -or $outputRequested -or $Arguments.Length -eq 0)
 		{
 			$result
@@ -188,9 +194,3 @@
 }
 
 New-alias -Name iaz Invoke-AzCli
-
-if ($loadingModule)
-{
-	Export-ModuleMember -Function 'Invoke-AzCli'
-	Export-ModuleMember -Alias 'iaz'
-}

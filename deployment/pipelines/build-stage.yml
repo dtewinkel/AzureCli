@@ -1,4 +1,4 @@
-stages:
+﻿stages:
 - stage: build
   displayName: Version and build
   jobs:
@@ -6,66 +6,67 @@ stages:
   - job: run_build
     displayName: Build, publish AzureCli Module
     variables:
-      GitVersion.ArtifactPath: $(build.artifactStagingDirectory)/GitVersion
-      GitVersion.JsonPath: $(build.artifactStagingDirectory)
+      Module.Path: $(Module.Name)/$(Module.Name)
+      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
+      Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
+      Repository.Name: Local$(Module.Name)PowerShell
+      SolutionFile: AzureCli.sln
+      CompanyName: Daniël te Winkel
+      Author: Daniël te Winkel
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
     steps:
 
     - task: GitVersion@5
       displayName: Determine Version using GitVersion
       inputs:
-        runtime: core
-        configFilePath: ${{ parameters.GitVersionFile }}
-
-    - pwsh: |
-        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
-        Write-Host "##vso[task.setvariable variable=GitVersion.CommitYear]$year"
-      displayName: Get Commit Year
-
-    - pwsh: |
-        [PsCustomObject]@{
-          Major = '$(GitVersion.Major)'
-          Minor = '$(GitVersion.Minor)'
-          Patch = '$(GitVersion.Patch)'
-          PreReleaseTag = '$(GitVersion.PreReleaseTag)'
-          PreReleaseTagWithDash = '$(GitVersion.PreReleaseTagWithDash)'
-          PreReleaseLabel = '$(GitVersion.PreReleaseLabel)'
-          PreReleaseNumber = '$(GitVersion.PreReleaseNumber)'
-          BuildMetaData = '$(GitVersion.BuildMetaData)'
-          BuildMetaDataPadded = '$(GitVersion.BuildMetaDataPadded)'
-          FullBuildMetaData = '$(GitVersion.FullBuildMetaData)'
-          MajorMinorPatch = '$(GitVersion.MajorMinorPatch)'
-          SemVer = '$(GitVersion.SemVer)'
-          LegacySemVer = '$(GitVersion.LegacySemVer)'
-          LegacySemVerPadded = '$(GitVersion.LegacySemVerPadded)'
-          AssemblySemVer = '$(GitVersion.AssemblySemVer)'
-          AssemblySemFileVer = '$(GitVersion.AssemblySemFileVer)'
-          FullSemVer = '$(GitVersion.FullSemVer)'
-          InformationalVersion = '$(GitVersion.InformationalVersion)'
-          BranchName = '$(GitVersion.BranchName)'
-          Sha = '$(GitVersion.Sha)'
-          ShortSha = '$(GitVersion.ShortSha)'
-          NuGetVersionV2 = '$(GitVersion.NuGetVersionV2)'
-          NuGetVersion = '$(GitVersion.NuGetVersion)'
-          NuGetPreReleaseTagV2 = '$(GitVersion.NuGetPreReleaseTagV2)'
-          NuGetPreReleaseTag = '$(GitVersion.NuGetPreReleaseTag)'
-          CommitsSinceVersionSource = '$(GitVersion.CommitsSinceVersionSource)'
-          CommitsSinceVersionSourcePadded = '$(GitVersion.CommitsSinceVersionSourcePadded)'
-          CommitDate = '$(GitVersion.CommitDate)'
-          CommitYear = '$(GitVersion.CommitYear)'
-        } |
-          ConvertTo-Json -Depth 2 |
-          Out-File -FilePath '$(GitVersion.JsonPath)/$(GitVersion.JsonFile)' -Encoding utf8
-      displayName: 'Store GitVersion Variables in GitVersion Json file'
+        configFilePath: GitVersion.yml
 
     - task: CopyFiles@2
-      displayName: Copy GitVersion Json file
+      displayName: Copy Module files
       inputs:
-        SourceFolder: $(GitVersion.JsonPath)
-        Contents: $(GitVersion.JsonFile)
-        TargetFolder: $(GitVersion.ArtifactPath)
+        SourceFolder: $(Module.Path)
+        Contents: '**'
+        TargetFolder: $(Module.ArtifactPath)
 
-    - publish: $(GitVersion.ArtifactPath)
-      artifact: $(GitVersion.ArtifactName)
-      displayName: Publish Gitversion Artifact
+    - pwsh: |
+        $modulePath = (Join-Path "$(Module.ArtifactPath)" "$(Module.Name).psd1")
+        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
+        $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
+        $updateParameters = @{
+          Path = $modulePath
+          ModuleVersion = '$(GitVersion.MajorMinorPatch)'
+          Copyright = $copyright
+          Author = '$(Author)'
+          CompanyName = '$(CompanyName)'
+        }
+        if("$(GitVersion.PreReleaseTag)" -ne "")
+        {
+          $preReleaseTag = '$(GitVersion.NuGetPreReleaseTagV2)' -replace '[^a-zA-Z0-9]', ''
+          $updateParameters.Add("Prerelease", "${preReleaseTag}")
+        }
+        Update-ModuleManifest @updateParameters
+        # make sure the ModuleManifest is in the right encoding.
+        $manifest = Get-Content $modulePath
+        $manifest | Out-File -Encoding utf8BOM $modulePath
+      displayName: Update Module manifest
+
+    - pwsh: |
+        Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
+        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
+      displayName: Run PowerShell ScriptAnalyzer
+
+    - pwsh: |
+        if(-not (Test-Path $(Repository.ArtifactPath)))
+        {
+            $newPath = New-Item -Path $(Repository.ArtifactPath) -ItemType Directory
+        }
+        Remove-Item (Join-Path $(Repository.ArtifactPath) "$(Module.Name)*.nupkg") -Force
+        Register-PSRepository -Name $(Repository.Name) -SourceLocation $(Repository.ArtifactPath) -InstallationPolicy Trusted
+        Publish-Module -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
+      displayName: Create NuGet package for Module
+
+    - publish: $(Repository.ArtifactPath)
+      artifact: $(Repository.ArtifactName)
+      displayName: Publish $(Repository.ArtifactName) Artifact
