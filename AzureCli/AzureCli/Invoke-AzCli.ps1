@@ -2,9 +2,10 @@
 {
 	<#
 	.SYNOPSIS
-	Invokes the az cli from PowerShell providing better error handling and converts the output from JSON to  a custom object or a hash table.
+	Invokes the az cli from PowerShell, providing better error handling and converting the output from JSON to a custom object.
 
 	.DESCRIPTION
+
 	Invokes the az cli from PowerShell.
 
 	Unless specified otherwise, converts the output from JSON to a custom object. This make further dealing with the output in PowerShell much easier.
@@ -50,6 +51,11 @@
 	Invoke-AzCli storage account list -Subscription "My Subscription"
 
 	List all storage accounts in the given subscription.
+
+	.EXAMPLE
+	iaz version
+
+	Use the alias for Invoke-AzCli to get the verion information of az cli.
 
 	#>
 
