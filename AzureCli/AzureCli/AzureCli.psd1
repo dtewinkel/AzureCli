@@ -26,7 +26,7 @@ CompanyName = 'Daniël te Winkel'
 Copyright = 'Copyright © 2020, Daniël te Winkel. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Cmdlet and alias to make invoking of az cli a bit more in PowerShell style'
+Description = 'Cmdlet and alias to make invoking of Azure CLI a bit more PowerShell style. Process output of Azure CLI JSON to custom object.'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -104,6 +104,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.0.1
+
+        - Don''t change direcotry to module path on invocation.
+        - Improve source project documentation.
+
         1.0.0
          - Initial version of this module providing Invoke-AzCli and alias iaz.
         '
