@@ -6,8 +6,11 @@ stages:
   - job: tag_build
     displayName: Tag Sources
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
     steps:
 
-    - task: git-tag-on-release-task@9
-      displayName: Tag Sources
+    - task: GitHubTag@1
+      inputs:
+        githubEndpoint: $(GitHubEndpoint)
+        repositoryName: $(Build.Repository.Name)
+        tag: $(Build.BuildNumber)
