@@ -160,15 +160,21 @@
 	process
 	{
 		Write-verbose "Invoking [az $Arguments $additionalArguments]"
-		if ($Raw.IsPresent)
+		try
 		{
-			az @Arguments @additionalArguments
-			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
+			if ($Raw.IsPresent)
+			{
+				az @Arguments @additionalArguments
+			}
+			else
+			{
+				$result = az @Arguments @additionalArguments
+			}
 		}
-		else
+		finally
 		{
-			$result = az @Arguments @additionalArguments
+				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
 		# Restore console colors, as az cli likely to change them.
 		if (-not $?)
@@ -180,8 +186,6 @@
 			}
 			throw "Command exited with error code ${LASTEXITCODE}"
 		}
-		$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-		$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		if ($helpRequested -or $outputRequested -or $Arguments.Length -eq 0)
 		{
 			$result

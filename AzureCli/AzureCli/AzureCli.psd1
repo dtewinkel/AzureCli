@@ -104,6 +104,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.0.2
+
+        - Fixed restoring color output in some error scenarios.
+
         1.0.1
 
         - Don''t change direcotry to module path on invocation.
