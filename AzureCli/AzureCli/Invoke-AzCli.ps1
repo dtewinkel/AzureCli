@@ -181,10 +181,10 @@
 		}
 		finally
 		{
-				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
+			# Restore console colors, as az cli likely to change them.
+			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
-		# Restore console colors, as az cli likely to change them.
 		if (-not $?)
 		{
 			if($null -ne $result)
