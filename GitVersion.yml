@@ -5,3 +5,6 @@ next-version: 1.0.2
 branches:
   master:
     increment: Minor
+  hotfix:
+    regex: ^fix[/-]
+    increment: Patch
