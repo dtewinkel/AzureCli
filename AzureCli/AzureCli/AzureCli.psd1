@@ -104,6 +104,14 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.1.0
+
+        - Support raw output for a number of specific command groups and parameters:
+            * Support --version.
+            * Support find.
+            * Support help.
+        - Better handle raw output for --output, -o, help and a number of other parameters.
+
         1.0.2
 
         - Fixed restoring color output in some error scenarios.

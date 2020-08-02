@@ -2,24 +2,30 @@
 {
 	<#
 	.SYNOPSIS
-	Invokes the az cli from PowerShell, providing better error handling and converting the output from JSON to a custom object.
+	Invoke the Azure CLI from PowerShell, providing better error handling and converting the output from JSON to a custom object.
 
 	.DESCRIPTION
 
-	Invokes the az cli from PowerShell.
+	Invoke the Azure CLI from PowerShell.
 
 	Unless specified otherwise, converts the output from JSON to a custom object. This make further dealing with the output in PowerShell much easier.
 
-	Provides better error handling, so that script fails more easily if the az cli fails.
+	Provides better error handling, so that script fails more easily if the Azure CLI fails.
 
-	Fixes the console colors back to what they were before calling az, as the az cli tends to screw up the colors on errors, verbose, and other cases.
+	Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
 
-	Allows to set most of the common az cli parameters through PowerShell parameters:
-	 - -Output for --output
-	 - -Help for --help
-	 - -Query for --query
-	 - -Subscription for --subscription
-	In most cases only the PowerShell or the az cli version of a parameter can be used. Specifying both is an error.
+	Allows to set most of the common Azure CLI parameters through PowerShell parameters:
+	  - -Output for --output
+	  - -Help for --help
+	  - -Query for --query
+	  - -Subscription for --subscription
+	  - -SuppressCliWarnings for --only-show-errors
+
+	In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
+
+	The parameter -Raw can be used to provide the raw output of the Azure CLI. This cmdlet will not try to convert the output to a custom object in that case.
+
+	The following command groups will produce raw output: help and find. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
 
 	.PARAMETER Subscription
 	Adds the --subscription common parameter. Specify the name or ID of subscription. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
@@ -28,24 +34,22 @@
 	Adds the --query common parameter. Provide the JMESPath query string. See http://jmespath.org/ for more information and examples.
 
 	.PARAMETER Output
-	If Output is set to object (the default), then the JSON output of the az cli will be converted to a custom object for easy processing in PowerShell
-
-	Otherwise adds the --query common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc.
+	Adds the --output common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc. The ourput will not be converted to a custom object.
 
 	.PARAMETER SuppressCliWarnings
-	Suppress warnings from the result of calling the az cli. This is passed on as '--only-show-errors' to the az cli.
+	Suppress warnings from the result of calling the Azure CLI. This is passed on as '--only-show-errors' to the Azure CLI.
 
 	.PARAMETER SuppressOutput
-	Suppress any object output from the result of calling the az cli. This is passed on as '--output none' to the az cli.
+	Suppress any object output from the result of calling the Azure CLI. This is passed on as '--output none' to the Azure CLI.
 
 	.PARAMETER Raw
-	Do not process the output of az cli.
+	Do not process the output of Azure CLI into a custom object.
 
 	.PARAMETER Help
-	Get the help text from the az cli.
+	Get the help text from the Azure CLI. This is passed on as '--help' to the Azure CLI.
 
 	.PARAMETER Arguments
-	All the remaining arguments are passedon the az cli.
+	All the remaining arguments are passed on the Azure CLI.
 
 	.EXAMPLE
 	Invoke-AzCli storage account list -Subscription "My Subscription"
@@ -55,11 +59,11 @@
 	.EXAMPLE
 	iaz version
 
-	Use the alias for Invoke-AzCli to get the verion information of az cli.
+	Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 	#>
 
-	<# Enable -Verbose, -Force and -WhatIf. #>
+	<# Enable -Verbose. #>
 	[CmdletBinding(PositionalBinding = $false)]
 	param(
 		[Parameter()]
@@ -95,6 +99,8 @@
 		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
 		$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
 
+		$rawOutput = $Raw.IsPresent
+
 		if ($Output)
 		{
 			if ($Arguments -contains "--output")
@@ -102,21 +108,38 @@
 				throw "Both -Output and --output are set on the commandline."
 			}
 			$additionalArguments += '--output', $Output
-			$outputRequested = $true
+			$rawOutput = $true
 		}
 		elseif ($Arguments -contains "--output")
 		{
-			$outputRequested = $true
+			$rawOutput = $true
 		}
 
 		if ($Arguments -contains "--help")
 		{
 			$helpRequested = $true
+			$rawOutput = $true
 		}
 		if ($Help.IsPresent)
 		{
 			$additionalArguments += '--help'
 			$helpRequested = $true
+			$rawOutput = $true
+		}
+
+		if ($Arguments.Length -eq 0)
+		{
+			$rawOutput = $true
+		}
+
+		if ($Arguments.Length -gt 0 -and $Arguments[0] -in "find", "help")
+		{
+			$rawOutput = $true
+		}
+
+		if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")
+		{
+			$rawOutput = $true
 		}
 
 		if (-not $helpRequested -and $SuppressOutput.IsPresent)
@@ -126,6 +149,7 @@
 				throw "Both -SuppressOutput and --output are set on the commandline."
 			}
 			$additionalArguments = @('--output', 'none')
+			$rawOutput = $true
 		}
 
 		if ($SuppressCliWarnings.IsPresent)
@@ -162,7 +186,7 @@
 		Write-verbose "Invoking [az $Arguments $additionalArguments]"
 		try
 		{
-			if ($Raw.IsPresent)
+			if ($rawOutput)
 			{
 				az @Arguments @additionalArguments
 			}
@@ -173,10 +197,10 @@
 		}
 		finally
 		{
-				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
+			# Restore console colors, as Azure CLI likely to change them.
+			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
-		# Restore console colors, as az cli likely to change them.
 		if (-not $?)
 		{
 			if($null -ne $result)
@@ -186,11 +210,7 @@
 			}
 			throw "Command exited with error code ${LASTEXITCODE}"
 		}
-		if ($helpRequested -or $outputRequested -or $Arguments.Length -eq 0)
-		{
-			$result
-		}
-		elseif ($null -ne $result -and -not $SuppressOutput.IsPresent -and -not $outputRequested)
+		if ($null -ne $result)
 		{
 			$result | ConvertFrom-Json
 		}
