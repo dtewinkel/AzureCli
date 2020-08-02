@@ -110,11 +110,12 @@ PrivateData = @{
 
         1.0.1
 
-        - Don''t change direcotry to module path on invocation.
+        - Don''t change directory to module path on invocation.
         - Improve source project documentation.
 
         1.0.0
-         - Initial version of this module providing Invoke-AzCli and alias iaz.
+
+        - Initial version of this module providing Invoke-AzCli and alias iaz.
         '
 
         # Prerelease string of this module
