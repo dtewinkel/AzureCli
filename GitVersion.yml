@@ -1,7 +1,9 @@
 ﻿mode: ContinuousDeployment
 assembly-versioning-scheme: Major
 continuous-delivery-fallback-tag: ''
-next-version: 1.0.1
 branches:
   master:
     increment: Minor
+  hotfix:
+    regex: ^fix[/-]
+    increment: Patch

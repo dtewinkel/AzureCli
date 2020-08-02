@@ -2,6 +2,8 @@
 
 Cmdlet to support invoking the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest) from PowerShell.
 
+Master branch: [![maste rBuild Status](https://dev.azure.com/twia/AzureCli/_apis/build/status/dtewinkel.AzureCli?branchName=master)](https://dev.azure.com/twia/AzureCli/_build/latest?definitionId=15&branchName=master)
+
 ## Introduction
 
 This PowerShell module provide a cmdlet and an alias to call the Azure CLI tool `az` in a more PowerShell friendly way. 

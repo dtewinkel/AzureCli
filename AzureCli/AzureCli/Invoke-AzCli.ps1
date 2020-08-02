@@ -168,19 +168,23 @@
 	process
 	{
 		Write-verbose "Invoking [az $Arguments $additionalArguments]"
-		if ($rawOutput)
+		try
 		{
-			az @Arguments @additionalArguments
-			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
+			if ($Raw.IsPresent)
+			{
+				az @Arguments @additionalArguments
+			}
+			else
+			{
+				$result = az @Arguments @additionalArguments
+			}
 		}
-		else
+		finally
 		{
-			$result = az @Arguments @additionalArguments
-			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
+				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
-		# Restore console colors, as Azure CLI likely to change them.
+		# Restore console colors, as az cli likely to change them.
 		if (-not $?)
 		{
 			if($null -ne $result)
