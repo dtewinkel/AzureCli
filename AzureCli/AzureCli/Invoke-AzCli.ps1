@@ -94,6 +94,9 @@
 	{
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
+		$interactiveCommand = "interactive", "configure", "feedback"
+		$testOutputCommands = "find", "help"
+		$rawCommandands = $interactiveCommand + $testOutputCommands
 
 		$hostInfo = Get-Host
 		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
@@ -115,15 +118,24 @@
 			$rawOutput = $true
 		}
 
+		if ($SuppressOutput.IsPresent)
+		{
+			if ($Arguments -contains "--output" -or $Output)
+			{
+				throw "Both -SuppressOutput and --output are set on the commandline."
+			}
+			$additionalArguments = @('--output', 'none')
+			$rawOutput = $true
+		}
+
+
 		if ($Arguments -contains "--help")
 		{
-			$helpRequested = $true
 			$rawOutput = $true
 		}
 		if ($Help.IsPresent)
 		{
 			$additionalArguments += '--help'
-			$helpRequested = $true
 			$rawOutput = $true
 		}
 
@@ -132,23 +144,13 @@
 			$rawOutput = $true
 		}
 
-		if ($Arguments.Length -gt 0 -and $Arguments[0] -in "find", "help")
+		if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommandands)
 		{
 			$rawOutput = $true
 		}
 
 		if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")
 		{
-			$rawOutput = $true
-		}
-
-		if (-not $helpRequested -and $SuppressOutput.IsPresent)
-		{
-			if ($Arguments -contains "--output" -or $Output)
-			{
-				throw "Both -SuppressOutput and --output are set on the commandline."
-			}
-			$additionalArguments = @('--output', 'none')
 			$rawOutput = $true
 		}
 
