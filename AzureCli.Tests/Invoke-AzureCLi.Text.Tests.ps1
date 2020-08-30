@@ -4,7 +4,7 @@
 
 		. ./Helpers/Az.ps1
 
-		Mock az { $Arguments -join "," }
+		Mock az { $Arguments -join ", " }
 
 		. ./Helpers/LoadModule.ps1
 	}
@@ -29,6 +29,22 @@
 
 		$expectedValue = 'help'
 		$result = Invoke-AzCLi help
+		$result | Should -Be $expectedValue
+		Should -Invoke az
+	}
+
+	It "Returns the raw data for '-Help'" {
+
+		$expectedValue = 'vm, list, --help'
+		$result = Invoke-AzCLi vm list -Help
+		$result | Should -Be $expectedValue
+		Should -Invoke az
+	}
+
+	It "Returns the raw data for '--help'" {
+
+		$expectedValue = 'vm, list, --help'
+		$result = Invoke-AzCLi vm list -Help
 		$result | Should -Be $expectedValue
 		Should -Invoke az
 	}
