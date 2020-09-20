@@ -61,8 +61,8 @@
 
     - pwsh: |
         mkdir $(Test.ArtifactPath)
+        Copy-Item $(Module.Tests.Path) $(Test.ArtifactPath)
         cd $(Test.ArtifactPath)
-        Copy-Item $(Module.Tests.Path) .
         mkdir $(Module.Name)
         Copy-Item $(Module.ArtifactPath) $(Module.Name)
         Invoke-Pester -CI
