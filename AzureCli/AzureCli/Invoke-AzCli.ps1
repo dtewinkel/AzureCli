@@ -95,7 +95,7 @@
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
 		$interactiveCommand = "interactive", "configure", "feedback"
-		$testOutputCommands = "find", "help"
+		$testOutputCommands = "find", "help", "upgrade"
 		$rawCommandands = $interactiveCommand + $testOutputCommands
 
 		$hostInfo = Get-Host
