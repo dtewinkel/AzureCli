@@ -59,8 +59,8 @@
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
       displayName: Run PowerShell ScriptAnalyzer
 
-      
     - pwsh: |
+        mkdir $(Test.ArtifactPath)
         cd $(Test.ArtifactPath)
         Copy-Item $(Module.Tests.Path) .
         mkdir $(Module.Name)
