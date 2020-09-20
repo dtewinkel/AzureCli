@@ -61,10 +61,11 @@
 
     - pwsh: |
         mkdir $(Test.ArtifactPath)
-        Copy-Item $(Module.Tests.Path) $(Test.ArtifactPath)
+        Copy-Item $(Module.Tests.Path)/* $(Test.ArtifactPath) -Recurse
         cd $(Test.ArtifactPath)
         mkdir $(Module.Name)
-        Copy-Item $(Module.ArtifactPath) $(Module.Name)
+        Copy-Item $(Module.ArtifactPath) $(Module.Name) -Recurse
+        dir -Recurse
         Invoke-Pester -CI
       displayName: Run Unit tests
 
