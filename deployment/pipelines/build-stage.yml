@@ -7,7 +7,9 @@
     displayName: Build, publish AzureCli Module
     variables:
       Module.Path: $(Module.Name)/$(Module.Name)
+      Module.Tests.Path: $(Module.Name).Tests
       Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
+      Test.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name).Tests
       Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
       Repository.Name: Local$(Module.Name)PowerShell
       SolutionFile: AzureCli.sln
@@ -56,6 +58,15 @@
         Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
       displayName: Run PowerShell ScriptAnalyzer
+
+      
+    - pwsh: |
+        cd $(Test.ArtifactPath)
+        Copy-Item $(Module.Tests.Path) .
+        mkdir $(Module.Name)
+        Copy-Item $($(Module.ArtifactPath)) $(Module.Name)
+        Invoke-Pester -CI
+      displayName: Run Unit tests
 
     - pwsh: |
         if(-not (Test-Path $(Repository.ArtifactPath)))
