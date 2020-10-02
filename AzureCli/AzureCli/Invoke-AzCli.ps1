@@ -186,14 +186,14 @@
 	process
 	{
 		$allArguments = $Arguments + $additionalArguments
-		$commandLine = (@( 'az', '--%' ) + ( $allArguments | % { "`"${_}`"" } )) -join ' '
+		$commandLine = (@( 'az', '--%' ) + ( $allArguments | ForEach-Object { "`"${_}`"" } )) -join ' '
 		Write-verbose "Invoking [$commandLine]"
 
 		try
 		{
 			if ($rawOutput)
 			{
-				 Invoke-Expression $commandLine
+				Invoke-Expression $commandLine
 			}
 			else
 			{
