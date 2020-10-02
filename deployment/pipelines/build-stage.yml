@@ -65,7 +65,16 @@
         cd $(Test.ArtifactPath)
         mkdir $(Module.Name) > $null
         Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
-        Invoke-Pester -CI
+        $configuration = [PesterConfiguration]@{
+            TestResult = @{
+                Enabled = $true
+                OutputPath = $(System.DefaultWorkingDirectory)\Pester.XML
+            }
+            CodeCoverage = @{
+                Enable = $true
+            }
+}
+        Invoke-Pester -CI -Ouptut Detailed
       displayName: Run Unit tests
 
     - pwsh: |
