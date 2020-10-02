@@ -94,8 +94,8 @@
 	{
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
-		$interactiveCommand = "interactive", "configure", "feedback"
-		$testOutputCommands = "find", "help", "upgrade"
+		$interactiveCommand = "interactive", "configure", "feedback", "upgrade"
+		$testOutputCommands = "find", "help"
 		$rawCommandands = $interactiveCommand + $testOutputCommands
 
 		$hostInfo = Get-Host
@@ -185,16 +185,19 @@
 
 	process
 	{
-		Write-verbose "Invoking [az $Arguments $additionalArguments]"
+		$allArguments = $Arguments + $additionalArguments
+		$commandLine = (@( 'az', '--%' ) + ( $allArguments | % { "`"${_}`"" } )) -join ' '
+		Write-verbose "Invoking [$commandLine]"
+
 		try
 		{
 			if ($rawOutput)
 			{
-				az @Arguments @additionalArguments
+				 Invoke-Expression $commandLine
 			}
 			else
 			{
-				$result = az @Arguments @additionalArguments
+				$result = Invoke-Expression $commandLine
 			}
 		}
 		finally
