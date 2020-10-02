@@ -68,13 +68,13 @@
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
-                OutputPath = $(System.DefaultWorkingDirectory)\Pester.XML
+                OutputPath = $(System.DefaultWorkingDirectory)\UnitTests.XML
             }
-            CodeCoverage = @{
-                Enable = $true
+            Output = @{
+                Verbosity = "Detailed"
             }
-}
-        Invoke-Pester -CI -Ouptut Detailed
+        }
+        Invoke-Pester -Configuration $configuration
       displayName: Run Unit tests
 
     - pwsh: |
