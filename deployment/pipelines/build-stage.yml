@@ -83,12 +83,13 @@
       inputs:
         testRunner: "NUnit"
         testResultsFiles: "**/TestResults.Pester.xml"
-        testRunTitle: "PS_Win2016_Unit"
+        testRunTitle: "Pester Unit Tests"
         failTaskOnFailedTests: true
       displayName: "Publish Pester Unit Test Results"
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - task: PublishCodeCoverageResults@1
+      enabled: false
       inputs:
         summaryFileLocation: "**/CodeCoverage.xml"
         failIfCoverageEmpty: false
