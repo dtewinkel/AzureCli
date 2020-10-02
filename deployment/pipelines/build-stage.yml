@@ -65,7 +65,7 @@
         cd $(Test.ArtifactPath)
         mkdir $(Module.Name) > $null
         Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
-        Update-Module Pester
+        Install-Module -Name Pester -Scope CurrentUser -Force
         Import-Module Pester
         $configuration = [PesterConfiguration]@{
             TestResult = @{
