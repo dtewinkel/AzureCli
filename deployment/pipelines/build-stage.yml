@@ -70,14 +70,30 @@
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
-                OutputPath = '$(System.DefaultWorkingDirectory)\UnitTests.XML'
+                OutputPath = '$(System.DefaultWorkingDirectory)\TestResults.Pester.XML'
             }
             Output = @{
                 Verbosity = "Detailed"
             }
         }
         Invoke-Pester -Configuration $configuration
-      displayName: Run Unit tests
+      displayName: Run Pester Unit tests
+
+    - task: PublishTestResults@2
+      inputs:
+        testRunner: "NUnit"
+        testResultsFiles: "**/TestResults.Pester.xml"
+        testRunTitle: "PS_Win2016_Unit"
+        failTaskOnFailedTests: true
+      displayName: "Publish Pester Unit Test Results"
+      condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        summaryFileLocation: "**/CodeCoverage.xml"
+        failIfCoverageEmpty: false
+      displayName: "Publish Pester Unit Test Code Coverage"
+      condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - pwsh: |
         if(-not (Test-Path $(Repository.ArtifactPath)))
