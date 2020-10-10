@@ -48,4 +48,12 @@
 		$result | Should -Be $expectedValue
 		Should -Invoke az
 	}
+
+	It "Returns the raw data for 'upgrade'" {
+
+		$expectedValue = '--% "upgrade"'
+		$result = Invoke-AzCLi upgrade
+		$result | Should -Be $expectedValue
+		Should -Invoke az
+	}
 }

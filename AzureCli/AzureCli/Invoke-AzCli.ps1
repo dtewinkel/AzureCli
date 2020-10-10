@@ -94,9 +94,9 @@
 	{
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
-		$interactiveCommand = "interactive", "configure", "feedback", "upgrade"
-		$testOutputCommands = "find", "help"
-		$rawCommandands = $interactiveCommand + $testOutputCommands
+		$interactiveCommand = "configure", "feedback", "interactive"
+		$textOutputCommands = "find", "help", "upgrade"
+		$rawCommandands = $interactiveCommand + $textOutputCommands
 
 		$hostInfo = Get-Host
 		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
