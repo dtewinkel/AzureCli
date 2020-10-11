@@ -5,15 +5,18 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureCli", "AzureCli\AzureCli.csproj", "{7A9E969F-39DE-4CFB-8479-47798B01DEB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "deployment", "deployment\deployment.csproj", "{91939006-9CDB-438C-AAFA-7F7AE6197612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "deployment", "deployment\deployment.csproj", "{91939006-9CDB-438C-AAFA-7F7AE6197612}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D75F28BF-C90F-491F-B721-8B7BD86D78EB}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		GitVersion.yml = GitVersion.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCli.Tests", "AzureCli.Tests\AzureCli.Tests.csproj", "{C848ADB7-A138-4088-BE34-480D9427F9EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureCli.Tests", "AzureCli.Tests\AzureCli.Tests.csproj", "{C848ADB7-A138-4088-BE34-480D9427F9EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

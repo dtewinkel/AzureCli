@@ -15,10 +15,10 @@
 	Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
 
 	Allows to set most of the common Azure CLI parameters through PowerShell parameters:
-	  - -Output for --output
-	  - -Help for --help
-	  - -Query for --query
-	  - -Subscription for --subscription
+	 - -Output for --output
+	 - -Help for --help
+	 - -Query for --query
+	 - -Subscription for --subscription
 	  - -SuppressCliWarnings for --only-show-errors
 
 	In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
@@ -92,6 +92,12 @@
 
 	begin
 	{
+		$azCmd = Get-Command az -ErrorAction SilentlyContinue
+		if (-not $azCmd)
+		{
+			throw "The az CLI is not found. Please go to https://docs.microsoft.com/en-us/cli/azure/install-azure-cli to install it."
+		}
+
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
 		$interactiveCommand = "configure", "feedback", "interactive"
