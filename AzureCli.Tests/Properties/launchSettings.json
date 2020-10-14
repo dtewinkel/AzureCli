@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AzureCli": {
+      "commandName": "Executable",
+      "executablePath": "pwsh",
+      "commandLineArgs": "-NoExit -NoLogo -ExecutionPolicy RemoteSigned -command \"Invoke-Pester -Script *.Tests.ps1 -Output Detailed \""
+    }
+  }
+}

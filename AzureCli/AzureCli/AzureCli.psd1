@@ -104,6 +104,15 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.2.0
+
+		- Improved passing of parameters to az command line, preventing interpretation of parameters by PowerShell.
+		- Support more text output or interactive commands:
+            * interactive.
+            * feedback.
+            * version.
+            * upgrade.
+
         1.1.0
 
         - Support raw output for a number of specific command groups and parameters:

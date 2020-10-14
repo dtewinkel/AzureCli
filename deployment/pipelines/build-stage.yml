@@ -7,7 +7,9 @@
     displayName: Build, publish AzureCli Module
     variables:
       Module.Path: $(Module.Name)/$(Module.Name)
+      Module.Tests.Path: $(Module.Name).Tests
       Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
+      Test.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name).Tests
       Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
       Repository.Name: Local$(Module.Name)PowerShell
       SolutionFile: AzureCli.sln
@@ -54,8 +56,45 @@
 
     - pwsh: |
         Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
-        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
+        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit -ExcludeRule 'PSAvoidUsingInvokeExpression'
       displayName: Run PowerShell ScriptAnalyzer
+
+    - pwsh: |
+        mkdir $(Test.ArtifactPath) > $null
+        Copy-Item $(Module.Tests.Path)/* $(Test.ArtifactPath) -Recurse
+        cd $(Test.ArtifactPath)
+        mkdir $(Module.Name) > $null
+        Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
+        Install-Module -Name Pester -Scope CurrentUser -Force
+        Import-Module Pester
+        $configuration = [PesterConfiguration]@{
+            TestResult = @{
+                Enabled = $true
+                OutputPath = '$(System.DefaultWorkingDirectory)\TestResults.Pester.XML'
+            }
+            Output = @{
+                Verbosity = "Detailed"
+            }
+        }
+        Invoke-Pester -Configuration $configuration
+      displayName: Run Pester Unit tests
+
+    - task: PublishTestResults@2
+      inputs:
+        testRunner: "NUnit"
+        testResultsFiles: "**/TestResults.Pester.xml"
+        testRunTitle: "Pester Unit Tests"
+        failTaskOnFailedTests: true
+      displayName: "Publish Pester Unit Test Results"
+      condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
+
+    - task: PublishCodeCoverageResults@1
+      enabled: false
+      inputs:
+        summaryFileLocation: "**/CodeCoverage.xml"
+        failIfCoverageEmpty: false
+      displayName: "Publish Pester Unit Test Code Coverage"
+      condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - pwsh: |
         if(-not (Test-Path $(Repository.ArtifactPath)))

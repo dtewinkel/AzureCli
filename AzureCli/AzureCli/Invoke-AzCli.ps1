@@ -15,10 +15,10 @@
 	Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
 
 	Allows to set most of the common Azure CLI parameters through PowerShell parameters:
-	  - -Output for --output
-	  - -Help for --help
-	  - -Query for --query
-	  - -Subscription for --subscription
+	 - -Output for --output
+	 - -Help for --help
+	 - -Query for --query
+	 - -Subscription for --subscription
 	  - -SuppressCliWarnings for --only-show-errors
 
 	In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
@@ -43,7 +43,7 @@
 	Suppress any object output from the result of calling the Azure CLI. This is passed on as '--output none' to the Azure CLI.
 
 	.PARAMETER Raw
-	Do not process the output of Azure CLI into a custom object.
+	Do not process the output of Azure CLI.
 
 	.PARAMETER Help
 	Get the help text from the Azure CLI. This is passed on as '--help' to the Azure CLI.
@@ -92,8 +92,17 @@
 
 	begin
 	{
+		$azCmd = Get-Command az -ErrorAction SilentlyContinue
+		if (-not $azCmd)
+		{
+			throw "The az CLI is not found. Please go to https://docs.microsoft.com/en-us/cli/azure/install-azure-cli to install it."
+		}
+
 		$verbose = $VerbosePreference -ne 'SilentlyContinue'
 		$additionalArguments = @()
+		$interactiveCommand = "configure", "feedback", "interactive"
+		$textOutputCommands = "find", "help", "upgrade"
+		$rawCommandands = $interactiveCommand + $textOutputCommands
 
 		$hostInfo = Get-Host
 		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
@@ -115,15 +124,24 @@
 			$rawOutput = $true
 		}
 
+		if ($SuppressOutput.IsPresent)
+		{
+			if ($Arguments -contains "--output" -or $Output)
+			{
+				throw "Both -SuppressOutput and --output are set on the commandline."
+			}
+			$additionalArguments = @('--output', 'none')
+			$rawOutput = $true
+		}
+
+
 		if ($Arguments -contains "--help")
 		{
-			$helpRequested = $true
 			$rawOutput = $true
 		}
 		if ($Help.IsPresent)
 		{
 			$additionalArguments += '--help'
-			$helpRequested = $true
 			$rawOutput = $true
 		}
 
@@ -132,23 +150,13 @@
 			$rawOutput = $true
 		}
 
-		if ($Arguments.Length -gt 0 -and $Arguments[0] -in "find", "help")
+		if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommandands)
 		{
 			$rawOutput = $true
 		}
 
 		if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")
 		{
-			$rawOutput = $true
-		}
-
-		if (-not $helpRequested -and $SuppressOutput.IsPresent)
-		{
-			if ($Arguments -contains "--output" -or $Output)
-			{
-				throw "Both -SuppressOutput and --output are set on the commandline."
-			}
-			$additionalArguments = @('--output', 'none')
 			$rawOutput = $true
 		}
 
@@ -183,16 +191,19 @@
 
 	process
 	{
-		Write-verbose "Invoking [az $Arguments $additionalArguments]"
+		$allArguments = $Arguments + $additionalArguments
+		$commandLine = (@( 'az', '--%' ) + ( $allArguments | ForEach-Object { "`"${_}`"" } )) -join ' '
+		Write-verbose "Invoking [$commandLine]"
+
 		try
 		{
 			if ($rawOutput)
 			{
-				az @Arguments @additionalArguments
+				Invoke-Expression $commandLine
 			}
 			else
 			{
-				$result = az @Arguments @additionalArguments
+				$result = Invoke-Expression $commandLine
 			}
 		}
 		finally
