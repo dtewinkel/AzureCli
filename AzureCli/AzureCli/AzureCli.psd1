@@ -106,7 +106,8 @@ PrivateData = @{
         ReleaseNotes = '
         1.2.0
 
-        - Support more text output or interactive command groups:
+		- Improved passing of parameters to az command line, preventing interretation of parameters by PowerShell.
+		- Support more text output or interactive commands:
             * interactive.
             * feedback.
             * version.
