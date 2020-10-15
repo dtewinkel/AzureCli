@@ -192,19 +192,20 @@
 	process
 	{
 		$allArguments = $Arguments + $additionalArguments
-		$commandLine = (@( 'az', '--%' ) + ( $allArguments | ForEach-Object { "`"${_}`"" } )) -join ' '
+		$commandLine = @( $allArguments | ForEach-Object { "`"${_}`"" } )
 		Write-verbose "Invoking [$commandLine]"
 
 		try
 		{
 			if ($rawOutput)
 			{
-				Invoke-Expression $commandLine
+				az @commandLine
 			}
 			else
 			{
-				$result = Invoke-Expression $commandLine
+				$result = az @commandLine
 			}
+			$hadError = -not $?
 		}
 		finally
 		{
@@ -212,7 +213,7 @@
 			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
 			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
-		if (-not $?)
+		if ($hadError)
 		{
 			if($null -ne $result)
 			{

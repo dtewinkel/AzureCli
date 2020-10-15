@@ -104,6 +104,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.3.0
+
+		- Fixed error handling.
+
         1.2.0
 
 		- Improved passing of parameters to az command line, preventing interpretation of parameters by PowerShell.
