@@ -1,5 +1,4 @@
-﻿next-version: 1.2.1
-mode: ContinuousDeployment
+﻿mode: ContinuousDeployment
 assembly-versioning-scheme: Major
 continuous-delivery-fallback-tag: ''
 branches:

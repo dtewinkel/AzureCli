@@ -104,9 +104,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        1.2.1
+        1.3.0
 
-		- Fixed error handling.
+		- Improved error handling. Now throws on error.
 
         1.2.0
 
