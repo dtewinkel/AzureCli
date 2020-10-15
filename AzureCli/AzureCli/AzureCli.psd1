@@ -104,6 +104,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        1.3.0
+
+		- Improved error handling. Now throws on error.
+		- Improved locality of restoring color output. Only restore it if we process the az cli output.
+
         1.2.0
 
 		- Improved passing of parameters to az command line, preventing interpretation of parameters by PowerShell.
@@ -112,6 +117,7 @@ PrivateData = @{
             * feedback.
             * version.
             * upgrade.
+		- provide message where to istall az CLI from if az command is not found.
 
         1.1.0
 

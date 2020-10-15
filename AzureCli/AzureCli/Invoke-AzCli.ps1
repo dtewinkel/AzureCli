@@ -104,10 +104,6 @@
 		$textOutputCommands = "find", "help", "upgrade"
 		$rawCommandands = $interactiveCommand + $textOutputCommands
 
-		$hostInfo = Get-Host
-		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
-		$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
-
 		$rawOutput = $Raw.IsPresent
 
 		if ($Output)
@@ -192,27 +188,32 @@
 	process
 	{
 		$allArguments = $Arguments + $additionalArguments
-		$commandLine = (@( 'az', '--%' ) + ( $allArguments | ForEach-Object { "`"${_}`"" } )) -join ' '
+		$commandLine = @( $allArguments | ForEach-Object { "`"${_}`"" } )
 		Write-verbose "Invoking [$commandLine]"
 
-		try
+		if ($rawOutput)
 		{
-			if ($rawOutput)
+			az @commandLine
+			$hadError = -not $?
+		}
+		else
+		{
+			$hostInfo = Get-Host
+			$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
+			$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
+			try
 			{
-				Invoke-Expression $commandLine
+				$result = az @commandLine
+				$hadError = -not $?
 			}
-			else
+			finally
 			{
-				$result = Invoke-Expression $commandLine
+				# Restore console colors, as Azure CLI likely to change them.
+				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 			}
 		}
-		finally
-		{
-			# Restore console colors, as Azure CLI likely to change them.
-			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
-		}
-		if (-not $?)
+		if ($hadError)
 		{
 			if($null -ne $result)
 			{

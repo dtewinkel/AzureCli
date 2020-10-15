@@ -56,7 +56,7 @@
 
     - pwsh: |
         Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
-        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit -ExcludeRule 'PSAvoidUsingInvokeExpression'
+        Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit
       displayName: Run PowerShell ScriptAnalyzer
 
     - pwsh: |
