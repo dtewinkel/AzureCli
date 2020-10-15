@@ -107,6 +107,7 @@ PrivateData = @{
         1.3.0
 
 		- Improved error handling. Now throws on error.
+		- Improved locality of restoring color output. Only restore it if we process the az cli output.
 
         1.2.0
 
@@ -116,6 +117,7 @@ PrivateData = @{
             * feedback.
             * version.
             * upgrade.
+		- provide message where to istall az CLI from if az command is not found.
 
         1.1.0
 
