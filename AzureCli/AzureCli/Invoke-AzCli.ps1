@@ -28,7 +28,10 @@
 	The following command groups will produce raw output: help and find. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
 
 	.PARAMETER Subscription
-	Adds the --subscription common parameter. Specify the name or ID of subscription. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
+	Adds the --subscription common parameter. Specify the name or ID of subscription. Autocompletion on the name of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
+
+	.PARAMETER ResourceGroup
+	Adds the --resource-group parameter. Specify the name of the resource group. Autocompletion on the name of the resource group.
 
 	.PARAMETER Query
 	Adds the --query common parameter. Provide the JMESPath query string. See http://jmespath.org/ for more information and examples.
@@ -67,14 +70,17 @@
 	[CmdletBinding(PositionalBinding = $false)]
 	param(
 		[Parameter()]
-		[string] $Subscription = $null,
+		[string] $Subscription,
 
 		[Parameter()]
-		[string] $Query = $null,
+		[string] $ResourceGroup,
+
+		[Parameter()]
+		[string] $Query,
 
 		[ValidateSet("json", "jsonc", "none", "table", "tsv", "yaml", "yamlc")]
 		[alias("o")]
-		[string] $Output = $null,
+		[string] $Output,
 
 		[Switch] $SuppressOutput,
 
@@ -175,6 +181,15 @@
 			$additionalArguments += '--subscription', $Subscription
 		}
 
+		if ($ResourceGroup)
+		{
+			if ($Arguments -contains "--resource-group")
+			{
+				throw "Both -ResourceGroup and --resource-group are set on the commandline."
+			}
+			$additionalArguments += '--resource-group', $ResourceGroup
+		}
+
 		if ($Query)
 		{
 			if ($Arguments -contains "--query")
@@ -228,5 +243,24 @@
 		}
 	}
 }
+
+
+$SubscriptionsCompleter = {
+    param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    az account list --query '[].name' | ConvertFrom-Json | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object { $_ -replace '\s', '` ' }
+}
+
+$ResourceGroupCompleter = {
+    param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $subscriptionParameters = @()
+    if($fakeBoundParameters.Subscription)
+    {
+        $subscriptionParameters = @('--subscription', $fakeBoundParameters.Subscription)
+    }
+    az group list --query '[].name' @subscriptionParameters | ConvertFrom-Json | Where-Object { $_ -like "$wordToComplete*" }
+}
+
+Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName Subscription -ScriptBlock $SubscriptionsCompleter
+Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $ResourceGroupCompleter
 
 New-alias -Name iaz Invoke-AzCli
