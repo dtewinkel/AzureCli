@@ -31,7 +31,7 @@
 	The commands configure, feedback, and interactive are interactive and do not produce JSON output.
 
 	.PARAMETER Subscription
-	Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
+	Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name and the id of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
 
 	.PARAMETER ResourceGroup
 	Adds the --resource-group parameter. Specify the name of the resource group. Tab-completion on the name of the resource group.
@@ -247,10 +247,21 @@
 	}
 }
 
-
 $SubscriptionsCompleter = {
     param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    az account list --query '[].name' | ConvertFrom-Json | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object { $_ -replace '\s', '` ' }
+    $accounts = az account list --query '[].{ name: name, id: id }' | ConvertFrom-Json
+	@( $accounts.name ) + @( $accounts.id ) |
+	Where-Object { $_ -like "$wordToComplete*" } |
+	ForEach-Object {
+        if($_ -match '\s')
+        {
+            "'${_}'"
+        }
+        else
+        {
+            $_
+        }
+    }
 }
 
 $ResourceGroupCompleter = {
