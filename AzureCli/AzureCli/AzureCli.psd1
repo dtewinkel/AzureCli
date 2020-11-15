@@ -104,10 +104,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-		1.4.0
+		2.0.0
 
 		- Added tab-completion for Subscription parameter.
 		- Added ResourceGroup parameter, because the --resource-group parameter is needed so often. Supports tab-completion.
+		- Added NoEnumerate and AsHashtable to have more control over the JSON to output conversion.
+		- Added parameter sets, to make clear which parameters can be used together. This may break existing script that use parameters together that are not allowed together anymore.
 
         1.3.0
 
