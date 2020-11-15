@@ -1,76 +1,82 @@
 ﻿function Invoke-AzCli
 {
-	<#
-	.SYNOPSIS
-	Invoke the Azure CLI from PowerShell, providing better error handling and converting the output from JSON to a custom object.
+<#
+.SYNOPSIS
+Invoke the Azure CLI from PowerShell, providing better error handling and converting the output from JSON to a custom object or a hash table.
 
-	.DESCRIPTION
+.DESCRIPTION
 
-	Invoke the Azure CLI from PowerShell.
+Invoke the Azure CLI from PowerShell.
 
-	Unless specified otherwise, converts the output from JSON to a custom object. This make further dealing with the output in PowerShell much easier.
+Unless specified otherwise, converts the output from JSON to a custom object (PSCustomObject). This make further dealing with the output in PowerShell much easier.
 
-	Provides better error handling, so that script fails more easily if the Azure CLI fails.
+Provides better error handling, so that script fails more easily if the Azure CLI fails.
 
-	Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
+Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
 
-	Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
-	 - -Output for --output
-	 - -Help for --help
-	 - -Query for --query
-	 - -Subscription for --subscription
-	 - -ResourceGroup for --resource-group
-	 - -SuppressCliWarnings for --only-show-errors
+Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
+	- -Output for --output
+	- -Help for --help
+	- -Query for --query
+	- -Subscription for --subscription
+	- -ResourceGroup for --resource-group
+	- -SuppressCliWarnings for --only-show-errors
 
-	In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
+In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
 
-	The parameter -Raw can be used to provide the raw output of the Azure CLI. This cmdlet will not try to convert the output to a custom object in that case.
+The parameter -Raw can be used to provide the raw output of the Azure CLI. This cmdlet will not try to convert the output to a custom object in that case.
 
-	The following command groups will produce raw output: help, find, and upgrade. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
+The following command groups will produce raw output: help, find, and upgrade. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
 
-	The commands configure, feedback, and interactive are interactive and do not produce JSON output.
+The commands configure, feedback, and interactive are interactive and do not produce JSON output.
 
-	.PARAMETER Subscription
-	Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name and the id of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
+.PARAMETER Subscription
+Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name and the id of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
 
-	.PARAMETER ResourceGroup
-	Adds the --resource-group parameter. Specify the name of the resource group. Tab-completion on the name of the resource group.
+.PARAMETER ResourceGroup
+Adds the --resource-group parameter. Specify the name of the resource group. Tab-completion on the name of the resource group.
 
-	.PARAMETER Query
-	Adds the --query common parameter. Provide the JMESPath query string. See http://jmespath.org/ for more information and examples.
+.PARAMETER Query
+Adds the --query common parameter. Provide the JMESPath query string. See http://jmespath.org/ for more information and examples.
 
-	.PARAMETER Output
-	Adds the --output common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc. The ourput will not be converted to a custom object.
+.PARAMETER Output
+Adds the --output common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc. The ourput will not be converted to a custom object.
 
-	.PARAMETER SuppressCliWarnings
-	Suppress warnings from the result of calling the Azure CLI. This is passed on as '--only-show-errors' to the Azure CLI.
+.PARAMETER AsHashtable
+Adds the --output common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc. The ourput will not be converted to a custom object.
 
-	.PARAMETER SuppressOutput
-	Suppress any object output from the result of calling the Azure CLI. This is passed on as '--output none' to the Azure CLI.
+.PARAMETER NoEnumerate
+Specifies that output is not enumerated. Setting this parameter causes arrays to be sent as a single object instead of sending every element separately. This guarantees that JSON can be round-tripped via `ConvertTo-Json`.
 
-	.PARAMETER Raw
-	Do not process the output of Azure CLI.
+.PARAMETER SuppressCliWarnings
+Suppress warnings from the result of calling the Azure CLI. This is passed on as '--only-show-errors' to the Azure CLI.
 
-	.PARAMETER Help
-	Get the help text from the Azure CLI. This is passed on as '--help' to the Azure CLI.
+.PARAMETER SuppressOutput
+Suppress any object output from the result of calling the Azure CLI. This is passed on as '--output none' to the Azure CLI.
 
-	.PARAMETER Arguments
-	All the remaining arguments are passed on the Azure CLI.
+.PARAMETER Raw
+Do not process the output of Azure CLI.
 
-	.EXAMPLE
-	Invoke-AzCli storage account list -Subscription "My Subscription"
+.PARAMETER Help
+Get the help text from the Azure CLI. This is passed on as '--help' to the Azure CLI.
 
-	List all storage accounts in the given subscription.
+.PARAMETER Arguments
+All the remaining arguments are passed on the Azure CLI.
 
-	.EXAMPLE
-	iaz version
+.EXAMPLE
+Invoke-AzCli storage account list -Subscription "My Subscription"
 
-	Use the alias for Invoke-AzCli to get the version information of Azure CLI.
+List all storage accounts in the given subscription.
 
-	#>
+.EXAMPLE
+iaz version
+
+Use the alias for Invoke-AzCli to get the version information of Azure CLI.
+
+#>
 
 	<# Enable -Verbose. #>
-	[CmdletBinding(PositionalBinding = $false)]
+	[CmdletBinding(PositionalBinding = $false, DefaultParameterSetName = 'ObjectOutput')]
 	param(
 		[Parameter()]
 		[string] $Subscription,
@@ -81,19 +87,29 @@
 		[Parameter()]
 		[string] $Query,
 
+		[Parameter(ParameterSetName = 'TextOutput')]
 		[ValidateSet("json", "jsonc", "none", "table", "tsv", "yaml", "yamlc")]
 		[alias("o")]
 		[string] $Output,
 
+		[Parameter(ParameterSetName = 'ObjectOutput')]
+		[Switch] $AsHashtable,
+
+		[Parameter(ParameterSetName = 'ObjectOutput')]
+		[Switch] $NoEnumerate,
+
+		[Parameter(ParameterSetName = 'NoOutput')]
 		[Switch] $SuppressOutput,
+
+		[Parameter(ParameterSetName = 'RawOutput')]
+		[Switch] $Raw,
+
+		[Parameter(ParameterSetName = 'HelpOutput')]
+		[alias("h")]
+		[Switch] $Help,
 
 		[Parameter()]
 		[Switch] $SuppressCliWarnings,
-
-		[Switch] $Raw,
-
-		[alias("h")]
-		[Switch] $Help,
 
 		[Parameter(ValueFromRemainingArguments)]
 		[string[]] $Arguments
@@ -111,7 +127,7 @@
 		$additionalArguments = @()
 		$interactiveCommand = "configure", "feedback", "interactive"
 		$textOutputCommands = "find", "help", "upgrade"
-		$rawCommandands = $interactiveCommand + $textOutputCommands
+		$rawCommands = $interactiveCommand + $textOutputCommands
 
 		$rawOutput = $Raw.IsPresent
 
@@ -155,7 +171,7 @@
 			$rawOutput = $true
 		}
 
-		if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommandands)
+		if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommands)
 		{
 			$rawOutput = $true
 		}
@@ -242,7 +258,20 @@
 		}
 		if ($null -ne $result)
 		{
-			$result | ConvertFrom-Json
+			$additionalArguments = @{}
+			if($Depth)
+			{
+				$additionalArguments.Add("Depth", $Depth)
+			}
+			if($NoEnumerate.IsPresent)
+			{
+				$additionalArguments.Add("NoEnumerate", $true)
+			}
+			if($AsHashtable.IsPresent)
+			{
+				$additionalArguments.Add("AsHashtable", $true)
+			}
+			$result | ConvertFrom-Json @additionalArguments
 		}
 	}
 }
