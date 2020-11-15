@@ -280,7 +280,7 @@ $SubscriptionsCompleter = {
     param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $accounts = az account list --query '[].{ name: name, id: id }' | ConvertFrom-Json
 	@( $accounts.name ) + @( $accounts.id ) |
-	Where-Object { $_ -like "$wordToComplete*" } |
+	Where-Object { $_ -like "${wordToComplete}*" } |
 	ForEach-Object {
         if($_ -match '\s')
         {
@@ -300,7 +300,7 @@ $ResourceGroupCompleter = {
     {
         $subscriptionParameters = @('--subscription', $fakeBoundParameters.Subscription)
     }
-    az group list --query '[].name' @subscriptionParameters | ConvertFrom-Json | Where-Object { $_ -like "$wordToComplete*" }
+    az group list --query '[].name' @subscriptionParameters | ConvertFrom-Json | Where-Object { $_ -like "${wordToComplete}*" }
 }
 
 Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName Subscription -ScriptBlock $SubscriptionsCompleter
