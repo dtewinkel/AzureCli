@@ -14,24 +14,27 @@
 
 	Fixes the console colors back to what they were before calling the Azure CLI, as the Azure CLI tends to screw up the colors on errors, verbose, and in some other cases.
 
-	Allows to set most of the common Azure CLI parameters through PowerShell parameters:
+	Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
 	 - -Output for --output
 	 - -Help for --help
 	 - -Query for --query
 	 - -Subscription for --subscription
-	  - -SuppressCliWarnings for --only-show-errors
+	 - -ResourceGroup for --resource-group
+	 - -SuppressCliWarnings for --only-show-errors
 
 	In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
 
 	The parameter -Raw can be used to provide the raw output of the Azure CLI. This cmdlet will not try to convert the output to a custom object in that case.
 
-	The following command groups will produce raw output: help and find. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
+	The following command groups will produce raw output: help, find, and upgrade. Also if invoked with no parameters, or if the only parameter is --version, then raw output will be produced.
+
+	The commands configure, feedback, and interactive are interactive and do not produce JSON output.
 
 	.PARAMETER Subscription
-	Adds the --subscription common parameter. Specify the name or ID of subscription. Autocompletion on the name of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
+	Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
 
 	.PARAMETER ResourceGroup
-	Adds the --resource-group parameter. Specify the name of the resource group. Autocompletion on the name of the resource group.
+	Adds the --resource-group parameter. Specify the name of the resource group. Tab-completion on the name of the resource group.
 
 	.PARAMETER Query
 	Adds the --query common parameter. Provide the JMESPath query string. See http://jmespath.org/ for more information and examples.

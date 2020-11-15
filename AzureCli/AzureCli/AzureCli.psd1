@@ -104,6 +104,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+		1.4.0
+
+		- Added tab-completion for Subscription parameter.
+		- Added ResourceGroup parameter, because the --resource-group parameter is needed so often. Supports tab-completion.
+
         1.3.0
 
 		- Improved error handling. Now throws on error.
