@@ -26,6 +26,7 @@
         configFilePath: GitVersion.yml
 
     - task: PowerShell@2
+      displayName: Install required modules
       inputs:
         filePath: build/Install-Modules.ps1
         pwsh: true
@@ -76,6 +77,7 @@
       displayName: Run PowerShell ScriptAnalyzer
 
     - pwsh: |
+        Import-Module Pester
         mkdir $(Test.ArtifactPath) > $null
         Copy-Item $(Module.Tests.Path)/* $(Test.ArtifactPath) -Recurse
         cd $(Test.ArtifactPath)
