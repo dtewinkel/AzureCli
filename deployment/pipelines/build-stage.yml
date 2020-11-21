@@ -33,6 +33,18 @@
         TargetFolder: $(Module.ArtifactPath)
 
     - pwsh: |
+        $moduleNames = @("PSScriptAnalyzer", "Pester")
+        foreach($moduleName in $moduleNames)
+        {
+          $module = Get-Module $moduleName -ListAvailable
+          if(-not $module)
+          {
+            Install-Module $moduleName -Scope CurrentUser -Force
+          }
+        }
+      displayName: Install required PowerShell modules
+
+    - pwsh: |
         $modulePath = (Join-Path "$(Module.ArtifactPath)" "$(Module.Name).psd1")
         $year = ([DateTime]"$(GitVersion.CommitDate)").Year
         $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
@@ -55,7 +67,6 @@
       displayName: Update Module manifest
 
     - pwsh: |
-        Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit -ExcludeRule PSReviewUnusedParameter
       displayName: Run PowerShell ScriptAnalyzer
 
@@ -65,12 +76,10 @@
         cd $(Test.ArtifactPath)
         mkdir $(Module.Name) > $null
         Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
-        Install-Module -Name Pester -Scope CurrentUser -Force
-        Import-Module Pester
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
-                OutputPath = '$(System.DefaultWorkingDirectory)\TestResults.Pester.XML'
+                OutputPath = '$(System.DefaultWorkingDirectory)/TestResults.Pester.XML'
             }
             Output = @{
                 Verbosity = "Detailed"
