@@ -28,7 +28,7 @@
       displayName: Test Gitversion Parameter
       inputs:
         filePath: build/Test-Gitversion.ps1
-        arguments: -GitVersion $GitVersion
+        arguments: -GitVersion $(GitVersion)
         pwsh: true
 
     - task: PowerShell@2
