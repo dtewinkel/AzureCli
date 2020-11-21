@@ -4,5 +4,7 @@ param(
 	$GitVersion
 )
 
-Write-Host $GitVersion.Major
+Write-Host $GitVersion[0]
+
+throw "Quit now :-)"
 
