@@ -26,7 +26,7 @@
         configFilePath: GitVersion.yml
 
     - task: PowerShell@2
-      displayName: Install required modules
+      displayName: Install required PowerShell modules
       inputs:
         filePath: build/Install-Modules.ps1
         pwsh: true
@@ -37,18 +37,6 @@
         SourceFolder: $(Module.Path)
         Contents: '**'
         TargetFolder: $(Module.ArtifactPath)
-
-    - pwsh: |
-        $moduleNames = @("PSScriptAnalyzer", "Pester")
-        foreach($moduleName in $moduleNames)
-        {
-          $module = Get-Module $moduleName -ListAvailable
-          if(-not $module)
-          {
-            Install-Module $moduleName -Scope CurrentUser -Force
-          }
-        }
-      displayName: Install required PowerShell modules
 
     - pwsh: |
         $modulePath = (Join-Path "$(Module.ArtifactPath)" "$(Module.Name).psd1")
