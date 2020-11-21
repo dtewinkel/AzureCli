@@ -12,7 +12,6 @@
       Test.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name).Tests
       Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
       Repository.Name: Local$(Module.Name)PowerShell
-      SolutionFile: AzureCli.sln
       CompanyName: Daniël te Winkel
       Author: Daniël te Winkel
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -24,6 +23,13 @@
       displayName: Determine Version using GitVersion
       inputs:
         configFilePath: GitVersion.yml
+
+    - task: PowerShell@2
+      displayName: Test Gitversion Parameter
+      inputs:
+        filePath: build/Test-Gitversion.ps1
+        arguments: -GitVersion $GitVersion
+        pwsh: true
 
     - task: PowerShell@2
       displayName: Install required PowerShell modules
