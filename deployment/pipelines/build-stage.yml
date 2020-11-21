@@ -25,6 +25,11 @@
       inputs:
         configFilePath: GitVersion.yml
 
+    - task: PowerShell@2
+      inputs:
+        filePath: build/Install-Modules.ps1
+        pwsh: true
+        
     - task: CopyFiles@2
       displayName: Copy Module files
       inputs:
