@@ -4,7 +4,5 @@ param(
 	$GitVersion
 )
 
-Write-Host ($GitVersion.GetType())
-
-Write-Host $GitVersion
+Write-Host $GitVersion.Major
 
