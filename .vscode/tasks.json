@@ -15,7 +15,11 @@
       {
         "label": "validate",
         "type": "shell",
-        "command": "deployment/pipelines/scripts/Test-Module.ps1",
+        "command": "Invoke-ScriptAnalyzer . -ExcludeRule PSReviewUnusedParameter",
+        "options": {
+          "cwd": "${workspaceFolder}/Modules/AzureCli"
+        },
+        "dependsOn": [ "build" ],
         "group": "build",
         "presentation": {
           "reveal": "never"

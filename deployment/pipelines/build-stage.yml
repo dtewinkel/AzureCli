@@ -9,7 +9,8 @@
       Module.Path: $(Module.Name)
       Module.Tests.Path: $(Module.Name).Tests
       Module.ArtifactPath: Modules/$(Module.Name)
-      Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
+      Repository.Name: Local$(Module.Name)Repo
+      Repository.ArtifactPath: Repositories/$(Repository.Name)
       Repository.Name: Local$(Module.Name)PowerShell
       CompanyName: Daniël te Winkel
       Author: Daniël te Winkel
@@ -32,7 +33,7 @@
       displayName: Build AzureCLi module
       inputs:
         filePath: deployment/pipelines/scripts/Build-Module.ps1
-        arguments: -GitVersionJson $(GitVersion)
+        arguments: -GitVersionJson $(GitVersion) -RepositoryName $(Repository.Name) -CleanupRepository
         pwsh: true
 
     - pwsh: |
@@ -41,7 +42,6 @@
 
     - pwsh: |
         Import-Module Pester
-        cd $(Module.Tests.Path)
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
@@ -52,6 +52,7 @@
             }
         }
         Invoke-Pester -Configuration $configuration
+      workingDirectory: $(Module.Tests.Path)
       displayName: Run Pester Unit tests
 
     - task: PublishTestResults@2
@@ -70,16 +71,6 @@
         failIfCoverageEmpty: false
       displayName: "Publish Pester Unit Test Code Coverage"
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
-
-    - pwsh: |
-        if(-not (Test-Path $(Repository.ArtifactPath)))
-        {
-            $newPath = New-Item -Path $(Repository.ArtifactPath) -ItemType Directory
-        }
-        Remove-Item (Join-Path $(Repository.ArtifactPath) "$(Module.Name)*.nupkg") -Force
-        Register-PSRepository -Name $(Repository.Name) -SourceLocation $(Repository.ArtifactPath) -InstallationPolicy Trusted
-        Publish-Module -Path $(Module.ArtifactPath) -Repository $(Repository.Name) -Force
-      displayName: Create NuGet package for Module
 
     - publish: $(Repository.ArtifactPath)
       artifact: $(Repository.ArtifactName)

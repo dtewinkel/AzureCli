@@ -8,7 +8,7 @@
             "name": "PowerShell: Build and test",
             "type": "PowerShell",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "validate",
             "script": "Invoke-Pester",
             "cwd": "${workspaceFolder}"
         }
