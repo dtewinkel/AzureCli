@@ -25,13 +25,6 @@
         configFilePath: GitVersion.yml
 
     - task: PowerShell@2
-      displayName: Test Gitversion Parameter
-      inputs:
-        filePath: build/Test-Gitversion.ps1
-        arguments: -GitVersion $(GitVersion)
-        pwsh: true
-
-    - task: PowerShell@2
       displayName: Install required PowerShell modules
       inputs:
         filePath: build/Install-Modules.ps1
