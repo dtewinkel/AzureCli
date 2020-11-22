@@ -42,8 +42,6 @@
     - pwsh: |
         Import-Module Pester
         cd $(Module.Tests.Path)
-        mkdir $(Module.Name) > $null
-        Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
