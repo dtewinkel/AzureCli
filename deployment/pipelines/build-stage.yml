@@ -6,7 +6,7 @@
   - job: run_build
     displayName: Build, publish AzureCli Module
     variables:
-      Module.Path: $(Module.Name)/$(Module.Name)
+      Module.Path: $(Module.Name)
       Module.Tests.Path: $(Module.Name).Tests
       Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
       Test.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name).Tests
