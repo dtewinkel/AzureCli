@@ -35,7 +35,7 @@ else
 $modulePath = Join-Path $ModuleRootPath $ModuleName
 if(-not (Test-Path $ModuleRootPath))
 {
-	mkdir $ModuleRootPath
+	$null = mkdir $ModuleRootPath
 }
 
 if(Test-Path $modulePath)
