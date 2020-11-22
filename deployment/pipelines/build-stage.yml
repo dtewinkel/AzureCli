@@ -8,13 +8,11 @@
     variables:
       Module.Path: $(Module.Name)
       Module.Tests.Path: $(Module.Name).Tests
-      Module.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name)
-      Test.ArtifactPath: $(build.artifactStagingDirectory)/$(Module.Name).Tests
+      Module.ArtifactPath: Modules/$(Module.Name)
       Repository.ArtifactPath: $(build.artifactStagingDirectory)/Repository
       Repository.Name: Local$(Module.Name)PowerShell
       CompanyName: Daniël te Winkel
       Author: Daniël te Winkel
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
     pool:
       vmImage: windows-latest
     steps:
@@ -27,37 +25,15 @@
     - task: PowerShell@2
       displayName: Install required PowerShell modules
       inputs:
-        filePath: build/Install-Modules.ps1
+        filePath: deployment/pipelines/scripts/Install-Modules.ps1
         pwsh: true
-        
-    - task: CopyFiles@2
-      displayName: Copy Module files
-      inputs:
-        SourceFolder: $(Module.Path)
-        Contents: '**'
-        TargetFolder: $(Module.ArtifactPath)
 
-    - pwsh: |
-        $modulePath = (Join-Path "$(Module.ArtifactPath)" "$(Module.Name).psd1")
-        $year = ([DateTime]"$(GitVersion.CommitDate)").Year
-        $copyright = "Copyright © ${year}, $(CompanyName). All rights reserved."
-        $updateParameters = @{
-          Path = $modulePath
-          ModuleVersion = '$(GitVersion.MajorMinorPatch)'
-          Copyright = $copyright
-          Author = '$(Author)'
-          CompanyName = '$(CompanyName)'
-        }
-        if("$(GitVersion.PreReleaseTag)" -ne "")
-        {
-          $preReleaseTag = '$(GitVersion.NuGetPreReleaseTagV2)' -replace '[^a-zA-Z0-9]', ''
-          $updateParameters.Add("Prerelease", "${preReleaseTag}")
-        }
-        Update-ModuleManifest @updateParameters
-        # make sure the ModuleManifest is in the right encoding.
-        $manifest = Get-Content $modulePath
-        $manifest | Out-File -Encoding utf8BOM $modulePath
-      displayName: Update Module manifest
+    - task: PowerShell@2
+      displayName: Build AzureCLi module
+      inputs:
+        filePath: deployment/pipelines/scripts/Build-Module.ps1
+        arguments: -GitVersionJson $(GitVersion)
+        pwsh: true
 
     - pwsh: |
         Invoke-ScriptAnalyzer "$(Module.ArtifactPath)" -EnableExit -ExcludeRule PSReviewUnusedParameter
@@ -65,9 +41,7 @@
 
     - pwsh: |
         Import-Module Pester
-        mkdir $(Test.ArtifactPath) > $null
-        Copy-Item $(Module.Tests.Path)/* $(Test.ArtifactPath) -Recurse
-        cd $(Test.ArtifactPath)
+        cd $(Module.Tests.Path)
         mkdir $(Module.Name) > $null
         Copy-Item $(Module.ArtifactPath)/* $(Module.Name) -Recurse
         $configuration = [PesterConfiguration]@{
