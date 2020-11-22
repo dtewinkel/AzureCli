@@ -2,11 +2,11 @@
 
 	BeforeAll {
 
-		. ./Helpers/Az.ps1
+		. $PSScriptRoot/Helpers/Az.ps1
 
 		Mock az { $Arguments -join " " }
 
-		. ./Helpers/LoadModule.ps1
+		. $PSScriptRoot/Helpers/LoadModule.ps1
 	}
 
 	$combinations = @(

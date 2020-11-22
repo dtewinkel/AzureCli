@@ -1,27 +1,29 @@
 ﻿Describe "Invoke-AzCli With Object Output" {
 
-	BeforeAll {
+	Context "With default output" {
 
-		. ./Helpers/Az.ps1
+		BeforeAll {
 
-		Mock az { @{ Arguments = $Arguments } | ConvertTo-Json }
+			. $PSScriptRoot/Helpers/Az.ps1
 
-		. ./Helpers/LoadModule.ps1
-	}
+			Mock az { @{ Arguments = $Arguments } | ConvertTo-Json }
 
-	It "Return the passed query to az" {
+			. $PSScriptRoot/Helpers/LoadModule.ps1
+		}
 
-		$expectedValue = @{ Arguments = '"version"', '"--verbose"', '"--query"', '"{ name }"' }
-		$result = Invoke-AzCli version -Query '{ name }' -Verbose
-		$result.Arguments | Should -Be $expectedValue.Arguments
-		Should -Invoke az
-	}
+		It "Returns the passed query to az" {
 
-	It "Return the parsed data from az" {
+			$expectedValue = @{ Arguments = '"version"', '"--verbose"', '"--query"', '"{ name }"' }
+			$result = Invoke-AzCli version -Query '{ name }' -Verbose
+			$result.Arguments | Should -Be $expectedValue.Arguments
+		}
 
-		$expectedValue = @{ Arguments = '"vm"', '"list"' }
-		$result = Invoke-AzCli vm list
-		$result.Arguments | Should -Be $expectedValue.Arguments
-		Should -Invoke az
+		It "Returns the parsed data from az" {
+
+			$expectedValue = @{ Arguments = '"vm"', '"list"' }
+			$result = Invoke-AzCli vm list
+			$result.Arguments | Should -Be $expectedValue.Arguments
+			Should -Invoke az
+		}
 	}
 }
