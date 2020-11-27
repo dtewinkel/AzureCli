@@ -46,10 +46,10 @@
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
-                OutputPath = '$(Pester.TestOutput)
+                OutputPath = '$(Pester.TestOutput)'
             }
             Output = @{
-                Verbosity = "Detailed"
+                Verbosity = 'Detailed'
             }
             CodeCoverage = @{
               Enabled = $true
