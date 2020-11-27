@@ -72,7 +72,10 @@
 
     - task: PublishCodeCoverageResults@1
       inputs:
+        codeCoverageTool: JaCoCO
         summaryFileLocation: $(Pester.CoverageOutput)
+        pathToSources: $(Module.ArtifactPath)
+        reportDirectory: $(System.DefaultWorkingDirectory)
         failIfCoverageEmpty: false
       displayName: Publish Pester Unit Test Code Coverage
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
