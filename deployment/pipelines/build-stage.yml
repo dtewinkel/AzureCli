@@ -53,7 +53,7 @@
             }
             CodeCoverage = @{
               Enabled = $true
-              Path = '../$(Module.Path)/Invoke-AzCli.ps1'
+              Path = '../$(Module.ArtifactPath)/*'
               OutputPath = '$(Pester.CoverageOutput)'
             }
         }
