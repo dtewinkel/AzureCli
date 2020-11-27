@@ -13,6 +13,8 @@
       Repository.ArtifactPath: Repositories/$(Repository.Name)
       CompanyName: Daniël te Winkel
       Author: Daniël te Winkel
+      Pester.TestOutput: $(System.DefaultWorkingDirectory)/TestResults.Pester.xml
+      Pester.CoverageOutput: $(System.DefaultWorkingDirectory)/Coverage.Pester.xml
     pool:
       vmImage: windows-latest
     steps:
@@ -44,10 +46,15 @@
         $configuration = [PesterConfiguration]@{
             TestResult = @{
                 Enabled = $true
-                OutputPath = '$(System.DefaultWorkingDirectory)/TestResults.Pester.XML'
+                OutputPath = '$(Pester.TestOutput)
             }
             Output = @{
                 Verbosity = "Detailed"
+            }
+            CodeCoverage = @{
+              Enabled = $true
+              Path = '../$(Module.Path)/Invoke-AzCli.ps1'
+              OutputPath = '$(Pester.CoverageOutput)'
             }
         }
         Invoke-Pester -Configuration $configuration
@@ -56,19 +63,19 @@
 
     - task: PublishTestResults@2
       inputs:
-        testRunner: "NUnit"
-        testResultsFiles: "**/TestResults.Pester.xml"
-        testRunTitle: "Pester Unit Tests"
+        testRunner: NUnit
+        testResultsFiles: $(Pester.TestOutput)
+        testRunTitle: Pester Unit Tests
         failTaskOnFailedTests: true
-      displayName: "Publish Pester Unit Test Results"
+      displayName: Publish Pester Unit Test Results
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - task: PublishCodeCoverageResults@1
       enabled: false
       inputs:
-        summaryFileLocation: "**/CodeCoverage.xml"
+        summaryFileLocation: $(Pester.CoverageOutput)
         failIfCoverageEmpty: false
-      displayName: "Publish Pester Unit Test Code Coverage"
+      displayName: Publish Pester Unit Test Code Coverage
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - publish: $(Repository.ArtifactPath)
