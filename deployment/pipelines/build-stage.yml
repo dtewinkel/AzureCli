@@ -71,7 +71,6 @@
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
 
     - task: PublishCodeCoverageResults@1
-      enabled: false
       inputs:
         summaryFileLocation: $(Pester.CoverageOutput)
         failIfCoverageEmpty: false
