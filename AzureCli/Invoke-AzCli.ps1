@@ -259,10 +259,6 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		if ($null -ne $result)
 		{
 			$additionalArguments = @{}
-			if($Depth)
-			{
-				$additionalArguments.Add("Depth", $Depth)
-			}
 			if($NoEnumerate.IsPresent)
 			{
 				$additionalArguments.Add("NoEnumerate", $true)
@@ -275,35 +271,5 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		}
 	}
 }
-
-$SubscriptionsCompleter = {
-    param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    $accounts = az account list --query '[].{ name: name, id: id }' | ConvertFrom-Json
-	@( $accounts.name ) + @( $accounts.id ) |
-	Where-Object { $_ -like "${wordToComplete}*" } |
-	ForEach-Object {
-        if($_ -match '\s')
-        {
-            "'${_}'"
-        }
-        else
-        {
-            $_
-        }
-    }
-}
-
-$ResourceGroupCompleter = {
-    param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    $subscriptionParameters = @()
-    if($fakeBoundParameters.Subscription)
-    {
-        $subscriptionParameters = @('--subscription', $fakeBoundParameters.Subscription)
-    }
-    az group list --query '[].name' @subscriptionParameters | ConvertFrom-Json | Where-Object { $_ -like "${wordToComplete}*" }
-}
-
-Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName Subscription -ScriptBlock $SubscriptionsCompleter
-Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $ResourceGroupCompleter
 
 New-alias -Name iaz Invoke-AzCli
