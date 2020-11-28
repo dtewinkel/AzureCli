@@ -8,8 +8,8 @@
             "name": "PowerShell: Build and test",
             "type": "PowerShell",
             "request": "launch",
-            "preLaunchTask": "validate",
-            "script": "Invoke-Pester",
+            "preLaunchTask": "build",
+            "script": "deployment/pipelines/scripts/Test-Module.ps1",
             "cwd": "${workspaceFolder}"
         }
     ]

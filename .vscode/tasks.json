@@ -9,20 +9,7 @@
         "command": "deployment/pipelines/scripts/Build-Module.ps1",
         "group": "build",
         "presentation": {
-          "reveal": "never"
-        }
-      },
-      {
-        "label": "validate",
-        "type": "shell",
-        "command": "Invoke-ScriptAnalyzer . -ExcludeRule PSReviewUnusedParameter",
-        "options": {
-          "cwd": "${workspaceFolder}/Modules/AzureCli"
-        },
-        "dependsOn": [ "build" ],
-        "group": "build",
-        "presentation": {
-          "reveal": "never"
+          "reveal": "silent"
         }
       }
     ]

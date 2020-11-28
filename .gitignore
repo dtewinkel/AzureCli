@@ -1,5 +1,5 @@
-# Output folder for local builds.
+# Local Output folders.
 Modules/
-
-# Local Module source
-LocalAzureCliPowerShell/
+Repositories/
+tools/
+TestResults/
