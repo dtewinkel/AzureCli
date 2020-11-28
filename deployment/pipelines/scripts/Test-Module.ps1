@@ -32,7 +32,6 @@ $configuration = [PesterConfiguration]@{
 			Enabled = $true
 			Path = "${moduleFolder}\*.psm1", "${moduleFolder}\*-*.ps1"
 			OutputPath = $coverageOutput
-
 		}
 }
 

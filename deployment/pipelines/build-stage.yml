@@ -72,7 +72,7 @@
 
     - task: PublishCodeCoverageResults@1
       inputs:
-        codeCoverageTool: JaCoCO
+        codeCoverageTool: JaCoCo
         summaryFileLocation: $(Pester.CoverageOutput)
         pathToSources: $(Module.ArtifactPath)
       displayName: Publish Pester Unit Test Code Coverage

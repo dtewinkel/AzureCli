@@ -147,7 +147,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 		if ($SuppressOutput.IsPresent)
 		{
-			if ($Arguments -contains "--output" -or $Output)
+			if ($Arguments -contains "--output")
 			{
 				throw "Both -SuppressOutput and --output are set on the commandline."
 			}
