@@ -1,11 +1,6 @@
 ﻿Describe "Invoke-AzCli with Interactive commands" {
 
 	BeforeAll {
-
-		. $PSScriptRoot/Helpers/Az.ps1
-
-		Mock az { $Arguments -join " " }
-
 		. $PSScriptRoot/Helpers/LoadModule.ps1
 	}
 
@@ -30,6 +25,7 @@
 
 		$parameters = @{ $first = $true; $second = $secondValue }
 		{ Invoke-AzCLi @parameters } | Should -Throw "*Parameter set cannot be resolved *"
+		Should -Not -Invoke az
 	}
 
 	$combinations = @(
@@ -50,5 +46,6 @@
 		}
 		$expected = "Both -${first} and ${second} are provided as parameter. This is not allowed."
 		{ Invoke-AzCLi @firstParameter @secondParameter } | Should -Throw $expected
+		Should -Not -Invoke az
 	}
 }

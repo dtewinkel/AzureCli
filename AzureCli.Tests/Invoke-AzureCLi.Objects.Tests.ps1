@@ -25,7 +25,30 @@
 			$result.Arguments | Should -Be $expectedValue.Arguments
 			Should -Invoke az
 		}
-	}
+
+		It "Sets the Subscription parameter" {
+
+			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--subscription"', '"sub"' }
+			$result = Invoke-AzCli vm list -Subscription sub
+			$result.Arguments | Should -Be $expectedValue.Arguments
+			Should -Invoke az
+		}
+
+		It "Sets the ResourceGroup parameter" {
+
+			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--resource-group"', '"rg"' }
+			$result = Invoke-AzCli vm list -ResourceGroup rg
+			$result.Arguments | Should -Be $expectedValue.Arguments
+			Should -Invoke az
+		}
+
+		It "Sets the SuppressCliWarnings parameter" {
+
+			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--only-show-errors"' }
+			$result = Invoke-AzCli vm list -SuppressCliWarnings
+			$result.Arguments | Should -Be $expectedValue.Arguments
+			Should -Invoke az
+		}	}
 
 	Context "With Json output options" {
 

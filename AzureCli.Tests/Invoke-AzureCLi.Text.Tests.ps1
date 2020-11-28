@@ -15,53 +15,42 @@
 		$result = Invoke-AzCLi
 		$result | Should -Be $expectedValue
 		Should -Invoke az
+		Should -Not -Invoke ConvertTo-Json
 	}
 
-	It "Returns the raw data for '--version'" {
+	It "Does not convert the data for '-<parameterName>'" -TestCases @(
+		@{ parameterName = "Raw"; parameterValue = $true; expected = '' }
+		@{ parameterName = "SuppressOutput"; parameterValue = $true; expected = ' "--output" "none"' }
+		@{ parameterName = "Output"; parameterValue = 'json'; expected = ' "--output" "json"' }
+		@{ parameterName = "Help"; parameterValue = $true; expected = ' "--help"' }
+	) {
+		param($parameterName, $parameterValue, $expected)
 
-		$expectedValue = 'raw parameters: "--version"'
-		$result = Invoke-AzCLi --version
+		$expectedValue = 'raw parameters: "vm" "list"' + $expected
+		$parameters = @{ $parameterName = $parameterValue }
+		$result = Invoke-AzCLi vm list @parameters
 		$result | Should -Be $expectedValue
 		Should -Invoke az
+		Should -Not -Invoke ConvertTo-Json
 	}
 
-	It "Returns the raw data for 'find'" {
+	It "Does not convert the data for '<parameters>'" -TestCases @(
+		@{ parameters = @( "help" ); expected = ' "help"' }
+		@{ parameters = @( "vm", "--help" ); expected = ' "vm" "--help"' }
+		@{ parameters = @( "--output", "json" ); expected = ' "--output" "json"' }
+		@{ parameters = @( "--version" ); expected = ' "--version"' }
+		@{ parameters = @( "find" ); expected = ' "find"' }
+		@{ parameters = @( "upgrade" ); expected = ' "upgrade"' }
+		@{ parameters = @( "interactive" ); expected = ' "interactive"' }
+		@{ parameters = @( "feedback" ); expected = ' "feedback"' }
+		@{ parameters = @( "configure" ); expected = ' "configure"' }
+	) {
+		param($parameters, $expected)
 
-		$expectedValue = 'raw parameters: "find"'
-		$result = Invoke-AzCLi find
+		$expectedValue = 'raw parameters:' + $expected
+		$result = Invoke-AzCLi @parameters
 		$result | Should -Be $expectedValue
 		Should -Invoke az
-	}
-
-	It "Returns the raw data for 'help'" {
-
-		$expectedValue = 'raw parameters: "help"'
-		$result = Invoke-AzCLi help
-		$result | Should -Be $expectedValue
-		Should -Invoke az
-	}
-
-	It "Returns the raw data for '-Help'" {
-
-		$expectedValue = 'raw parameters: "vm" "list" "--help"'
-		$result = Invoke-AzCLi vm list -Help
-		$result | Should -Be $expectedValue
-		Should -Invoke az
-	}
-
-	It "Returns the raw data for '--help'" {
-
-		$expectedValue = 'raw parameters: "vm" "list" "--help"'
-		$result = Invoke-AzCLi vm list -Help
-		$result | Should -Be $expectedValue
-		Should -Invoke az
-	}
-
-	It "Returns the raw data for 'upgrade'" {
-
-		$expectedValue = 'raw parameters: "upgrade"'
-		$result = Invoke-AzCLi upgrade
-		$result | Should -Be $expectedValue
-		Should -Invoke az
+		Should -Not -Invoke ConvertTo-Json
 	}
 }
