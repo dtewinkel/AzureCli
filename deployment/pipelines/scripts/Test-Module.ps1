@@ -30,8 +30,9 @@ $configuration = [PesterConfiguration]@{
 		}
 		CodeCoverage = @{
 			Enabled = $true
-			Path = "${moduleFolder}\*"
+			Path = "${moduleFolder}\*.psm1", "${moduleFolder}\*-*.ps1"
 			OutputPath = $coverageOutput
+
 		}
 }
 
