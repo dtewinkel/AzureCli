@@ -53,7 +53,7 @@
             }
             CodeCoverage = @{
               Enabled = $true
-              Path = '../$(Module.ArtifactPath)/*'
+              Path = '../$(Module.ArtifactPath)/*.psm1', '../$(Module.ArtifactPath)/*-*.ps1'
               OutputPath = '$(Pester.CoverageOutput)'
             }
         }
