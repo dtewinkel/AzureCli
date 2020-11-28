@@ -135,7 +135,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		{
 			if ($Arguments -contains "--output")
 			{
-				throw "Both -Output and --output are set on the commandline."
+				throw "Both -Output and --output are provided as parameter. This is not allowed."
 			}
 			$additionalArguments += '--output', $Output
 			$rawOutput = $true
@@ -149,7 +149,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		{
 			if ($Arguments -contains "--output")
 			{
-				throw "Both -SuppressOutput and --output are set on the commandline."
+				throw "Both -SuppressOutput and --output are provided as parameter. This is not allowed."
 			}
 			$additionalArguments = @('--output', 'none')
 			$rawOutput = $true
@@ -195,7 +195,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		{
 			if ($Arguments -contains "--subscription")
 			{
-				throw "Both -Subscription and --subscription are set on the commandline."
+				throw "Both -Subscription and --subscription are provided as parameter. This is not allowed."
 			}
 			$additionalArguments += '--subscription', $Subscription
 		}
@@ -204,7 +204,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		{
 			if ($Arguments -contains "--resource-group")
 			{
-				throw "Both -ResourceGroup and --resource-group are set on the commandline."
+				throw "Both -ResourceGroup and --resource-group are provided as parameter. This is not allowed."
 			}
 			$additionalArguments += '--resource-group', $ResourceGroup
 		}
@@ -213,7 +213,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		{
 			if ($Arguments -contains "--query")
 			{
-				throw "Both -Query and --query are set on the commandline."
+				throw "Both -Query and --query are provided as parameter. This is not allowed."
 			}
 			$additionalArguments += '--query', $Query
 		}
