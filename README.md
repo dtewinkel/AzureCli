@@ -7,7 +7,7 @@ Install-Module -Name AzureCli
 
 Cmdlet to support invoking the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest) from PowerShell.
 
-Master branch: [![master Build Status](https://dev.azure.com/twia/AzureCli/_apis/build/status/AzureCli?branchName=master)
+Master branch: ![master Build Status](https://dev.azure.com/twia/AzureCli/_apis/build/status/AzureCli?branchName=master)
 
 ## Introduction
 
