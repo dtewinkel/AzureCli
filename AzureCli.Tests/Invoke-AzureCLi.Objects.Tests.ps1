@@ -1,96 +1,45 @@
-﻿Describe "Invoke-AzCli With Object Output" {
+﻿BeforeDiscovery {
+}
 
-	Context "With default output" {
+Describe "Invoke-AzCli With Object Output" {
 
-		BeforeAll {
+	BeforeAll {
+		$jsonText = '{ "IsAz": true }'
+		$convertedObject = [PsCustomObject]@{ IsConvertFromJson = $true }
 
-			. $PSScriptRoot/Helpers/Az.ps1
+		. $PSScriptRoot/Helpers/Az.ps1
+		Mock az { $jsonText }
+		Mock ConvertFrom-Json { $convertedObject }
+		. $PSScriptRoot/Helpers/LoadModule.ps1
+	}
 
-			Mock az { @{ Arguments = $Arguments } | ConvertTo-Json }
+	It "Returns the parsed data from az" {
 
-			. $PSScriptRoot/Helpers/LoadModule.ps1
-		}
+		$result = Invoke-AzCli vm list --show-details
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $InputObject -eq $jsonText }
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ') -eq '"vm" "list" "--show-details"' }
+		$result | Should -Be $convertedObject
+	}
 
-		It "Returns the passed query to az" {
+	It "By default does not pass -NoEnumerate and -AsHashTable to ConvertFrom-Json" {
 
-			$expectedValue = @{ Arguments = '"version"', '"--verbose"', '"--query"', '"{ name }"' }
-			$result = Invoke-AzCli version -Query '{ name }' -Verbose
-			$result.Arguments | Should -Be $expectedValue.Arguments
-		}
+		$null = Invoke-AzCli one two three
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $null -and $AsHashTable -eq $null }
+		Should -Invoke az -Exactly 1
+	}
 
-		It "Returns the parsed data from az" {
+	It "Passes -NoEnumerate to ConvertFrom-Json" {
 
-			$expectedValue = @{ Arguments = '"vm"', '"list"' }
-			$result = Invoke-AzCli vm list
-			$result.Arguments | Should -Be $expectedValue.Arguments
-			Should -Invoke az
-		}
+		$null = Invoke-AzCli one two three -NoEnumerate
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $true }
+		Should -Invoke az -Exactly 1
+	}
 
-		It "Sets the Subscription parameter" {
+	It "Passes -AsHashTable to ConvertFrom-Json" {
 
-			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--subscription"', '"sub"' }
-			$result = Invoke-AzCli vm list -Subscription sub
-			$result.Arguments | Should -Be $expectedValue.Arguments
-			Should -Invoke az
-		}
-
-		It "Sets the ResourceGroup parameter" {
-
-			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--resource-group"', '"rg"' }
-			$result = Invoke-AzCli vm list -ResourceGroup rg
-			$result.Arguments | Should -Be $expectedValue.Arguments
-			Should -Invoke az
-		}
-
-		It "Sets the SuppressCliWarnings parameter" {
-
-			$expectedValue = @{ Arguments = '"vm"', '"list"', '"--only-show-errors"' }
-			$result = Invoke-AzCli vm list -SuppressCliWarnings
-			$result.Arguments | Should -Be $expectedValue.Arguments
-			Should -Invoke az
-		}	}
-
-	Context "With Json output options" {
-
-		BeforeAll {
-
-			. $PSScriptRoot/Helpers/Az.ps1
-
-			Mock az { $Arguments | ConvertTo-Json -AsArray }
-
-			. $PSScriptRoot/Helpers/LoadModule.ps1
-		}
-
-		It "Returns the passed array as array when -NoEnumerate is given" {
-
-			$expectedValue = @( '"one"', '"two"', '"three"' )
-			$result = Invoke-AzCli one two three -NoEnumerate
-			$result | Should -Be $expectedValue
-			$result.GetType() | Should -Be 'System.Object[]'
-		}
-
-		It "Returns the passed array as array" {
-
-			$expectedValue = @( '"one"', '"two"', '"three"' )
-			$result = Invoke-AzCli one two three
-			$result | Should -Be $expectedValue
-			$result.GetType() | Should -Be 'System.Object[]'
-		}
-
-		It "Returns the passed single parameter as array when -NoEnumerate is given" {
-
-			$expectedValue = @( '"One"' )
-			$result = Invoke-AzCli One -NoEnumerate
-			$result | Should -Be $expectedValue
-			$result.GetType() | Should -Be 'System.Object[]'
-		}
-
-		It "Returns the passed single parameter as string" {
-
-			$expectedValue = '"One"'
-			$result = Invoke-AzCli One
-			$result | Should -Be $expectedValue
-			$result.GetType() | Should -Be 'string'
-		}
+		$null = Invoke-AzCli one two three -AsHashtable
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $AsHashTable -eq $true }
+		Should -Invoke az -Exactly 1
 	}
 }
+

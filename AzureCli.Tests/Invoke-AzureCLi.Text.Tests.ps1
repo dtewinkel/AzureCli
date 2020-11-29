@@ -1,11 +1,8 @@
 ﻿Describe "Invoke-AzCli with commands that produce text" {
 
 	BeforeAll {
-
 		. $PSScriptRoot/Helpers/Az.ps1
-
-		Mock az { "raw parameters: " + ($Arguments -join " ") }
-
+		Mock az { "raw parameters: " + ($args -join " ") }
 		. $PSScriptRoot/Helpers/LoadModule.ps1
 	}
 
@@ -14,8 +11,8 @@
 		$expectedValue = 'raw parameters: '
 		$result = Invoke-AzCLi
 		$result | Should -Be $expectedValue
-		Should -Invoke az
-		Should -Not -Invoke ConvertTo-Json
+		Should -Invoke az -Exactly 1
+		Should -Invoke ConvertFrom-Json -Exactly 0
 	}
 
 	It "Does not convert the data for '-<parameterName>'" -TestCases @(
@@ -30,8 +27,8 @@
 		$parameters = @{ $parameterName = $parameterValue }
 		$result = Invoke-AzCLi vm list @parameters
 		$result | Should -Be $expectedValue
-		Should -Invoke az
-		Should -Not -Invoke ConvertTo-Json
+		Should -Invoke az -Exactly 1
+		Should -Invoke ConvertFrom-Json -Exactly 0
 	}
 
 	It "Does not convert the data for '<parameters>'" -TestCases @(
@@ -50,7 +47,7 @@
 		$expectedValue = 'raw parameters:' + $expected
 		$result = Invoke-AzCLi @parameters
 		$result | Should -Be $expectedValue
-		Should -Invoke az
-		Should -Not -Invoke ConvertTo-Json
+		Should -Invoke az -Exactly 1
+		Should -Invoke ConvertFrom-Json -Exactly 0
 	}
 }
