@@ -1,27 +1,45 @@
-﻿Describe "Invoke-AzCli With Object Output" {
+﻿BeforeDiscovery {
+}
+
+Describe "Invoke-AzCli With Object Output" {
 
 	BeforeAll {
+		$jsonText = '{ "IsAz": true }'
+		$convertedObject = [PsCustomObject]@{ IsConvertFromJson = $true }
 
-		. ./Helpers/Az.ps1
-
-		Mock az { @{ Arguments = $Arguments } | ConvertTo-Json }
-
-		. ./Helpers/LoadModule.ps1
+		. $PSScriptRoot/Helpers/Az.ps1
+		Mock az { $jsonText }
+		Mock ConvertFrom-Json { $convertedObject }
+		. $PSScriptRoot/Helpers/LoadModule.ps1
 	}
 
-	It "Return the passed query to az" {
+	It "Returns the parsed data from az" {
 
-		$expectedValue = @{ Arguments = '"version"', '"--verbose"', '"--query"', '"{ name }"' }
-		$result = Invoke-AzCli version -Query '{ name }' -Verbose
-		$result.Arguments | Should -Be $expectedValue.Arguments
-		Should -Invoke az
+		$result = Invoke-AzCli vm list --show-details
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $InputObject -eq $jsonText }
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ') -eq '"vm" "list" "--show-details"' }
+		$result | Should -Be $convertedObject
 	}
 
-	It "Return the parsed data from az" {
+	It "By default does not pass -NoEnumerate and -AsHashTable to ConvertFrom-Json" {
 
-		$expectedValue = @{ Arguments = '"vm"', '"list"' }
-		$result = Invoke-AzCli vm list
-		$result.Arguments | Should -Be $expectedValue.Arguments
-		Should -Invoke az
+		$null = Invoke-AzCli one two three
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $null -and $AsHashTable -eq $null }
+		Should -Invoke az -Exactly 1
+	}
+
+	It "Passes -NoEnumerate to ConvertFrom-Json" {
+
+		$null = Invoke-AzCli one two three -NoEnumerate
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $true }
+		Should -Invoke az -Exactly 1
+	}
+
+	It "Passes -AsHashTable to ConvertFrom-Json" {
+
+		$null = Invoke-AzCli one two three -AsHashtable
+		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $AsHashTable -eq $true }
+		Should -Invoke az -Exactly 1
 	}
 }
+
