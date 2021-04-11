@@ -6,7 +6,7 @@
   - job: run_build
     displayName: Build, publish AzureCli Module
     variables:
-      Module.Path: $(Module.Name)
+      Modules.Path: Modules
       Repository.Name: Local$(Module.Name)Repo
       Repository.ArtifactPath: Repositories/$(Repository.Name)
       Pester.TestOutput: $(System.DefaultWorkingDirectory)/TestResults.Pester.xml
