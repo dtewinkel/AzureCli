@@ -1,25 +1,7 @@
 [cmdletbinding()]
 param(
 	[Parameter()]
-	[String] $ModuleName = "AzureCli",
-
-	[Parameter()]
-	[String] $CompanyName = "Daniël te Winkel",
-
-	[Parameter()]
-	[String] $Author = "Daniël te Winkel",
-
-	[Parameter()]
-	[String] $SourcePath = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..', $ModuleName)),
-
-	[Parameter()]
-	[String] $ModuleRootPath = (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..')) "Modules"),
-
-	[Parameter()]
-	[String] $RepositoryName = "Local${ModuleName}PowerShell",
-
-	[Parameter()]
-	[String] $RepositoryPath = (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..')) "Repositories" $RepositoryName),
+	[String] $RootPath = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..')),
 
 	[Parameter()]
 	$GitVersionJson,
@@ -27,6 +9,15 @@ param(
 	[Parameter()]
 	[Switch] $CleanupRepository
 )
+
+$companyName = "Daniël te Winkel"
+$author = "Daniël te Winkel"
+
+$moduleName = "AzureCli"
+$repositoryName = "Local${moduleName}Repo"
+$sourcePath = Join-Path $RootPath $moduleName
+$moduleRootPath = Join-Path $RootPath "Modules"
+$repositoryPath = Join-Path $RootPath "Repositories" $repositoryName
 
 if($GitVersionJson)
 {
@@ -43,23 +34,23 @@ else
 
 try
 {
-	if(-not (Test-Path $RepositoryPath))
+	if(-not (Test-Path $repositoryPath))
 	{
-		$null = mkdir $RepositoryPath
+		$null = New-Item -ItemType directory -Path $repositoryPath
 	}
 
-	$repo = Get-PSRepository -Name $RepositoryName -ErrorAction SilentlyContinue
+	$repo = Get-PSRepository -Name $repositoryName -ErrorAction SilentlyContinue
 
 	if(-not $repo)
 	{
-		Register-PSRepository -Name $RepositoryName -SourceLocation $RepositoryPath -InstallationPolicy Trusted
-		Write-Verbose "Registered repository '${RepositoryName}' to directory '${RepositoryPath}'."
+		Register-PSRepository -Name $repositoryName -SourceLocation $repositoryPath -InstallationPolicy Trusted
+		Write-Verbose "Registered repository '${repositoryName}' to directory '${repositoryPath}'."
 	}
 
-	$modulePath = Join-Path $ModuleRootPath $ModuleName
-	if(-not (Test-Path $ModuleRootPath))
+	$modulePath = Join-Path $moduleRootPath $moduleName
+	if(-not (Test-Path $moduleRootPath))
 	{
-		$null = mkdir $ModuleRootPath
+		$null = New-Item -ItemType directory -Path $moduleRootPath
 	}
 
 	if(Test-Path $modulePath)
@@ -67,26 +58,26 @@ try
 		Remove-Item $modulePath -Recurse -Force
 	}
 
-	Copy-Item $SourcePath $ModuleRootPath -Recurse
+	Copy-Item $sourcePath $moduleRootPath -Recurse
 
-	$moduleData = Join-Path $modulePath "${ModuleName}.psd1"
+	$moduleData = Join-Path $modulePath "${moduleName}.psd1"
 
 	$version = $Gitversion.MajorMinorPatch
-	$nugetPath = (join-Path $repositoryPath "${ModuleName}.${version}.nupkg")
+	$nugetPath = (join-Path $repositoryPath "${moduleName}.${version}.nupkg")
 	$year = ([DateTime]($GitVersion.CommitDate)).Year
-	$copyright = "Copyright © ${year}, ${CompanyName}. All rights reserved."
+	$copyright = "Copyright © ${year}, ${companyName}. All rights reserved."
 	$updateParameters = @{
 		Path = $moduleData
 		ModuleVersion = $GitVersion.MajorMinorPatch
 		Copyright = $copyright
-		Author = $Author
-		CompanyName = $CompanyName
+		Author = $author
+		CompanyName = $companyName
 	}
 	if($GitVersion.NuGetPreReleaseTagV2 -ne "")
 	{
 		$preReleaseTag = $GitVersion.NuGetPreReleaseTagV2 -replace '[^a-zA-Z0-9]', ''
 		$updateParameters.Add("Prerelease", $preReleaseTag)
-		$nugetPath = (join-Path $repositoryPath "${ModuleName}.${version}-${preReleaseTag}.nupkg")
+		$nugetPath = (join-Path $repositoryPath "${moduleName}.${version}-${preReleaseTag}.nupkg")
 	}
 	Update-ModuleManifest @updateParameters
 	# make sure the ModuleManifest is in the right encoding.
@@ -107,7 +98,7 @@ try
 }
 finally
 {
-	if($removeRepo)
+	if($CleanupRepository.IsPresent)
 	{
 		$repo = Get-PSRepository -Name $repositoryName -ErrorAction SilentlyContinue
 
