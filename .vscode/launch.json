@@ -5,11 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "PowerShell: Build and test",
+            "name": "PowerShell: Configure, Build, and Test",
             "type": "PowerShell",
             "request": "launch",
-            "preLaunchTask": "build",
-            "script": "deployment/pipelines/scripts/Test-Module.ps1",
+            "script": "deployment/pipelines/scripts/ConfigureBuildTest.ps1",
             "cwd": "${workspaceFolder}"
         }
     ]
