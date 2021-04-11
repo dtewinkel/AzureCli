@@ -104,6 +104,10 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = '
+2.1.0
+
+- Added argument -CliVerbosity to set verbosity of Azure CLI. This provides a single parameter to either set --only-show-errors, --verbose, or --debug.
+
 2.0.0
 
 - Added argument completion for Subscription parameter.

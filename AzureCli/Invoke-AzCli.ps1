@@ -1,6 +1,6 @@
 ﻿function Invoke-AzCli
 {
-<#
+	<#
 .SYNOPSIS
 Invoke the Azure CLI from PowerShell, providing better error handling and converting the output from JSON to a custom object or a hash table.
 
@@ -30,6 +30,8 @@ The following command groups will produce raw output: help, find, and upgrade. A
 
 The commands configure, feedback, and interactive are interactive and do not produce JSON output.
 
+By default -Verbose will output verbose information about the commandline used to call Azure CLI. Unless the -CliVerbosity is specified this will also result in verbose output from the Azure CLI.
+
 .PARAMETER Subscription
 Adds the --subscription common parameter. Specify the name or ID of subscription. Tab-completion on the name and the id of the subscripotion. You can configure the default subscription using `Invoke-AzCli account set -s NAME_OR_ID`.
 
@@ -54,6 +56,12 @@ Suppress warnings from the result of calling the Azure CLI. This is passed on as
 .PARAMETER SuppressOutput
 Suppress any object output from the result of calling the Azure CLI. This is passed on as '--output none' to the Azure CLI.
 
+.PARAMETER CliVerbosity
+Set the verbosity of Azure CLI. Valid valuse are none, vebose, and debug.
+Use none to suppress Azure CLI verbosity in combination with `-Verbose`.
+Use `verbose` to get verbose output, without using `-Verbose`. This is passed on as '--verbose' to the Azure CLI.
+Use `debug` to get debug output. This is passed on as '--verbose' to the Azure CLI.
+
 .PARAMETER Raw
 Do not process the output of Azure CLI.
 
@@ -71,7 +79,7 @@ List all storage accounts in the given subscription.
 .EXAMPLE
 iaz version
 
-Use the alias for Invoke-AzCli to get the version information of Azure CLI.
+Uses the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 #>
 
@@ -110,6 +118,10 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 		[Parameter()]
 		[Switch] $SuppressCliWarnings,
+
+		[Parameter()]
+		[ValidateSet("NoWarnings", "Default", "Verbose", "Debug")]
+		[string] $CliVerbosity,
 
 		[Parameter(ValueFromRemainingArguments)]
 		[string[]] $Arguments
@@ -188,7 +200,28 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 		if ($verbose)
 		{
-			$additionalArguments += '--verbose'
+			if (-not $CliVerbosity)
+			{
+				$additionalArguments += '--verbose'
+			}
+		}
+
+		switch ($CliVerbosity)
+		{
+			"NoWarnings"
+			{
+				$additionalArguments += '--only-show-errors'
+			}
+
+			"Verbose"
+			{
+				$additionalArguments += '--verbose'
+			}
+
+			"Debug"
+			{
+				$additionalArguments += '--debug'
+			}
 		}
 
 		if ($Subscription)
@@ -223,7 +256,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 	{
 		$allArguments = $Arguments + $additionalArguments
 		$commandLine = @( $allArguments | ForEach-Object { "`"${_}`"" } )
-		Write-verbose "Invoking [$commandLine]"
+		Write-Verbose "Invoking [$commandLine]"
 
 		if ($rawOutput)
 		{
@@ -249,7 +282,7 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		}
 		if ($hadError)
 		{
-			if($null -ne $result)
+			if ($null -ne $result)
 			{
 				$result
 				throw "Command exited with error code ${LASTEXITCODE}: ${result}"
@@ -259,11 +292,11 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 		if ($null -ne $result)
 		{
 			$additionalArguments = @{}
-			if($NoEnumerate.IsPresent)
+			if ($NoEnumerate.IsPresent)
 			{
 				$additionalArguments.Add("NoEnumerate", $true)
 			}
-			if($AsHashtable.IsPresent)
+			if ($AsHashtable.IsPresent)
 			{
 				$additionalArguments.Add("AsHashtable", $true)
 			}
@@ -272,4 +305,4 @@ Use the alias for Invoke-AzCli to get the version information of Azure CLI.
 	}
 }
 
-New-alias -Name iaz Invoke-AzCli
+New-Alias -Name iaz Invoke-AzCli
