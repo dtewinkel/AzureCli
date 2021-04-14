@@ -57,8 +57,8 @@
 
 	It "Include the --only-show-errors parameter if CliVerbosity is NoWarnings" {
 
-		$null = Invoke-AzCli vm list -CliVerbosity verbose
-		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"--verbose"' }
+		$null = Invoke-AzCli vm list -CliVerbosity NoWarnings
+		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"--only-show-errors"' }
 	}
 
 	It "Include the --verbose parameter if CliVerbosity is Verbose" {
@@ -74,9 +74,9 @@
 	}
 
 
-	It "Include the debug parameter if CliVerbosity is debug and -Verbose is specified" {
+	It "Include the debug parameter if CliVerbosity is Debug and -Verbose is specified" {
 
-		$null = Invoke-AzCli vm list -CliVerbosity debug -Verbose
+		$null = Invoke-AzCli vm list -CliVerbosity Debug -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -notcontains '"--verbose"' -and $args -ccontains '"--debug"' }
 		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list" "--debug"]'}
 	}
