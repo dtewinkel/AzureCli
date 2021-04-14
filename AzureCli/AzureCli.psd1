@@ -104,6 +104,11 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = '
+2.2.0
+
+- Allow to set global CliVerbosity preference through $AzCliVerbosityPreference variable.
+- Documentation fixes.
+
 2.1.0
 
 - Added argument -CliVerbosity to set verbosity of Azure CLI. This provides a single parameter to either set --only-show-errors, --verbose, or --debug.

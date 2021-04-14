@@ -16,7 +16,6 @@
 		{ Invoke-AzCli test -Query '{ name }' } | Should -Throw "The az CLI is not found. Please go to*"
 	}
 
-
 	It "Returns the passed query to az" {
 
 		$null = Invoke-AzCli test -Query '{ name }'
@@ -43,16 +42,48 @@
 
 	It "Sets the Verbose parameter" {
 
-		$null = Invoke-AzCli vm list -Verbose
+		Invoke-AzCli vm list -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"--verbose"' }
-		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list" "--verbose"]'}
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list" "--verbose"]' }
 	}
 
 	It "Suppresses the --verbose parameter if CliVerbosity is Default" {
 
-		$null = Invoke-AzCli vm list -Verbose -CliVerbosity Default
+		Invoke-AzCli vm list -Verbose -CliVerbosity Default
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -notcontains '"--verbose"' }
-		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list"]'}
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list"]' }
+	}
+
+	Context "With `$AzCliVerbosityPreference set." {
+
+		BeforeAll {
+			$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+			$global:AzCliVerbosityPreference = 'Default'
+		}
+
+		It "Suppresses the --verbose parameter if CliVerbosity is set globally to Default" {
+
+			Invoke-AzCli vm list -Verbose
+			Should -Invoke az -Exactly 1 -ParameterFilter { $args -notcontains '"--verbose"' }
+			Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list"]' }
+		}
+
+		It "Include the --only-show-errors parameter if CliVerbosity is NoWarnings and CliVerbosity is set globally to Default" {
+
+			Invoke-AzCli vm list -CliVerbosity NoWarnings
+			Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"--only-show-errors"' }
+		}
+
+		AfterAll {
+			if ($OriginalAzCliVerbosityPreference)
+			{
+				$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
+			}
+			else
+			{
+				Clear-Variable AzCliVerbosityPreference -Scope Global
+			}
+		}
 	}
 
 	It "Include the --only-show-errors parameter if CliVerbosity is NoWarnings" {
@@ -78,6 +109,6 @@
 
 		$null = Invoke-AzCli vm list -CliVerbosity Debug -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -notcontains '"--verbose"' -and $args -ccontains '"--debug"' }
-		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list" "--debug"]'}
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["vm" "list" "--debug"]' }
 	}
 }
