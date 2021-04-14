@@ -27,12 +27,14 @@ Fixes the console colors back to what they were before calling Azure CLI, as the
 
 Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
 
-- -Output for --output
-- -Help for --help
-- -Query for --query
-- -Subscription for --subscription
-- -ResourceGroup for --resource-group
-- -SuppressCliWarnings for --only-show-errors
+- `-Output` for `--output`
+- `-Help` for `--help`
+- `-Query` for `--query`
+- `-Subscription` for `--subscription`
+- `-ResourceGroup` for `--resource-group`
+- `-SuppressCliWarnings` or `-CliVerbosity NoWarnings` for `--only-show-errors`
+- `-CliVerbosity Verbose` for `--verbose`
+- `-CliVerbosity Debug` for `--debug`
 
 In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
 
