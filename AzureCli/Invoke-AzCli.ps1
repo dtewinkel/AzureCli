@@ -58,9 +58,9 @@ Suppress any object output from the result of calling the Azure CLI. This is pas
 
 .PARAMETER CliVerbosity
 Set the verbosity of Azure CLI. Valid valuse are `NoWarnings`, `Default`, `Vebose`, and `Debug`.
-Use `NoWarnings` to get verbose output, without using `-Verbose`. This is passed on as '--verbose' to the Azure CLI. Azure CLI will be verbose. Invoke-AzCli will not be verbose.
+Use `NoWarnings` to suppress all warnings from Azure CLI. This is passed on as '--only-show-errors' to the Azure CLI.
 Use `Default` to suppress Azure CLI verbosity in combination with `-Verbose`. Azure CLI will not be verbose, but, if -Verbose is used, then Invoke-AzCli will be verbose.
-Use `verbose` to get verbose output, without using `-Verbose`. This is passed on as '--verbose' to the Azure CLI.
+Use `Verbose` to get verbose output from Azure CLI, without using `-Verbose`. This is passed on as '--verbose' to the Azure CLI.
 Use `Debug` to get debug output. This is passed on as '--debug' to the Azure CLI.
 
 The default value for `-CliVerbosity` can be set with the variable $CliVerbosityPreference.
