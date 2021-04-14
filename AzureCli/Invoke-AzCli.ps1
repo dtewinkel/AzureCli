@@ -63,6 +63,10 @@ Use `Default` to suppress Azure CLI verbosity in combination with `-Verbose`. Az
 Use `verbose` to get verbose output, without using `-Verbose`. This is passed on as '--verbose' to the Azure CLI.
 Use `Debug` to get debug output. This is passed on as '--debug' to the Azure CLI.
 
+The default value for `-CliVerbosity` can be set with the variable $CliVerbosityPreference.
+
+If `-CLiVerbosity` is set, or the variable $CliVerbosityPreference is set, then the default behavior of `-Verbose` to also pass `--verbose` to Azure CLI is disabled.
+
 .PARAMETER Raw
 Do not process the output of Azure CLI.
 
@@ -122,7 +126,7 @@ Uses the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 		[Parameter()]
 		[ValidateSet("NoWarnings", "Default", "Verbose", "Debug")]
-		[string] $CliVerbosity,
+		[string] $CliVerbosity = $CliVerbosityPreference,
 
 		[Parameter(ValueFromRemainingArguments)]
 		[string[]] $Arguments
