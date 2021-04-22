@@ -107,6 +107,7 @@
 2.2.0
 
 - Allow to set global CliVerbosity preference through $AzCliVerbosityPreference variable.
+- Argument completers for -Subscription and -ResourceGroup provide a better description for each completion result.
 - Documentation fixes.
 
 2.1.0

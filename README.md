@@ -1,6 +1,7 @@
 # AzureCli
 
 Get it from the PowerShell gallery: [AzureCli](https://www.powershellgallery.com/packages/AzureCli):
+
 ```powershell
 Install-Module -Name AzureCli
 ```
@@ -23,7 +24,7 @@ Unless specified otherwise, converts the output from JSON to a custom object. Th
 
 It provides better error handling, so that script fails if the Azure CLI fails.
 
-In some scenarios the Azure CLI changes console output colors, but doe snot change them back to what they were. This may happen for errors, verbose output, and some other cases. `Invoke-AzCli` fixes the console colors back to what they were before calling Azure CLI.
+In some scenarios the Azure CLI changes console output colors, but does not change them back to what they were. This may happen for errors, verbose output, and in some other cases. `Invoke-AzCli` fixes the console colors back to what they were before calling Azure CLI.
 
 Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
 
