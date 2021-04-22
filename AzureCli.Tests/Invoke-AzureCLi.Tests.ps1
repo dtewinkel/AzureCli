@@ -7,6 +7,7 @@
 		. $PSScriptRoot/Helpers/Az.ps1
 		Mock az { $jsonText }
 		Mock Write-Verbose
+		Mock Write-Warning
 		. $PSScriptRoot/Helpers/LoadModule.ps1
 	}
 
@@ -38,6 +39,7 @@
 
 		Invoke-AzCli vm list -SuppressCliWarnings
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"--only-show-errors"' }
+		Should -Invoke Write-Warning -ParameterFilter { $Message -like "'-SuppressCliWarnings' is deprecated. Please use '-CliVerbosity NoWarnings' instead.*" }
 	}
 
 	It "Sets the Verbose parameter" {

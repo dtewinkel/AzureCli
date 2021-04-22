@@ -20,11 +20,24 @@
 		@{ first = "AsHashTable"; second = "Output"; secondValue = 'json' }
 		@{ first = "NoEnumerate"; second = "Output"; secondValue = 'json' }
 	)
-	It "Fails with combined parameters: <first>, <second>" -TestCases $combinations {
+	It "Fails with combined parameters: <first>, <second> with message about parameter set" -TestCases $combinations {
 		param($first, $second, $secondValue)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
 		{ Invoke-AzCLi @parameters } | Should -Throw "*Parameter set cannot be resolved *"
+		Should -Not -Invoke az
+	}
+
+	$combinations = @(
+		@{ first = "SuppressCliWarnings"; second = "CliVerbosity"; secondValue = 'Debug'; exceptionMessage = "-SuppressCliWarnings cannot be used together with -CliVerbosity Debug" }
+		@{ first = "SuppressCliWarnings"; second = "CliVerbosity"; secondValue = 'Verbose'; exceptionMessage = "-SuppressCliWarnings cannot be used together with -CliVerbosity Verbose" }
+		@{ first = "SuppressCliWarnings"; second = "Verbose"; secondValue = $true; exceptionMessage = "-SuppressCliWarnings cannot be used together with -Verbose" }
+	)
+	It "Fails with combined parameters: <first>, <second> with exception" -TestCases $combinations {
+		param($first, $second, $secondValue)
+
+		$parameters = @{ $first = $true; $second = $secondValue }
+		{ Invoke-AzCLi @parameters } | Should -Throw $exceptionMessage
 		Should -Not -Invoke az
 	}
 

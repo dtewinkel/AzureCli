@@ -132,181 +132,60 @@ Uses the alias for Invoke-AzCli to get the version information of Azure CLI.
 		[string[]] $Arguments
 	)
 
-	begin
+	AssertAzPresent
+
+	$rawOutput, $additionalArguments = HandleRawOutputs -Output $Output -SuppressOutput:$SuppressOutput -Raw:$Raw -Arguments $Arguments
+	$additionalArguments += HandleVerbosity -SuppressCliWarnings:$SuppressCliWarnings  -CliVerbosity $CliVerbosity -Arguments $Arguments
+	$additionalArguments += HandleSubscription -Subscription $Subscription -Arguments $Arguments
+	$additionalArguments += HandleResourceGroup -ResourceGroup $ResourceGroup -Arguments $Arguments
+	$additionalArguments += HandleQuery -Query $Query -Arguments $Arguments
+	$commandLine, $verboseCommandLine = ProcessArguments -Arguments ($Arguments + $additionalArguments)
+
+	Write-Verbose "Invoking [$verboseCommandLine]"
+
+	if ($rawOutput)
 	{
-		$azCmd = Get-Command az -ErrorAction SilentlyContinue
-		if (-not $azCmd)
-		{
-			throw "The az CLI is not found. Please go to https://docs.microsoft.com/en-us/cli/azure/install-azure-cli to install it."
-		}
-
-		$verbose = $VerbosePreference -ne 'SilentlyContinue'
-		$additionalArguments = @()
-		$interactiveCommand = "configure", "feedback", "interactive"
-		$textOutputCommands = "find", "help", "upgrade"
-		$rawCommands = $interactiveCommand + $textOutputCommands
-
-		$rawOutput = $Raw.IsPresent
-
-		if ($Output)
-		{
-			if ($Arguments -contains "--output")
-			{
-				throw "Both -Output and --output are provided as parameter. This is not allowed."
-			}
-			$additionalArguments += '--output', $Output
-			$rawOutput = $true
-		}
-		elseif ($Arguments -contains "--output")
-		{
-			$rawOutput = $true
-		}
-
-		if ($SuppressOutput.IsPresent)
-		{
-			if ($Arguments -contains "--output")
-			{
-				throw "Both -SuppressOutput and --output are provided as parameter. This is not allowed."
-			}
-			$additionalArguments = @('--output', 'none')
-			$rawOutput = $true
-		}
-
-
-		if ($Arguments -contains "--help")
-		{
-			$rawOutput = $true
-		}
-		if ($Help.IsPresent)
-		{
-			$additionalArguments += '--help'
-			$rawOutput = $true
-		}
-
-		if ($Arguments.Length -eq 0)
-		{
-			$rawOutput = $true
-		}
-
-		if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommands)
-		{
-			$rawOutput = $true
-		}
-
-		if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")
-		{
-			$rawOutput = $true
-		}
-
-		if ($SuppressCliWarnings.IsPresent)
-		{
-			$additionalArguments += '--only-show-errors'
-		}
-
-		if ($verbose)
-		{
-			if (-not $CliVerbosity)
-			{
-				$additionalArguments += '--verbose'
-			}
-		}
-
-		switch ($CliVerbosity)
-		{
-			"NoWarnings"
-			{
-				$additionalArguments += '--only-show-errors'
-			}
-
-			"Verbose"
-			{
-				$additionalArguments += '--verbose'
-			}
-
-			"Debug"
-			{
-				$additionalArguments += '--debug'
-			}
-		}
-
-		if ($Subscription)
-		{
-			if ($Arguments -contains "--subscription")
-			{
-				throw "Both -Subscription and --subscription are provided as parameter. This is not allowed."
-			}
-			$additionalArguments += '--subscription', $Subscription
-		}
-
-		if ($ResourceGroup)
-		{
-			if ($Arguments -contains "--resource-group")
-			{
-				throw "Both -ResourceGroup and --resource-group are provided as parameter. This is not allowed."
-			}
-			$additionalArguments += '--resource-group', $ResourceGroup
-		}
-
-		if ($Query)
-		{
-			if ($Arguments -contains "--query")
-			{
-				throw "Both -Query and --query are provided as parameter. This is not allowed."
-			}
-			$additionalArguments += '--query', $Query
-		}
+		az @commandLine
+		$hadError = -not $?
 	}
-
-	process
+	else
 	{
-		$allArguments = $Arguments + $additionalArguments
-		$commandLine = @( $allArguments | ForEach-Object { "`"${_}`"" } )
-		Write-Verbose "Invoking [$commandLine]"
-
-		if ($rawOutput)
+		$hostInfo = Get-Host
+		$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
+		$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
+		try
 		{
-			az @commandLine
+			$result = az @commandLine
 			$hadError = -not $?
 		}
-		else
+		finally
 		{
-			$hostInfo = Get-Host
-			$ForegroundColor = $hostInfo.ui.rawui.ForegroundColor
-			$BackgroundColor = $hostInfo.ui.rawui.BackgroundColor
-			try
-			{
-				$result = az @commandLine
-				$hadError = -not $?
-			}
-			finally
-			{
-				# Restore console colors, as Azure CLI likely to change them.
-				$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
-				$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
-			}
+			# Restore console colors, as Azure CLI likely to change them.
+			$hostInfo.ui.rawui.ForegroundColor = $ForegroundColor
+			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
-		if ($hadError)
-		{
-			if ($null -ne $result)
-			{
-				$result
-				throw "Command exited with error code ${LASTEXITCODE}: ${result}"
-			}
-			throw "Command exited with error code ${LASTEXITCODE}"
-		}
+	}
+	if ($hadError)
+	{
 		if ($null -ne $result)
 		{
-			$additionalArguments = @{}
-			if ($NoEnumerate.IsPresent)
-			{
-				$additionalArguments.Add("NoEnumerate", $true)
-			}
-			if ($AsHashtable.IsPresent)
-			{
-				$additionalArguments.Add("AsHashtable", $true)
-			}
-			$result | ConvertFrom-Json @additionalArguments
+			$result
+			throw "Command exited with error code ${LASTEXITCODE}: ${result}"
 		}
+		throw "Command exited with error code ${LASTEXITCODE}"
+	}
+	if ($null -ne $result)
+	{
+		$additionalArguments = @{}
+		if ($NoEnumerate.IsPresent)
+		{
+			$additionalArguments.Add("NoEnumerate", $true)
+		}
+		if ($AsHashtable.IsPresent)
+		{
+			$additionalArguments.Add("AsHashtable", $true)
+		}
+		$result | ConvertFrom-Json @additionalArguments
 	}
 }
 
