@@ -7,7 +7,7 @@ function HandleResourceGroup()
 		[string] $ResourceGroup,
 
 		[Parameter()]
-		[object[]] $Arguments
+		[string[]] $Arguments
 	)
 
 	if ($ResourceGroup)

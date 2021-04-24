@@ -7,13 +7,16 @@ function HandleRawOutputs()
 		[string] $Output,
 
 		[Parameter()]
+		[Switch] $Help,
+
+		[Parameter()]
 		[Switch] $SuppressOutput,
 
 		[Parameter()]
 		[Switch] $Raw,
 
 		[Parameter()]
-		[object[]] $Arguments
+		[string[]] $Arguments
 	)
 
 	$additionalArguments = @()

@@ -7,7 +7,7 @@ function HandleSubscription()
 		[string] $Subscription,
 
 		[Parameter()]
-		[object[]] $Arguments
+		[string[]] $Arguments
 	)
 
 	if ($Subscription)

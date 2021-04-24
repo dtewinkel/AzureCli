@@ -134,8 +134,8 @@ Uses the alias for Invoke-AzCli to get the version information of Azure CLI.
 
 	AssertAzPresent
 
-	$rawOutput, $additionalArguments = HandleRawOutputs -Output $Output -SuppressOutput:$SuppressOutput -Raw:$Raw -Arguments $Arguments
-	$additionalArguments += HandleVerbosity -SuppressCliWarnings:$SuppressCliWarnings  -CliVerbosity $CliVerbosity -Arguments $Arguments
+	$rawOutput, $additionalArguments = HandleRawOutputs -Output $Output -Help:$Help -SuppressOutput:$SuppressOutput -Raw:$Raw -Arguments $Arguments
+	$additionalArguments += HandleVerbosity -SuppressCliWarnings:$SuppressCliWarnings -CliVerbosity $CliVerbosity -Arguments $Arguments
 	$additionalArguments += HandleSubscription -Subscription $Subscription -Arguments $Arguments
 	$additionalArguments += HandleResourceGroup -ResourceGroup $ResourceGroup -Arguments $Arguments
 	$additionalArguments += HandleQuery -Query $Query -Arguments $Arguments
