@@ -1,4 +1,8 @@
-﻿Describe "Invoke-AzCli general handling" {
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',
+		Justification='To test not showing SecureString Values in verbose output.')]
+param()
+
+Describe "Invoke-AzCli general handling" {
 
 	$jsonText = '{ "IsAz": true }'
 
@@ -34,6 +38,17 @@
 		Invoke-AzCli vm list -ResourceGroup rg
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains('"--resource-group" "rg"') }
 	}
+
+	It "Mask a SecureString in the verbose output" {
+
+		$plainText = "PlainTextSecret"
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText
+
+		Invoke-AzCli something --password $secureString -Verbose
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainTExt}`"") }
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking ["something" "--password" ******** "--verbose"]' }
+	}
+
 
 	It "Sets the SuppressCliWarnings parameter" {
 

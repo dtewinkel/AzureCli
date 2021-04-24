@@ -129,7 +129,7 @@ Uses the alias for Invoke-AzCli to get the version information of Azure CLI.
 		[string] $CliVerbosity = $AzCliVerbosityPreference,
 
 		[Parameter(ValueFromRemainingArguments)]
-		[string[]] $Arguments
+		[object[]] $Arguments
 	)
 
 	AssertAzPresent

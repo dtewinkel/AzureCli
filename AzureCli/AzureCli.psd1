@@ -106,6 +106,7 @@
 			ReleaseNotes = '
 2.2.0
 
+- Improved security by supporting SecureString as input for Az CLI parameter. The SecureString value will be passed on as plain text to Az CLI, but will be printed as ******** on the Invoke-AzCli verbose output.
 - Allow to set global CliVerbosity preference through $AzCliVerbosityPreference variable.
 - Deprecated -SuppressCliWarnings in favor of -CliVerbosity NoWarnings. Use of -SuppressCliWarnings will give a deprecation warning.
 - Argument completers for -Subscription and -ResourceGroup provide a better description for each completion result.
