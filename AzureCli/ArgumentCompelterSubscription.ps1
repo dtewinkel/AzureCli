@@ -1,5 +1,6 @@
-﻿$SubscriptionsCompleter = {
-	param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+﻿function SubscriptionsCompleter($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+{
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
 
 	$accounts = az account list --query '[].{ name: name, id: id }' | ConvertFrom-Json
 	if (-not $accounts -or $accounts.Length -eq 0)
@@ -28,11 +29,11 @@
 		}
 	}
 	$all = @($names + $ids)
-	if($all.Length -eq 0)
+	if ($all.Length -eq 0)
 	{
 		return $null
 	}
 	return $all
 }
 
-Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName Subscription -ScriptBlock $SubscriptionsCompleter
+Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName Subscription -ScriptBlock $function:SubscriptionsCompleter
