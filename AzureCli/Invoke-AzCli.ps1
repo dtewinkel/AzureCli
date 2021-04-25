@@ -210,6 +210,10 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 	$additionalArguments += HandleResourceGroup -ResourceGroup $ResourceGroup -Arguments $Arguments
 	$additionalArguments += HandleQuery -Query $Query -Arguments $Arguments
 	$commandLine, $verboseCommandLine = ProcessArguments -Arguments ($Arguments + $additionalArguments)
+	if(-not $rawOutput)
+	{
+		$jsonArguments = HandleJson -AsHashtable:$AsHashtable -NoEnumerate:$NoEnumerate
+	}
 
 	Write-Verbose "Invoking [$verboseCommandLine]"
 
@@ -246,16 +250,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 	}
 	if ($null -ne $result)
 	{
-		$additionalArguments = @{}
-		if ($NoEnumerate.IsPresent)
-		{
-			$additionalArguments.Add("NoEnumerate", $true)
-		}
-		if ($AsHashtable.IsPresent)
-		{
-			$additionalArguments.Add("AsHashtable", $true)
-		}
-		$result | ConvertFrom-Json @additionalArguments
+		$result | ConvertFrom-Json @jsonArguments
 	}
 }
 
