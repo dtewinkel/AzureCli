@@ -18,7 +18,7 @@ This PowerShell module provide a CmdLet and an alias to call the Azure CLI tool 
 
 ### Invoke-AzCli
 
-Invoke the Azure CLI (`az`) from PowerShell and make dealing with the output in PowerShell easier.
+Invoke the Azure CLI (`az`) from PowerShell and make processing the output easier in PowerShell.
 
 Unless specified otherwise, converts the output from JSON to a custom object. This makes further processing the output in PowerShell much easier.
 

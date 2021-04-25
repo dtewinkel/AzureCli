@@ -23,10 +23,10 @@
 	CompanyName       = 'Daniël te Winkel'
 
 	# Copyright statement for this module
-	Copyright         = 'Copyright © 2020, Daniël te Winkel. All rights reserved.'
+	Copyright         = 'Copyright © 2021, Daniël te Winkel. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description       = 'Cmdlet and alias to make invoking of Azure CLI a bit more PowerShell style. Process output of Azure CLI JSON to custom object.'
+	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
 	# PowerShellVersion = ''
@@ -111,6 +111,7 @@
 - Deprecated -SuppressCliWarnings in favor of -CliVerbosity NoWarnings. Use of -SuppressCliWarnings will give a deprecation warning.
 - Argument completers for -Subscription and -ResourceGroup provide a better description for each completion result.
 - Documentation fixes.
+- Added about_AzureCl help file.
 
 2.1.0
 
