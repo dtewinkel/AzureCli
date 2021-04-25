@@ -215,7 +215,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		$jsonArguments = HandleJson -AsHashtable:$AsHashtable -NoEnumerate:$NoEnumerate
 	}
 
-	Write-Verbose "Invoking [$verboseCommandLine]"
+	Write-Verbose "Invoking [az $verboseCommandLine]"
 
 	if ($rawOutput)
 	{
