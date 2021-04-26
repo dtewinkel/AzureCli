@@ -103,32 +103,35 @@
 			IconUri      = 'http://www.twia.nl/resources/twia.ico'
 
 			# ReleaseNotes of this module
-			ReleaseNotes = '
+			ReleaseNotes = @'
 2.2.0
 
-- Improved security by supporting SecureString as input for Az CLI parameter. The SecureString value will be passed on as plain text to Az CLI, but will be printed as ******** on the Invoke-AzCli verbose output.
-- Allow to set global CliVerbosity preference through $AzCliVerbosityPreference variable.
-- Deprecated -SuppressCliWarnings in favor of -CliVerbosity NoWarnings. Use of -SuppressCliWarnings will give a deprecation warning.
+- Improved security by supporting SecureString as input for Auzure CLI parameter. The SecureString value will be passed
+  on as plain text to Azure CLI, but will be printed as ******** on the Invoke-AzCli verbose output.
+- Allow to set global CliVerbosity preference through the $AzCliVerbosityPreference variable.
+- Deprecated -SuppressCliWarnings in favor of -CliVerbosity NoWarnings. Use of -SuppressCliWarnings will give a
+  deprecation warning.
 - Argument completers for -Subscription and -ResourceGroup provide a better description for each completion result.
-- Documentation fixes.
-- Added about_AzureCl help file.
+- Documentation updates and fixes.
 
 2.1.0
 
-- Added argument -CliVerbosity to set verbosity of Azure CLI. This provides a single parameter to either set --only-show-errors, --verbose, or --debug.
+- Added argument -CliVerbosity to set verbosity of Azure CLI. This provides a single parameter to either set
+  --only-show-errors, --verbose, or --debug.
 
 2.0.0
 
-- Added argument completion for Subscription parameter.
-- Added ResourceGroup parameter, because the --resource-group parameter is needed so often. Supports argument completion.
-- Added NoEnumerate and AsHashtable to have more control over the JSON to output conversion.
-- Added parameter sets, to make clear which parameters can be used together. This may break existing scripts that use parameters together that are not allowed together anymore.
+- Added argument completion for -Subscription parameter.
+- Added -ResourceGroup parameter, because the --resource-group parameter is needed so often. Supports argument completion.
+- Added -NoEnumerate and -AsHashtable to have more control over the JSON to output conversion.
+- Added parameter sets, to make clear which parameters can be used together. This may break existing scripts that use
+  parameters together that are not allowed together anymore.
 - Improved test coverage.
 
 1.3.0
 
 - Improved error handling. Now throws on error.
-- Improved locality of restoring color output. Only restore it if we process the az cli output.
+- Improved locality of restoring color output. Only restore it if we process the Auzure CLI output.
 
 1.2.0
 
@@ -138,7 +141,7 @@
   - feedback.
   - version.
   - upgrade.
-- provide message where to istall az CLI from if az command is not found.
+- provide message where to install Auzure CLI from if az command is not found.
 
 1.1.0
 
@@ -154,13 +157,13 @@
 
 1.0.1
 
-- Don''t change directory to module path on invocation.
+- Don't change directory to module path on invocation.
 - Improve source project documentation.
 
 1.0.0
 
 - Initial version of this module providing Invoke-AzCli and alias iaz.
-'
+'@
 
 			# Prerelease string of this module
 			# Prerelease = ''

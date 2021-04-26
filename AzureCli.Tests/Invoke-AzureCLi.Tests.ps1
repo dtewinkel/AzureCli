@@ -18,7 +18,7 @@ Describe "Invoke-AzCli general handling" {
 	It "throw an exception if az is not found" {
 
 		Mock Get-Command { $Null } -ParameterFilter { $name -eq 'az' }
-		{ Invoke-AzCli test -Query '{ name }' } | Should -Throw "The az CLI is not found. Please go to*"
+		{ Invoke-AzCli test -Query '{ name }' } | Should -Throw "The 'az' Azure CLI command is not found. Please go to*"
 	}
 
 	It "Returns the passed query to az" {
