@@ -4,14 +4,28 @@ function ProcessArguments()
 	[CmdletBinding()]
 	param(
 		[Parameter()]
-		[object[]] $Arguments
+		[object[]] $Arguments,
+
+		[Parameter()]
+		[string] $EscapeHandling
 	)
 
 	$secretsMask = "********"
 
-	function EscapeParameter($Argument)
+	function EscapeParameter($Argument, $escapeHandling)
 	{
-		$escaped = "$Argument" -replace '"', '\"'
+		switch ($escapeHandling)
+		{
+			"Always"
+			{
+				$escaped = "$Argument" -replace '(["\\])', '\$0'
+			}
+
+			"Never"
+			{
+				$escaped = $Argument
+			}
+		}
 		"`"${escaped}`""
 	}
 
@@ -22,13 +36,13 @@ function ProcessArguments()
 		if ($argument -is [securestring])
 		{
 			$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
-			$commandLineArguments += EscapeParameter $plainArgument
+			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
 			$verboseCommandLineArguments += $secretsMask
 		}
 		else
 		{
-			$commandLineArguments += EscapeParameter $argument
-			$verboseCommandLineArguments += EscapeParameter $argument
+			$commandLineArguments += EscapeParameter $argument $EscapeHandling
+			$verboseCommandLineArguments += EscapeParameter $argument $EscapeHandling
 		}
 	}
 

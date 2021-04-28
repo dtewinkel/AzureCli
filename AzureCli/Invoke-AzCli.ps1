@@ -70,6 +70,14 @@ examples.
 Adds the --output common parameter. Valid values are json, jsonc, none, table, tsv, yaml, and yamlc. The output will not
 be converted to a custom object.
 
+.PARAMETER EscapeHandling
+
+Defines how the double quoute (") and backslash (\) for the command-line parameters are escaped before sending them to
+the Azure CLI. Th following values are valid:
+
+- Never: Do not escape " or \. Any escaping must be done by the caller. This is the default value.
+- Always: Always escape " or \.
+
 .PARAMETER AsHashtable
 
 Converts the JSON to a hash table object.
@@ -170,6 +178,10 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		[Parameter()]
 		[string] $Query,
 
+		[Parameter()]
+		[ValidateSet("Never", "Always")]
+		[string] $EscapeHandling = "Never",
+
 		[Parameter(ParameterSetName = 'TextOutput')]
 		[ValidateSet("json", "jsonc", "none", "table", "tsv", "yaml", "yamlc")]
 		[alias("o")]
@@ -209,7 +221,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 	$additionalArguments += HandleSubscription -Subscription $Subscription -Arguments $Arguments
 	$additionalArguments += HandleResourceGroup -ResourceGroup $ResourceGroup -Arguments $Arguments
 	$additionalArguments += HandleQuery -Query $Query -Arguments $Arguments
-	$commandLine, $verboseCommandLine = ProcessArguments -Arguments ($Arguments + $additionalArguments)
+	$commandLine, $verboseCommandLine = ProcessArguments -Arguments ($Arguments + $additionalArguments) -EscapeHandling $EscapeHandling
 	if(-not $rawOutput)
 	{
 		$jsonArguments = HandleJson -AsHashtable:$AsHashtable -NoEnumerate:$NoEnumerate

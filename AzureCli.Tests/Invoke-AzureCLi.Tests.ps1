@@ -39,6 +39,24 @@ Describe "Invoke-AzCli general handling" {
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains('"--resource-group" "rg"') }
 	}
 
+	It "Escapes strings with double quotes or backslashes if EscapeHandling Always is specified" {
+
+		Invoke-AzCli vm list -Query 'query with " and \.' -EscapeHandling Always
+		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"query with \" and \\."' }
+	}
+
+	It "Does not escapes strings with double quotes or backslashes if EscapeHandling is not specified" {
+
+		Invoke-AzCli vm list -Query 'query with " and \.'
+		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"query with " and \."' }
+	}
+
+	It "Does not escapes strings with double quotes or backslashes if EscapeHandling Never is specified" {
+
+		Invoke-AzCli vm list -Query 'query with " and \.' -EscapeHandling Never
+		Should -Invoke az -Exactly 1 -ParameterFilter { $args -contains '"query with " and \."' }
+	}
+
 	It "Mask a SecureString in the verbose output" {
 
 		$plainText = "PlainTextSecret"
