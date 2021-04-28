@@ -106,7 +106,7 @@
 			ReleaseNotes = @'
 2.2.0
 
-- Improved security by supporting SecureString as input for Auzure CLI parameter. The SecureString value will be passed
+- Improved security by supporting SecureString as input for Azure CLI parameter. The SecureString value will be passed
   on as plain text to Azure CLI, but will be printed as ******** on the Invoke-AzCli verbose output.
 - Added -EscapeHandling parameter to set automatic escaping of strings on the command-line to Azure CLI. Set to Always
   to escape \ and " with the \ escape character. Do not set it, or set it to None, to not escape. This is the default
