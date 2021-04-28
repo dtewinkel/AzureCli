@@ -4,5 +4,12 @@
     "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
     "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
     "powershell.codeFormatting.useCorrectCasing": true,
-    "powershell.scriptAnalysis.enable": true
+    "powershell.scriptAnalysis.enable": true,
+
+    "[plaintext]": {
+        "editor.rulers": [120]
+    },
+    "[powershell]": {
+        "editor.rulers": [120]
+    }
 }

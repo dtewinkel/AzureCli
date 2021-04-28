@@ -1,7 +1,4 @@
-﻿BeforeDiscovery {
-}
-
-Describe "Invoke-AzCli With Object Output" {
+﻿Describe "Invoke-AzCli With Object Output" {
 
 	BeforeAll {
 		$jsonText = '{ "IsAz": true }'
@@ -23,21 +20,21 @@ Describe "Invoke-AzCli With Object Output" {
 
 	It "By default does not pass -NoEnumerate and -AsHashTable to ConvertFrom-Json" {
 
-		$null = Invoke-AzCli one two three
+		Invoke-AzCli one two three
 		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $null -and $AsHashTable -eq $null }
 		Should -Invoke az -Exactly 1
 	}
 
 	It "Passes -NoEnumerate to ConvertFrom-Json" {
 
-		$null = Invoke-AzCli one two three -NoEnumerate
+		Invoke-AzCli one two three -NoEnumerate
 		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $NoEnumerate -eq $true }
 		Should -Invoke az -Exactly 1
 	}
 
 	It "Passes -AsHashTable to ConvertFrom-Json" {
 
-		$null = Invoke-AzCli one two three -AsHashtable
+		Invoke-AzCli one two three -AsHashtable
 		Should -Invoke ConvertFrom-Json -Exactly 1 -ParameterFilter { $AsHashTable -eq $true }
 		Should -Invoke az -Exactly 1
 	}
