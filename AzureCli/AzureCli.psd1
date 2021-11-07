@@ -65,7 +65,9 @@
 	NestedModules     = @()
 
 	# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-	FunctionsToExport = 'Invoke-AzCli'
+	FunctionsToExport = @(
+		'Invoke-AzCli'
+		)
 
 	# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 	CmdletsToExport   = @()
@@ -74,7 +76,9 @@
 	# VariablesToExport = @()
 
 	# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-	AliasesToExport   = 'iaz'
+	AliasesToExport   = @(
+		'iaz'
+	)
 
 	# DSC resources to export from this module
 	# DscResourcesToExport = @()
@@ -104,6 +108,13 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.3.0
+
+- Added MIT license.
+- Rewrote / restructured tests. Use Module name in mocks where applicable.
+- Wrote better tests to test argument completers.
+- Escape subscription name in calling az in resource argument completer.
+
 2.2.0
 
 - Improved security by supporting SecureString as input for Azure CLI parameter. The SecureString value will be passed

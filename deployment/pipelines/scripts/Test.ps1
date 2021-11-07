@@ -1,47 +1,49 @@
-#Requires -Module @{ ModuleName="Pester"; ModuleVersion="5.1.0" }
+#Requires -Module @{ ModuleName="Pester"; ModuleVersion="5.3.1" }
 
 param(
 	[Parameter()]
 	[String] $RootPath = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..')),
 
 	[Parameter()]
+	[String] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..', 'Modules', 'AzureCli')),
+
+	[Parameter()]
+	[String] $TestPath = (Resolve-Path (Join-Path $RootPath 'AzureCli.Tests')),
+
+	[Parameter()]
 	[String] $TestOutput = (Join-Path $RootPath TestResults TestResults.Pester.xml),
 
 	[Parameter()]
-	[String] $CoverageOutput = (Join-Path $RootPath TestResults Coverage.Pester.xml)
+	[String] $CoverageOutput = (Join-Path $RootPath TestResults Coverage.Pester.xml),
+
+	[Parameter()]
+	[String] $CoverageOutputFormat,
+
+	[Parameter()]
+	[String] $OutputVerbosity = 'Detailed'
 )
 
-$modulesFolder = Join-Path $RootPath Modules
-$moduleFolder = Join-Path $modulesFolder AzureCli
-$testFolder = Join-Path $RootPath AzureCli.Tests
-$testOutputFolder = Join-Path $RootPath TestResults
+$testOutputFolder =  ([System.IO.Fileinfo]$TestOutput).DirectoryName
 
-Import-Module Pester
+$configuration = New-PesterConfiguration
 
-$configuration = [PesterConfiguration]@{
-		TestResult = @{
-				Enabled = $true
-				OutputPath = $TestOutput
-		}
-		Output = @{
-				Verbosity = 'Detailed'
-		}
-		CodeCoverage = @{
-			Enabled = $true
-			Path = "${moduleFolder}/*.psm1", "${moduleFolder}/*-*.ps1", "${moduleFolder}/*.ps1"
-			OutputPath = $CoverageOutput
-		}
+$container = New-PesterContainer -Path $testPath -Data @{ ModuleFolder = $moduleFolder }
+$configuration.Run.Container = $container
+
+$configuration.TestResult.Enabled = $true
+$configuration.TestResult.OutputPath = $TestOutput
+$configuration.Output.Verbosity = $OutputVerbosity
+$configuration.CodeCoverage.Enabled = $true
+$configuration.CodeCoverage.Path = "${moduleFolder}/*.psm1", "${moduleFolder}/*-*.ps1", "${moduleFolder}/*.ps1", "${moduleFolder}/*/*.ps1"
+$configuration.CodeCoverage.OutputPath = $CoverageOutput
+$configuration.CodeCoverage.UseBreakpoints = $false
+$configuration.TestDrive.Enabled = $false
+$configuration.TestRegistry.Enabled = $false
+if($CoverageOutputFormat)
+{
+	$configuration.CodeCoverage.OutputFormat = $CoverageOutputFormat
 }
 
 $null = New-Item -ItemType directory -Path $testOutputFolder -Force
 
-Push-Location $testFolder
-
-try
-{
-	Invoke-Pester -Configuration $configuration
-}
-finally
-{
-	Pop-Location
-}
+Invoke-Pester -Configuration $configuration

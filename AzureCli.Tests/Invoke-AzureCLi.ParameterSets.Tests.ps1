@@ -1,8 +1,18 @@
-﻿Describe "Invoke-AzCli with Interactive commands" {
+﻿[CmdletBinding()]
+param (
+	[Parameter()]
+	[string]
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+)
+
+Describe "Invoke-AzCli with Interactive commands" {
 
 	BeforeAll {
-		. $PSScriptRoot/Helpers/LoadModule.ps1
-		Mock Write-Warning
+
+		function az { $jsonText }
+		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
+		Mock az -ModuleName 'AzureCli'
+		Mock Write-Warning -ModuleName 'AzureCli'
 	}
 
 	$combinations = @(
@@ -25,8 +35,10 @@
 		param($first, $second, $secondValue)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
+
 		{ Invoke-AzCLi @parameters } | Should -Throw "*Parameter set cannot be resolved *"
-		Should -Not -Invoke az
+
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
 	$combinations = @(
@@ -38,16 +50,20 @@
 		param($first, $second, $secondValue, $exceptionMessage)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
+
 		{ Invoke-AzCLi @parameters } | Should -Throw $exceptionMessage
-		Should -Not -Invoke az
+
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
 	It "Fails with combined parameters: <first>, <second> with exception" -TestCases $combinations {
 		param($first, $second, $secondValue, $exceptionMessage)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
+
 		{ Invoke-AzCLi @parameters } | Should -Throw $exceptionMessage
-		Should -Not -Invoke az
+
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
 	$combinations = @(
@@ -58,9 +74,11 @@
 		param($first, $second, $exceptionMessage)
 
 		$parameters = @{ $first = $true }
+
 		{ Invoke-AzCLi @parameters $second } | Should -Throw $exceptionMessage
-		Should -Invoke Write-Warning -ParameterFilter { $Message -like "'-SuppressCliWarnings' is deprecated. Please use '-CliVerbosity NoWarnings' instead.*" }
-		Should -Not -Invoke az
+
+		Should -Invoke Write-Warning -ParameterFilter { $Message -like "'-SuppressCliWarnings' is deprecated. Please use '-CliVerbosity NoWarnings' instead.*" } -ModuleName 'AzureCli'
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
 	$combinations = @(
@@ -73,8 +91,10 @@
 		param($first, $second)
 
 		$exceptionMessage = "-CliVerbosity ${first} cannot be used together with ${second}"
+
 		{ Invoke-AzCLi -CliVerbosity $first $second } | Should -Throw $exceptionMessage
-		Should -Not -Invoke az
+
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
 	$combinations = @(
@@ -94,7 +114,9 @@
 			$secondParameter += $secondValue
 		}
 		$expected = "Both -${first} and ${second} are provided as parameter. This is not allowed."
+
 		{ Invoke-AzCLi @firstParameter @secondParameter } | Should -Throw $expected
-		Should -Not -Invoke az
+
+		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 }
