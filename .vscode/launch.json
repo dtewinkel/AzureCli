@@ -10,6 +10,39 @@
             "request": "launch",
             "script": "deployment/pipelines/scripts/ConfigureBuildTest.ps1",
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PowerShell: Configure and Build",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "deployment/pipelines/scripts/ConfigureBuild.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run tests in current file with CC",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/deployment/pipelines/scripts/Test.ps1",
+            "args": [
+                "-TestPath", "'${file}'",
+                "-OutputVerbosity", "${config:powershell.pester.debugOutputVerbosity}",
+                "-CoverageOutputFormat", "CoverageGutters",
+                "-ModuleFolder", "${workspaceFolder}/AzureCli"
+            ],
+            "cwd": "${file}",
+        },
+        {
+            "name": "Run all tests with CC",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/deployment/pipelines/scripts/Test.ps1",
+            "args": [
+                "-TestPath", "'${workspaceFolder}/AzureCli.Tests'",
+                "-OutputVerbosity", "${config:powershell.pester.debugOutputVerbosity}",
+                "-CoverageOutputFormat", "CoverageGutters",
+                "-ModuleFolder", "${workspaceFolder}/AzureCli"
+            ],
+            "cwd": "${workspaceFolder}/GitWorktreeProjects.Tests",
         }
     ]
 }

@@ -1,11 +1,11 @@
-﻿function ResourceGroupCompleter($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+﻿function ArgumentCompleterResourceGroup($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
 {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'parameterName')]
 
 	$subscriptionParameters = @()
 	if ($fakeBoundParameters.Subscription)
 	{
-		$subscriptionParameters = @('--subscription', $fakeBoundParameters.Subscription)
+		$subscriptionParameters = @('--subscription', "`"$($fakeBoundParameters.Subscription)`"")
 	}
 	$resourceGroups = az group list --query '[].name' @subscriptionParameters | ConvertFrom-Json
 	if (-not $resourceGroups -or $resourceGroups.Length -eq 0)
@@ -27,4 +27,4 @@
 	return $results
 }
 
-Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $function:ResourceGroupCompleter
+Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $function:ArgumentCompelterResourceGroup

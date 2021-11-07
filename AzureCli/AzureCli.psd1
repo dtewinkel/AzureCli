@@ -29,7 +29,7 @@
 	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
-	# PowerShellVersion = ''
+	# PowerShellVersion = '6.0'
 
 	# Name of the PowerShell host required by this module
 	# PowerShellHostName = ''
@@ -65,7 +65,9 @@
 	NestedModules     = @()
 
 	# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-	FunctionsToExport = 'Invoke-AzCli'
+	FunctionsToExport = @(
+		'Invoke-AzCli'
+		)
 
 	# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 	CmdletsToExport   = @()
@@ -74,7 +76,9 @@
 	# VariablesToExport = @()
 
 	# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-	AliasesToExport   = 'iaz'
+	AliasesToExport   = @(
+		'iaz'
+	)
 
 	# DSC resources to export from this module
 	# DscResourcesToExport = @()
@@ -91,10 +95,10 @@
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'powershell', 'az', 'cli', 'azure'
+			Tags         = 'az', 'cli', 'Azure'
 
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/master/AzureCli/license.txt'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
@@ -104,6 +108,14 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.3.0
+
+- Added MIT license.
+- Process 'bicep upgrade' as raw command.
+- Rewrote / restructured tests. Use Module name in mocks where applicable.
+- Wrote better tests to test argument completers.
+- Escape subscription name in calling az in resource argument completer.
+
 2.2.0
 
 - Improved security by supporting SecureString as input for Azure CLI parameter. The SecureString value will be passed
