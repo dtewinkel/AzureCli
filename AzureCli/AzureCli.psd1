@@ -95,10 +95,10 @@
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'powershell', 'az', 'cli', 'Azure'
+			Tags         = 'az', 'cli', 'Azure'
 
 			# A URL to the license for this module.
-			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/licence-and-more/AzureCli/license.txt'
+			#LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/master/AzureCli/license.txt'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
