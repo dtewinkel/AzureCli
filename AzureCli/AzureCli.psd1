@@ -29,7 +29,7 @@
 	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
-	# PowerShellVersion = ''
+	# PowerShellVersion = '6.0'
 
 	# Name of the PowerShell host required by this module
 	# PowerShellHostName = ''
@@ -95,10 +95,10 @@
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'powershell', 'az', 'cli', 'azure'
+			Tags         = 'az', 'cli', 'Azure'
 
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/licence-and-more/LICENSE'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
