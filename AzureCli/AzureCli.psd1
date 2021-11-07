@@ -98,7 +98,7 @@
 			Tags         = 'powershell', 'az', 'cli', 'Azure'
 
 			# A URL to the license for this module.
-			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/license-and-more/AzureCli/License.txt'
+			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/licence-and-more/AzureCli/license.txt'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
