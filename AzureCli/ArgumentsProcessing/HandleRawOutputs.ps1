@@ -20,8 +20,8 @@ function HandleRawOutputs()
 	)
 
 	$additionalArguments = @()
-	$interactiveCommand = "configure", "feedback", "interactive"
-	$textOutputCommands = "find", "help", "upgrade"
+	$interactiveCommand =  @(@("configure"), @("feedback"), @("interactive"))
+	$textOutputCommands = @(@("find"), @("help"), @("upgrade"), @("bicep", "upgrade"))
 	$rawCommands = $interactiveCommand + $textOutputCommands
 	$rawOutput = $Raw.IsPresent
 
@@ -64,9 +64,28 @@ function HandleRawOutputs()
 		$rawOutput = $true
 	}
 
-	if ($Arguments.Length -gt 0 -and $Arguments[0] -in $rawCommands)
+	if ($Arguments.Length -gt 0)
 	{
-		$rawOutput = $true
+		foreach($rawCommand in $rawCommands)
+		{
+			if($Arguments.Length -ge $rawCommand.Length)
+			{
+				$index = 0
+				$allMatch = $true
+				foreach($command in $rawCommand)
+				{
+					if($Arguments[$index++] -ne $command)
+					{
+						$allMatch = $false
+					}
+				}
+				if($allMatch)
+				{
+					$rawOutput = $true
+					break
+				}
+			}
+		}
 	}
 
 	if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")

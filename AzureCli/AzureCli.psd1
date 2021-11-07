@@ -111,6 +111,7 @@
 2.3.0
 
 - Added MIT license.
+- Process 'bicep upgrade' as raw command.
 - Rewrote / restructured tests. Use Module name in mocks where applicable.
 - Wrote better tests to test argument completers.
 - Escape subscription name in calling az in resource argument completer.

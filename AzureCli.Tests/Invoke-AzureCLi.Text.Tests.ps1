@@ -46,9 +46,11 @@ Describe "Invoke-AzCli with commands that produce text" {
 		@{ parameters = @( "help" ); expected = ' "help"' }
 		@{ parameters = @( "vm", "--help" ); expected = ' "vm" "--help"' }
 		@{ parameters = @( "--output", "json" ); expected = ' "--output" "json"' }
+		@{ parameters = @( "vm", "--output", "json" ); expected = ' "vm" "--output" "json"' }
 		@{ parameters = @( "--version" ); expected = ' "--version"' }
 		@{ parameters = @( "find" ); expected = ' "find"' }
 		@{ parameters = @( "upgrade" ); expected = ' "upgrade"' }
+		@{ parameters = @( 'bicep', "upgrade" ); expected = ' "bicep" "upgrade"' }
 		@{ parameters = @( "interactive" ); expected = ' "interactive"' }
 		@{ parameters = @( "feedback" ); expected = ' "feedback"' }
 		@{ parameters = @( "configure" ); expected = ' "configure"' }
