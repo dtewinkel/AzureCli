@@ -1,7 +1,6 @@
 ﻿mode: ContinuousDeployment
 assembly-versioning-scheme: Major
 continuous-delivery-fallback-tag: ''
-next-version: 2.3.1
 branches:
   master:
-    increment: Minor
+    increment: minor
