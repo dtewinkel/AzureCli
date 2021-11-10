@@ -27,4 +27,4 @@
 	return $results
 }
 
-Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $function:ArgumentCompelterResourceGroup
+Register-ArgumentCompleter -CommandName Invoke-AzCli -ParameterName ResourceGroup -ScriptBlock $function:ArgumentCompleterResourceGroup

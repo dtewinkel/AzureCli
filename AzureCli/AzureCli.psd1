@@ -108,6 +108,10 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.3.2
+
+- Fixed issues with argument completion on -Subscription and -ResourceGroup.
+
 2.3.1
 
 - Fixed issue with loading the module on case-sensitive file-systems.
