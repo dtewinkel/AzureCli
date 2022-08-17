@@ -23,7 +23,7 @@
 	CompanyName       = 'Daniël te Winkel'
 
 	# Copyright statement for this module
-	Copyright         = 'Copyright © 2021, Daniël te Winkel. All rights reserved.'
+	Copyright         = 'Copyright © 2022, Daniël te Winkel. All rights reserved.'
 
 	# Description of the functionality provided by this module
 	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
@@ -108,6 +108,13 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.4.0
+
+- Add -ConcatenatedArguments to add arguments in the form <--param>=<value>. This is mainly required if value starts
+  with a - and would otherwise be iterpreted as an argument and not a value. For instance '--password "-123"' fails,
+  where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments paramter will be masked in
+	verbose output if they are of type SecureString.
+
 2.3.1
 
 - Fixed issue with loading the module on case-sensitive file-systems.

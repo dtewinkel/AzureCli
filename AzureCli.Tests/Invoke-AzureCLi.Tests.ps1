@@ -67,10 +67,26 @@ Describe "Invoke-AzCli general handling" {
 		$secureString = ConvertTo-SecureString -AsPlainText $plainText
 
 		Invoke-AzCli something --password $secureString -Verbose
-		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainTExt}`"") } -ModuleName 'AzureCli'
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainText}`"") } -ModuleName 'AzureCli'
 		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--password" ******** "--verbose"]' } -ModuleName 'AzureCli'
 	}
 
+	It "Adds -ConcatenatedArguments" {
+
+		Invoke-AzCli something -ConcatenatedArguments @{ '--arg' = 1 } -Verbose
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--arg=1`"") } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--arg=1" "--verbose"]' } -ModuleName 'AzureCli'
+	}
+
+	It "Mask a SecureString in the verbose output for -ConcatenatedArguments" {
+
+		$plainText = "PlainTextSecret"
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText
+
+		Invoke-AzCli something -ConcatenatedArguments @{ '--password' =  $secureString } -Verbose
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password=${plainText}`"") } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--password=********" "--verbose"]' } -ModuleName 'AzureCli'
+	}
 
 	It "Sets the SuppressCliWarnings parameter" {
 

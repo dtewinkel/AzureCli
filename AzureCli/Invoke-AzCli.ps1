@@ -210,6 +210,9 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		[ValidateSet("NoWarnings", "Default", "Verbose", "Debug")]
 		[string] $CliVerbosity = $AzCliVerbosityPreference,
 
+		[Parameter()]
+		[hashtable] $ConcatenatedArguments = @{},
+
 		[Parameter(ValueFromRemainingArguments)]
 		[object[]] $Arguments
 	)
@@ -221,7 +224,11 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 	$additionalArguments += HandleSubscription -Subscription $Subscription -Arguments $Arguments
 	$additionalArguments += HandleResourceGroup -ResourceGroup $ResourceGroup -Arguments $Arguments
 	$additionalArguments += HandleQuery -Query $Query -Arguments $Arguments
-	$commandLine, $verboseCommandLine = ProcessArguments -Arguments ($Arguments + $additionalArguments) -EscapeHandling $EscapeHandling
+	$commandLine1, $verboseCommandLine1 = ProcessArguments -Arguments $Arguments -EscapeHandling $EscapeHandling
+	$commandLine2, $verboseCommandLine2 = ProcessArguments -Arguments @() -ConcatenatedArguments $ConcatenatedArguments -EscapeHandling $EscapeHandling
+	$commandLine3, $verboseCommandLine3 = ProcessArguments -Arguments $additionalArguments  -EscapeHandling $EscapeHandling
+	$commandLine = $commandLine1 + $commandLine2 + $commandLine3
+	$verboseCommandLine = $verboseCommandLine1 + $verboseCommandLine2 + $verboseCommandLine3
 	if(-not $rawOutput)
 	{
 		$jsonArguments = HandleJson -AsHashtable:$AsHashtable -NoEnumerate:$NoEnumerate

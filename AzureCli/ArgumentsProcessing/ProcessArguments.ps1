@@ -4,7 +4,10 @@ function ProcessArguments()
 	[CmdletBinding()]
 	param(
 		[Parameter()]
-		[object[]] $Arguments,
+		[object[]] $Arguments = @(),
+
+		[Parameter()]
+		[hashtable] $ConcatenatedArguments = @{},
 
 		[Parameter()]
 		[string] $EscapeHandling
@@ -31,6 +34,7 @@ function ProcessArguments()
 
 	$commandLineArguments = @()
 	$verboseCommandLineArguments = @()
+
 	foreach ($argument in $Arguments)
 	{
 		if ($argument -is [securestring])
@@ -43,6 +47,26 @@ function ProcessArguments()
 		{
 			$commandLineArguments += EscapeParameter $argument $EscapeHandling
 			$verboseCommandLineArguments += EscapeParameter $argument $EscapeHandling
+		}
+	}
+
+	foreach ($argument in $ConcatenatedArguments.GetEnumerator())
+	{
+		$argumentName = $argument.Key
+		$argumentValue = $argument.Value
+		if ($argumentValue -is [securestring])
+		{
+			$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue -AsPlainText)"
+
+			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
+			Write-Verbose "${argumentName}=${secretsMask}"
+			$verboseCommandLineArguments += EscapeParameter "${argumentName}=${secretsMask}" $EscapeHandling
+		}
+		else
+		{
+			$commandLineArgument = EscapeParameter "${argumentName}=${argumentValue}" $EscapeHandling
+			$commandLineArguments += $commandLineArgument
+			$verboseCommandLineArguments += $commandLineArgument
 		}
 	}
 
