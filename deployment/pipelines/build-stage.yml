@@ -33,7 +33,10 @@
       displayName: Build AzureCli module
       inputs:
         filePath: deployment/pipelines/scripts/Build.ps1
-        arguments: -GitVersionJson $(GitVersion)
+        arguments: >-
+          -CommitDate $(GitVersion.CommitDate)
+          -MajorMinorPatch $(GitVersion.MajorMinorPatch)
+          -NuGetPreReleaseTagV2 $(GitVersion.NuGetPreReleaseTagV2)
         pwsh: true
 
     - task: PowerShell@2
