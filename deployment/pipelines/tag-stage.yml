@@ -13,4 +13,4 @@ stages:
       inputs:
         githubEndpoint: $(GitHubEndpoint)
         repositoryName: $(Build.Repository.Name)
-        tag: v$(Build.BuildNumber)
+        tag: $(Build.BuildNumber)
