@@ -250,6 +250,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 			$hostInfo.ui.rawui.BackgroundColor = $BackgroundColor
 		}
 	}
+
 	if ($hadError)
 	{
 		if ($null -ne $result)

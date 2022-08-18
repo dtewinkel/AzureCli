@@ -18,7 +18,7 @@
 			$name = "'${name}'"
 		}
 		$id = $account.id
-		if ($name -like "${wordToComplete}*")
+		if ($plainName -like "${wordToComplete}*")
 		{
 			$description = "Subscription with name '${plainName}' (ID = '${id}')."
 			$names += [System.Management.Automation.CompletionResult]::new($name, $plainName, "ParameterValue", $description)

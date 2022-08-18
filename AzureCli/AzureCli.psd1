@@ -115,6 +115,10 @@
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
 	verbose output if they are of type SecureString.
 
+	2.3.2
+
+	- Fixed issues with argument completion on -Subscription and -ResourceGroup.
+
 2.3.1
 
 - Fixed issue with loading the module on case-sensitive file-systems.
