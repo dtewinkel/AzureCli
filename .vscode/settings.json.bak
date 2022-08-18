@@ -15,7 +15,10 @@
 			"Coverage.Pester.xml"
 	],
 
-    "[plaintext][powershell]": {
+    "[plaintext]": {
         "editor.rulers": [80, 120]
     },
+    "[powershell]": {
+        "editor.rulers": [80, 120]
+    }
 }
