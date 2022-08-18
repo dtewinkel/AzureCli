@@ -21,4 +21,13 @@
     "files.associations": {
         "*.yaml": "home-assistant"
     },
+    "cSpell.enableFiletypes": [
+        "powershell"
+    ],
+    "cSpell.words": [
+        "Daniël",
+        "hashtable",
+        "Winkel",
+        "yamlc"
+    ],
 }

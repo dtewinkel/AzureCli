@@ -71,7 +71,7 @@ No verbosity from the Azure CLI.
 Invoke-AzCli storage account list -Query '[].{ name: name }' -NoEnumerate -AsHashtable
 
 List all storage accounts in the current subscription.
-Query to get only the name in an object per sttorage account.
+Query to get only the name in an object per storage account.
 Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 
 #>
@@ -91,7 +91,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		Adds the --resource-group parameter. Specify the name of the resource group.
 
 		The -ResourceGroup parameter supports argument completion, with the resource groups available in to the currently
-		selescted subscription in the current session, or the resource groups available in the subscription that is selected
+		selected subscription in the current session, or the resource groups available in the subscription that is selected
 		 with -Subscription.
 		#>
 		[Parameter()]
@@ -106,7 +106,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		[string] $Query,
 
 		<#
-		Defines how the double quoute (") and backslash (\) for the command-line parameters are escaped before sending them
+		Defines how the double quote (") and backslash (\) for the command-line parameters are escaped before sending them
 		to the Azure CLI. Th following values are valid:
 
 		- Never: Do not escape " or \. Any escaping must be done by the caller. This is the default value.
@@ -186,7 +186,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 
 		<#
 		Add each item in the hashtable as an argument in the form <name>=<value>. This is mainly required if value starts
-		with a - and would otherwise be iterpreted as an argument and not a value. For instance '--password "-123"' fails,
+		with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
 		where '--password=-123' succeeds.
 		The values in the hash table of -ConcatenatedArguments parameter will be masked in verbose output if they are of
 		type SecureString.
@@ -197,7 +197,8 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		<#
 		Deprecated. Please use '-CliVerbosity NoWarnings' instead.
 
-		Suppress warnings from the result of calling the Azure CLI. This is passed on as '--only-show-errors' to the Azure CLI.
+		Suppress warnings from the result of calling the Azure CLI. This is passed on as '--only-show-errors' to the
+		Azure CLI.
 		#>
 		[Parameter()]
 		[Switch] $SuppressCliWarnings,
