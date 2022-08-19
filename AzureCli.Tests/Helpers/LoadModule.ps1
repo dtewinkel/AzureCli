@@ -8,7 +8,7 @@ param (
 $modulePath = (Resolve-Path (Join-Path $ModuleFolder '..')).Path
 if(-not ($env:PSModulePath.Contains($modulePath)))
 {
-	$env:PSModulePath = $modulePath + ";" + $env:PSModulePath
+	$env:PSModulePath = $modulePath + [IO.Path]::PathSeparator + $env:PSModulePath
 }
 
 Remove-Module AzureCli -Force -ErrorAction SilentlyContinue
