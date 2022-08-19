@@ -6,7 +6,7 @@ stages:
   - job: tag_build
     displayName: Tag Sources
     pool:
-      vmImage: windows-latest
+      vmImage: ubuntu-latest
     steps:
 
     - task: GitHubTag@1

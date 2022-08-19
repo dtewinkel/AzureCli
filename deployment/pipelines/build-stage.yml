@@ -12,7 +12,7 @@
       Pester.TestOutput: $(System.DefaultWorkingDirectory)/TestResults.Pester.xml
       Pester.CoverageOutput: $(System.DefaultWorkingDirectory)/Coverage.Pester.xml
     pool:
-      vmImage: ubuntu-latest
+      vmImage: macos-latest
     steps:
 
     - task: gitversion/setup@0
