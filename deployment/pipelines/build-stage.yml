@@ -90,4 +90,4 @@
     - publish: $(Repository.ArtifactPath)
       artifact: $(Repository.ArtifactName)
       displayName: Publish $(Repository.ArtifactName) Artifact
-      condition: and(succeeded(), eq(variables['publish'], true)
+      condition: and(succeeded(), eq(variables['publish'], true))
