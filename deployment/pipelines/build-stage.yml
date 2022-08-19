@@ -5,19 +5,19 @@
 
   - job: run_build
     strategy:
-    matrix:
-      ubuntu:
-        os: ubuntu
-        pool: ubuntu-latest
-        publish: yes
-      windows:
-        os: windows
-        pool: windows-latest
-        publish: no
-      macos:
-        os: macos
-        pool: macos-latest
-        publish: no
+      matrix:
+        ubuntu:
+          os: ubuntu
+          pool: ubuntu-latest
+          publish: yes
+        windows:
+          os: windows
+          pool: windows-latest
+          publish: no
+        macos:
+          os: macos
+          pool: macos-latest
+          publish: no
     displayName: Build, publish AzureCli Module
     variables:
       Modules.Path: Modules
