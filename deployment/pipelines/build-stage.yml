@@ -9,15 +9,15 @@
         ubuntu:
           os: ubuntu
           pool: ubuntu-latest
-          publish: yes
+          publish: true
         windows:
           os: windows
           pool: windows-latest
-          publish: no
+          publish: false
         macos:
           os: macos
           pool: macos-latest
-          publish: no
+          publish: false
     displayName: Build, publish AzureCli Module
     variables:
       Modules.Path: Modules
