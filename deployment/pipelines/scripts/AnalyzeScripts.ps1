@@ -7,7 +7,7 @@ param(
 )
 
 $modulesFolder = Join-Path $RootPath Modules
-$moduleFolder = Join-Path $modulesFolder AzureCLi
+$moduleFolder = Join-Path $modulesFolder AzureCli
 $testFolder = Join-Path $RootPath AzureCli.Tests
 
 Invoke-ScriptAnalyzer (Join-Path -Path $moduleFolder -ChildPath *.ps1)
