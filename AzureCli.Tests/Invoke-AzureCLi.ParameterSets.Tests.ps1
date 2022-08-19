@@ -2,7 +2,7 @@
 param (
 	[Parameter()]
 	[string]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCli')).Path
 )
 
 Describe "Invoke-AzCli with Interactive commands" {
