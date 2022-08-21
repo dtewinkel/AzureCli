@@ -30,10 +30,6 @@ Describe "Invoke-AzCli general handling" {
 		{
 			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
 		}
-		else
-		{
-			Clear-Variable AzCliVerbosityPreference -Scope Global
-		}
 	}
 
 	It "throw an exception if az is not found" {

@@ -26,10 +26,6 @@ Describe "Invoke-AzCli with Interactive commands" {
 		{
 			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
 		}
-		else
-		{
-			Clear-Variable AzCliVerbosityPreference -Scope Global
-		}
 	}
 
 	$combinations = @(
