@@ -117,6 +117,7 @@
 - Run build and test on Windows, Ubuntu and MacOS.
 - Improve portability of build and tests.
 - Rename branch master to main.
+- Restrict release notes to versions 2.x.x.
 
 2.3.2
 
@@ -160,42 +161,6 @@
 - Added parameter sets, to make clear which parameters can be used together. This may break existing scripts that use
   parameters together that are not allowed together anymore.
 - Improved test coverage.
-
-1.3.0
-
-- Improved error handling. Now throws on error.
-- Improved locality of restoring color output. Only restore it if we process the Azure CLI output.
-
-1.2.0
-
-- Improved passing of parameters to az command line, preventing interpretation of parameters by PowerShell.
-- Support more text output or interactive commands:
-  - interactive.
-  - feedback.
-  - version.
-  - upgrade.
-- provide message where to install Azure CLI from if az command is not found.
-
-1.1.0
-
-- Support raw output for a number of specific command groups and parameters:
-  - Support --version.
-  - Support find.
-  - Support help.
-- Better handle raw output for --output, -o, help and a number of other parameters.
-
-1.0.2
-
-- Fixed restoring color output in some error scenarios.
-
-1.0.1
-
-- Don't change directory to module path on invocation.
-- Improve source project documentation.
-
-1.0.0
-
-- Initial version of this module providing Invoke-AzCli and alias iaz.
 '@
 
 			# Prerelease string of this module
