@@ -110,7 +110,7 @@
 			ReleaseNotes = @'
 2.4.0
 
-- Add -ConcatenatedArguments to add arguments in the form <name>=<value>. This is mainly required if value starts
+- Add -ConcatenatedArguments to add arguments in the form `--name=value`. This is mainly required if value starts
   with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
 	verbose output if they are of type SecureString.
