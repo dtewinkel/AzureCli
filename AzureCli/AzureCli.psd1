@@ -114,10 +114,13 @@
   with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
 	verbose output if they are of type SecureString.
+- Run build and test on Windows, Ubuntu and MacOS.
+- Improve portability of build and tests.
+- Rename branch master to main.
 
-	2.3.2
+2.3.2
 
-	- Fixed issues with argument completion on -Subscription and -ResourceGroup.
+- Fixed issues with argument completion on -Subscription and -ResourceGroup.
 
 2.3.1
 
