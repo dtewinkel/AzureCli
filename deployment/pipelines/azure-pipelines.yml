@@ -21,7 +21,7 @@ stages:
 
 - template: publish-stage.yml
   parameters:
-    Condition: and( succeeded(), or( eq(variables['Build.SourceBranch'], 'refs/heads/master'), in( variables['Build.Reason'], 'Manual', 'Schedule' ) ) )
+    Condition: and( succeeded(), or( eq(variables['Build.SourceBranch'], 'refs/heads/main'), in( variables['Build.Reason'], 'Manual', 'Schedule' ) ) )
     RepositoryConnection: PsGallery
     StageName: publish_psgallery
 
