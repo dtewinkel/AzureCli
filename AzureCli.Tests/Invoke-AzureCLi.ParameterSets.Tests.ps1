@@ -9,8 +9,11 @@ Describe "Invoke-AzCli with Interactive commands" {
 
 	BeforeAll {
 
-		$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
-		Clear-Variable AzCliVerbosityPreference -Scope Global
+		if($AzCliVerbosityPreference)
+		{
+			$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+			Clear-Variable AzCliVerbosityPreference -Scope Global
+		}
 
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
