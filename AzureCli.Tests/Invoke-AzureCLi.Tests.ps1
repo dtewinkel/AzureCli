@@ -12,11 +12,25 @@ Describe "Invoke-AzCli general handling" {
 
 	BeforeAll {
 
+		$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+		Clear-Variable AzCliVerbosityPreference -Scope Global
+
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az { $jsonText } -ModuleName 'AzureCli'
 		Mock Write-Verbose -ModuleName 'AzureCli'
 		Mock Write-Warning -ModuleName 'AzureCli'
+	}
+
+	AfterAll {
+		if ($OriginalAzCliVerbosityPreference)
+		{
+			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
+		}
+		else
+		{
+			Clear-Variable AzCliVerbosityPreference -Scope Global
+		}
 	}
 
 	It "throw an exception if az is not found" {

@@ -9,10 +9,24 @@ Describe "Invoke-AzCli with Interactive commands" {
 
 	BeforeAll {
 
+		$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+		Clear-Variable AzCliVerbosityPreference -Scope Global
+
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az -ModuleName 'AzureCli'
 		Mock Write-Warning -ModuleName 'AzureCli'
+	}
+
+	AfterAll {
+		if ($OriginalAzCliVerbosityPreference)
+		{
+			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
+		}
+		else
+		{
+			Clear-Variable AzCliVerbosityPreference -Scope Global
+		}
 	}
 
 	$combinations = @(
