@@ -39,6 +39,8 @@ Allows to set most of the common or often used Azure CLI parameters through Powe
 
 In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
 
+For full help, run `Get-Help Invoke-AzureCli -Full`.
+
 ### iaz
 
 `iaz` is the alias to `Invoke-AzCli`.

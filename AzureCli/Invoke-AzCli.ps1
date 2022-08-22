@@ -65,7 +65,6 @@ List all storage accounts in the current subscription.
 Print the arguments that are sent to the Azure CLI.
 No verbosity from the Azure CLI.
 
-
 .EXAMPLE
 
 Invoke-AzCli storage account list -Query '[].{ name: name }' -NoEnumerate -AsHashtable
@@ -73,6 +72,13 @@ Invoke-AzCli storage account list -Query '[].{ name: name }' -NoEnumerate -AsHas
 List all storage accounts in the current subscription.
 Query to get only the name in an object per storage account.
 Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
+
+.EXAMPLE
+
+Invoke-AzCli ad user update --id user@domain -ConcatenatedArguments @{ '--password' = '-secret123' }
+
+Set the password for user `user@domain`. Because the password start wit a `-`,
+use -ConcatenatedArguments to be able to pass it to the Azure CLI.
 
 #>
 
