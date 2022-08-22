@@ -4,7 +4,8 @@
 
 .SYNOPSIS
 
-Invoke the Azure CLI from PowerShell, converting output to PowerShell custom objects and providing better error handling.
+Invoke the Azure CLI from PowerShell, converting output to PowerShell custom objects and providing better error
+handling.
 
 .DESCRIPTION
 
@@ -77,8 +78,8 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 
 Invoke-AzCli ad user update --id user@domain -ConcatenatedArguments @{ '--password' = '-secret123' }
 
-Set the password for user `user@domain`. Because the password start wit a `-`,
-use -ConcatenatedArguments to be able to pass it to the Azure CLI.
+Set the password for user 'user@domain'. Because the password starts with a '-', use -ConcatenatedArguments to be able
+to pass it to the Azure CLI.
 
 #>
 
@@ -135,9 +136,9 @@ use -ConcatenatedArguments to be able to pass it to the Azure CLI.
 		Converts the output to a HashTable instead of to a PSCustomObject. This is useful in certain scenarios:
 
 		- If the JSON contains a list with keys that only differ in casing. Without the switch, those keys would be seen as
-			identical keys and therefore only the last one would get used.
+		  identical keys and therefore only the last one would get used.
 		- If the JSON contains a key that is an empty string. Without the switch, the cmdlet would throw an error since a
-			PSCustomObject does not allow for that but a hash table does.
+		  PSCustomObject does not allow for that but a hash table does.
 		- Hash tables can be processed faster for certain data structures.
 
 		This switch will can only be used in PowerShell 6.0 or newer.
