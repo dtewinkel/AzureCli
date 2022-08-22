@@ -1,6 +1,6 @@
 # AzureCli
 
-Get it from the PowerShell gallery: [AzureCli](https://www.powershellgallery.com/packages/AzureCli):
+Get it from PowerShell gallery [AzureCli](https://www.powershellgallery.com/packages/AzureCli):
 
 ```powershell
 Install-Module -Name AzureCli
