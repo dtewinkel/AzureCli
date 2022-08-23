@@ -11,16 +11,16 @@ handling.
 
 Invoke the Azure CLI from PowerShell.
 
-Unless specified otherwise, converts the output from JSON to a custom object (PSCustomObject). This make further
-processing the output in PowerShell much easier.
+Unless specified otherwise, converts the output from JSON to a custom object (PSCustomObject). This makes further
+processing of the output in PowerShell much easier.
 
-Provides better error handling, so that script fails more easily if the Azure CLI fails.
+It provides better error handling, so that a script fails more easily if the Azure CLI fails.
 
 In some scenarios the Azure CLI changes console output colors, but does not change them back to what they were. This may
 happen for errors, verbose output, and in some other cases. Invoke-AzCli fixes the console colors back to what they were
 before calling Azure CLI.
 
-Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
+It allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
   - -Output for --output. Setting -Output, --output, or -Raw stops Invoke-AzCli from converting the output of Azure CLI
      to custom objects.
   - -Help for --help.
