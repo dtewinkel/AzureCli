@@ -3,30 +3,29 @@
 #
 
 @{
-
 	# Script module or binary module file associated with this manifest.
-	RootModule        = 'AzureCli.psm1'
+	RootModule           = 'AzureCli.psm1'
 
 	# Version number of this module.
-	ModuleVersion     = '0.0.1'
+	ModuleVersion        = '0.0.1'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
 
 	# ID used to uniquely identify this module
-	GUID              = 'dbe3fe96-136f-4fcb-b265-cd3b778d89b0'
+	GUID                 = 'dbe3fe96-136f-4fcb-b265-cd3b778d89b0'
 
 	# Author of this module
-	Author            = 'Daniël te Winkel'
+	Author               = 'Daniël te Winkel'
 
 	# Company or vendor of this module
-	CompanyName       = 'Daniël te Winkel'
+	CompanyName          = 'Daniël te Winkel'
 
 	# Copyright statement for this module
-	Copyright         = 'Copyright © 2022, Daniël te Winkel. All rights reserved.'
+	Copyright            = 'Copyright © 2022, Daniël te Winkel. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
+	Description          = 'Cmdlet and alias to make the use of Azure CLI more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
 	# PowerShellVersion = '6.0'
@@ -39,6 +38,9 @@
 
 	# Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 	# DotNetFrameworkVersion = ''
+
+	# Supported PSEditions
+	CompatiblePSEditions = 'Core'
 
 	# Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 	# ClrVersion = ''
@@ -62,21 +64,21 @@
 	# FormatsToProcess = @()
 
 	# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-	NestedModules     = @()
+	NestedModules        = @()
 
 	# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-	FunctionsToExport = @(
+	FunctionsToExport    = @(
 		'Invoke-AzCli'
-		)
+	)
 
 	# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-	CmdletsToExport   = @()
+	CmdletsToExport      = @()
 
 	# Variables to export from this module
 	# VariablesToExport = @()
 
 	# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-	AliasesToExport   = @(
+	AliasesToExport      = @(
 		'iaz'
 	)
 
@@ -90,15 +92,15 @@
 	# FileList = @()
 
 	# Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-	PrivateData       = @{
+	PrivateData          = @{
 
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'az', 'cli', 'Azure'
+			Tags         = 'az', 'cli', 'Azure', 'AzureCli', 'Windows', 'Linux', 'Mac', 'PSEdition_Core'
 
 			# A URL to the license for this module.
-			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/main/AzureCli/license.txt'
+			LicenseUri   = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/main/AzureCli/license.txt'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
@@ -183,4 +185,3 @@
 	# DefaultCommandPrefix = ''
 
 }
-
