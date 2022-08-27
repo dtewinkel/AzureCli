@@ -28,7 +28,7 @@
 	Description          = 'Cmdlet and alias to make the use of Azure CLI more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
-	# PowerShellVersion = '6.0'
+	PowerShellVersion = '6.1.0'
 
 	# Name of the PowerShell host required by this module
 	# PowerShellHostName = ''
@@ -117,6 +117,8 @@
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
 	verbose output if they are of type SecureString.
 - Run build and test on Windows, Ubuntu and MacOS.
+- Be honest on support for supported PowerShell versions: PS core >= 6.1.0.
+- Correctly mention support for -NoEnumerate for PowerShell >= 7.0.0.
 - Improve portability of build and tests.
 - Rename branch master to main.
 - Restrict release notes to versions 2.x.x.

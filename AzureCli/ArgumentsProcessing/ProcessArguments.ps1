@@ -14,6 +14,11 @@ function ProcessArguments()
 	)
 
 	$secretsMask = "********"
+	$convertFromSecureStringCompatibleArguments = @{ AsPlainText = $true }
+	if($PSVersionTable.PSVersion.Major -lt 7)
+	{
+		$convertFromSecureStringCompatibleArguments = @{}
+	}
 
 	function EscapeParameter($Argument, $escapeHandling)
 	{
@@ -39,7 +44,7 @@ function ProcessArguments()
 	{
 		if ($argument -is [securestring])
 		{
-			$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
+			$plainArgument = ConvertFrom-SecureString $argument @convertFromSecureStringCompatibleArguments
 			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
 			$verboseCommandLineArguments += $secretsMask
 		}
@@ -56,7 +61,7 @@ function ProcessArguments()
 		$argumentValue = $argument.Value
 		if ($argumentValue -is [securestring])
 		{
-			$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue -AsPlainText)"
+			$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue @convertFromSecureStringCompatibleArguments)"
 
 			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
 			Write-Verbose "${argumentName}=${secretsMask}"

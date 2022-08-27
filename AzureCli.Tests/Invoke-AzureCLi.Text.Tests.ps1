@@ -11,7 +11,7 @@ Describe "Invoke-AzCli with commands that produce text" {
 		function az { $args }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az { "raw parameters: " + ($args -join " ") } -ModuleName 'AzureCli'
-		Mock ConvertFrom-Json {} -ModuleName 'AzureCli'
+		Mock ConvertFrom-Json {} -ModuleName 'AzureCli' -RemoveParameterValidation 'Depth'
 	}
 
 	It "Returns the raw data for no parameters" {

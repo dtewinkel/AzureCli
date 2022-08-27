@@ -18,6 +18,12 @@ Describe "Invoke-AzCli general handling" {
 			Clear-Variable AzCliVerbosityPreference -Scope Global
 		}
 
+		$convertToSecureStringCompatibleArguments = @{}
+		if($PSVersionTable.PSVersion.Major -lt 7)
+		{
+			$convertToSecureStringCompatibleArguments += @{ Force = $true }
+		}
+
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az { $jsonText } -ModuleName 'AzureCli'
@@ -77,7 +83,7 @@ Describe "Invoke-AzCli general handling" {
 	It "Mask a SecureString in the verbose output" {
 
 		$plainText = "PlainTextSecret"
-		$secureString = ConvertTo-SecureString -AsPlainText $plainText
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertFromSecureStringCompatibleArguments
 
 		Invoke-AzCli something --password $secureString -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainText}`"") } -ModuleName 'AzureCli'
@@ -94,7 +100,7 @@ Describe "Invoke-AzCli general handling" {
 	It "Mask a SecureString in the verbose output for -ConcatenatedArguments" {
 
 		$plainText = "PlainTextSecret"
-		$secureString = ConvertTo-SecureString -AsPlainText $plainText
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertFromSecureStringCompatibleArguments
 
 		Invoke-AzCli something -ConcatenatedArguments @{ '--password' =  $secureString } -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password=${plainText}`"") } -ModuleName 'AzureCli'

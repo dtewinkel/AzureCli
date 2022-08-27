@@ -140,8 +140,6 @@ to pass it to the Azure CLI.
 		- If the JSON contains a key that is an empty string. Without the switch, the cmdlet would throw an error since a
 		  PSCustomObject does not allow for that but a hash table does.
 		- Hash tables can be processed faster for certain data structures.
-
-		This switch will can only be used in PowerShell 6.0 or newer.
 		#>
 		[Parameter(ParameterSetName = 'ObjectOutput')]
 		[Switch] $AsHashtable,
@@ -149,6 +147,8 @@ to pass it to the Azure CLI.
 		<#
 		Specifies that output is not enumerated. Setting this parameter causes arrays to be sent as a single object instead
 		of sending every element separately. This guarantees that JSON can be round-tripped via ConvertTo-Json.
+
+		This switch will can only be used in PowerShell 7.0.0 or newer.
 		#>
 		[Parameter(ParameterSetName = 'ObjectOutput')]
 		[Switch] $NoEnumerate,
