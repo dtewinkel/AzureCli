@@ -2,3 +2,4 @@
 assembly-versioning-scheme: Major
 continuous-delivery-fallback-tag: ''
 increment: Minor
+next-version: 2.4.0
