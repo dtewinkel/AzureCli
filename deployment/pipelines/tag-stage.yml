@@ -1,16 +1,16 @@
 stages:
 - stage: tag
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Tag Sources after Release
   jobs:
   - job: tag_build
     displayName: Tag Sources
     pool:
-      vmImage: windows-latest
+      vmImage: ubuntu-latest
     steps:
 
     - task: GitHubTag@1
       inputs:
         githubEndpoint: $(GitHubEndpoint)
         repositoryName: $(Build.Repository.Name)
-        tag: v$(Build.BuildNumber)
+        tag: $(Build.BuildNumber)

@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param (
 	[Parameter()]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCli')).Path
 )
 
 Describe "Invoke-AzCli With Object Output" {
@@ -13,8 +13,15 @@ Describe "Invoke-AzCli With Object Output" {
 		function az {}
 
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
+
 		Mock az { $jsonText } -ModuleName 'AzureCli'
-		Mock ConvertFrom-Json { $convertedObject } -ModuleName 'AzureCli'
+
+		$additionalArguments = @{}
+		if ($PSVersionTable.PSVersion.Major -lt 7)
+		{
+			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }
+		}
+		Mock ConvertFrom-Json { $convertedObject } @additionalArguments -ModuleName 'AzureCli'
 	}
 
 	It "Returns the parsed data from az" {
@@ -34,7 +41,7 @@ Describe "Invoke-AzCli With Object Output" {
 		Should -Invoke az -Exactly 1 -ModuleName 'AzureCli'
 	}
 
-	It "Passes -NoEnumerate to ConvertFrom-Json" {
+	It "Passes -NoEnumerate to ConvertFrom-Json" -Skip:($PSVersionTable.PSVersion.Major -lt 7) {
 
 		Invoke-AzCli one two three -NoEnumerate
 

@@ -4,7 +4,13 @@ param(
 	[String] $RootPath = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', '..')),
 
 	[Parameter()]
-	$GitVersionJson,
+	$CommitDate = [DateTime]::Today.ToString("yyyy-MM-dd"),
+
+	[Parameter()]
+	$MajorMinorPatch ="0.0.1",
+
+	[Parameter()]
+	$NuGetPreReleaseTagV2 = "local-build",
 
 	[Parameter()]
 	[Switch] $CleanupRepository
@@ -18,19 +24,6 @@ $repositoryName = "Local${moduleName}Repo"
 $sourcePath = Join-Path $RootPath $moduleName
 $moduleRootPath = Join-Path $RootPath "Modules"
 $repositoryPath = Join-Path $RootPath "Repositories" $repositoryName
-
-if($GitVersionJson)
-{
-	$Gitversion = $GitVersionJson | ConvertFrom-Json
-}
-else
-{
-	$Gitversion = [PSCustomObject]@{
-		CommitDate = [DateTime]::Today.ToString("yyyy-MM-dd")
-		MajorMinorPatch = "0.0.1"
-		NuGetPreReleaseTagV2 = "local-build"
-	}
-}
 
 try
 {
@@ -62,20 +55,20 @@ try
 
 	$moduleData = Join-Path $modulePath "${moduleName}.psd1"
 
-	$version = $Gitversion.MajorMinorPatch
+	$version = $MajorMinorPatch
 	$nugetPath = (join-Path $repositoryPath "${moduleName}.${version}.nupkg")
-	$year = ([DateTime]($GitVersion.CommitDate)).Year
+	$year = ([DateTime]($CommitDate)).Year
 	$copyright = "Copyright © ${year}, ${companyName}. All rights reserved."
 	$updateParameters = @{
 		Path = $moduleData
-		ModuleVersion = $GitVersion.MajorMinorPatch
+		ModuleVersion = $MajorMinorPatch
 		Copyright = $copyright
 		Author = $author
 		CompanyName = $companyName
 	}
-	if($GitVersion.NuGetPreReleaseTagV2 -ne "")
+	if($NuGetPreReleaseTagV2 -ne "")
 	{
-		$preReleaseTag = $GitVersion.NuGetPreReleaseTagV2 -replace '[^a-zA-Z0-9]', ''
+		$preReleaseTag = $NuGetPreReleaseTagV2 -replace '[^a-zA-Z0-9]', ''
 		$updateParameters.Add("Prerelease", $preReleaseTag)
 		$nugetPath = (join-Path $repositoryPath "${moduleName}.${version}-${preReleaseTag}.nupkg")
 	}

@@ -4,7 +4,10 @@ function ProcessArguments()
 	[CmdletBinding()]
 	param(
 		[Parameter()]
-		[object[]] $Arguments,
+		[object[]] $Arguments = @(),
+
+		[Parameter()]
+		[hashtable] $ConcatenatedArguments = @{},
 
 		[Parameter()]
 		[string] $EscapeHandling
@@ -31,11 +34,19 @@ function ProcessArguments()
 
 	$commandLineArguments = @()
 	$verboseCommandLineArguments = @()
+
 	foreach ($argument in $Arguments)
 	{
 		if ($argument -is [securestring])
 		{
-			$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
+			if($PSVersionTable.PSVersion.Major -lt 7)
+			{
+				$plainArgument = [System.Net.NetworkCredential]::new("", $argument).Password
+			}
+			else
+			{
+				$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
+			}
 			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
 			$verboseCommandLineArguments += $secretsMask
 		}
@@ -43,6 +54,32 @@ function ProcessArguments()
 		{
 			$commandLineArguments += EscapeParameter $argument $EscapeHandling
 			$verboseCommandLineArguments += EscapeParameter $argument $EscapeHandling
+		}
+	}
+
+	foreach ($argument in $ConcatenatedArguments.GetEnumerator())
+	{
+		$argumentName = $argument.Key
+		$argumentValue = $argument.Value
+		if ($argumentValue -is [securestring])
+		{
+			if($PSVersionTable.PSVersion.Major -lt 7)
+			{
+				$plainArgument = "${argumentName}=$([System.Net.NetworkCredential]::new('', $argumentValue).Password)"
+			}
+			else
+			{
+				$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue -AsPlainText)"
+			}
+
+			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
+			$verboseCommandLineArguments += EscapeParameter "${argumentName}=${secretsMask}" $EscapeHandling
+		}
+		else
+		{
+			$commandLineArgument = EscapeParameter "${argumentName}=${argumentValue}" $EscapeHandling
+			$commandLineArguments += $commandLineArgument
+			$verboseCommandLineArguments += $commandLineArgument
 		}
 	}
 

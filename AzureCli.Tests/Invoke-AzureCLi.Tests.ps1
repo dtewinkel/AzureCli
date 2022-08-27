@@ -3,20 +3,40 @@
 [CmdletBinding()]
 param (
 	[Parameter()]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCli')).Path
 )
 
 Describe "Invoke-AzCli general handling" {
 
-	$jsonText = '{ "IsAz": true }'
-
 	BeforeAll {
+
+		$jsonText = '{ "IsAz": true }'
+
+		$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
+
+		if($OriginalAzCliVerbosityPreference)
+		{
+			Clear-Variable AzCliVerbosityPreference -Scope Global
+		}
+
+		$convertToSecureStringCompatibleArguments = @{}
+		if($PSVersionTable.PSVersion.Major -lt 7)
+		{
+			$convertToSecureStringCompatibleArguments += @{ Force = $true }
+		}
 
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az { $jsonText } -ModuleName 'AzureCli'
 		Mock Write-Verbose -ModuleName 'AzureCli'
 		Mock Write-Warning -ModuleName 'AzureCli'
+	}
+
+	AfterAll {
+		if ($OriginalAzCliVerbosityPreference)
+		{
+			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
+		}
 	}
 
 	It "throw an exception if az is not found" {
@@ -64,13 +84,29 @@ Describe "Invoke-AzCli general handling" {
 	It "Mask a SecureString in the verbose output" {
 
 		$plainText = "PlainTextSecret"
-		$secureString = ConvertTo-SecureString -AsPlainText $plainText
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertToSecureStringCompatibleArguments
 
 		Invoke-AzCli something --password $secureString -Verbose
-		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainTExt}`"") } -ModuleName 'AzureCli'
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainText}`"") } -ModuleName 'AzureCli'
 		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--password" ******** "--verbose"]' } -ModuleName 'AzureCli'
 	}
 
+	It "Adds -ConcatenatedArguments" {
+
+		Invoke-AzCli something -ConcatenatedArguments @{ '--arg' = 1 } -Verbose
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--arg=1`"") } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--arg=1" "--verbose"]' } -ModuleName 'AzureCli'
+	}
+
+	It "Mask a SecureString in the verbose output for -ConcatenatedArguments" {
+
+		$plainText = "PlainTextSecret"
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertToSecureStringCompatibleArguments
+
+		Invoke-AzCli something -ConcatenatedArguments @{ '--password' =  $secureString } -Verbose
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password=${plainText}`"") } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "something" "--password=********" "--verbose"]' } -ModuleName 'AzureCli'
+	}
 
 	It "Sets the SuppressCliWarnings parameter" {
 
@@ -96,7 +132,8 @@ Describe "Invoke-AzCli general handling" {
 	Context "With `$AzCliVerbosityPreference set." {
 
 		BeforeAll {
-			$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+			$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
+
 			$global:AzCliVerbosityPreference = 'Default'
 		}
 

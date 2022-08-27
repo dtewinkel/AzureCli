@@ -1,6 +1,6 @@
 # AzureCli
 
-Get it from the PowerShell gallery: [AzureCli](https://www.powershellgallery.com/packages/AzureCli):
+Get it from PowerShell gallery [AzureCli](https://www.powershellgallery.com/packages/AzureCli):
 
 ```powershell
 Install-Module -Name AzureCli
@@ -8,7 +8,7 @@ Install-Module -Name AzureCli
 
 CmdLet to support invoking the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest) from PowerShell.
 
-Master branch: ![master Build Status](https://dev.azure.com/twia/AzureCli/_apis/build/status/AzureCli?branchName=master)
+Main branch: [![main Build Status](https://dev.azure.com/twia/AzureCli/_apis/build/status/AzureCli?branchName=main)](https://dev.azure.com/twia/AzureCli/_build/latest?definitionId=15&branchName=main)
 
 ## Introduction
 
@@ -20,9 +20,9 @@ This PowerShell module provide a CmdLet and an alias to call the Azure CLI tool 
 
 Invoke the Azure CLI (`az`) from PowerShell and make processing the output easier in PowerShell.
 
-Unless specified otherwise, converts the output from JSON to a custom object. This makes further processing the output in PowerShell much easier.
+Unless specified otherwise, converts the output from JSON to a custom object. This makes further processing of the output in PowerShell much easier.
 
-It provides better error handling, so that script fails if the Azure CLI fails.
+It provides better error handling, so that a script fails if the Azure CLI fails.
 
 In some scenarios the Azure CLI changes console output colors, but does not change them back to what they were. This may happen for errors, verbose output, and in some other cases. `Invoke-AzCli` fixes the console colors back to what they were before calling Azure CLI.
 
@@ -38,6 +38,8 @@ Allows to set most of the common or often used Azure CLI parameters through Powe
 - `-CliVerbosity Debug` for `--debug`.
 
 In most cases only the PowerShell or the Azure CLI version of a parameter can be used. Specifying both is an error.
+
+For full help, run `Get-Help Invoke-AzureCli -Full`.
 
 ### iaz
 

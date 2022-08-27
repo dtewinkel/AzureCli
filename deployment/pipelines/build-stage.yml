@@ -4,6 +4,20 @@
   jobs:
 
   - job: run_build
+    strategy:
+      matrix:
+        ubuntu:
+          os: ubuntu
+          pool: ubuntu-latest
+          publish: true
+        windows:
+          os: windows
+          pool: windows-latest
+          publish: false
+        macos:
+          os: macos
+          pool: macos-latest
+          publish: false
     displayName: Build, publish AzureCli Module
     variables:
       Modules.Path: Modules
@@ -12,7 +26,7 @@
       Pester.TestOutput: $(System.DefaultWorkingDirectory)/TestResults.Pester.xml
       Pester.CoverageOutput: $(System.DefaultWorkingDirectory)/Coverage.Pester.xml
     pool:
-      vmImage: windows-latest
+      vmImage: $(pool)
     steps:
 
     - task: gitversion/setup@0
@@ -33,7 +47,10 @@
       displayName: Build AzureCli module
       inputs:
         filePath: deployment/pipelines/scripts/Build.ps1
-        arguments: -GitVersionJson $(GitVersion)
+        arguments: >-
+          -CommitDate $(GitVersion.CommitDate)
+          -MajorMinorPatch $(GitVersion.MajorMinorPatch)
+          -NuGetPreReleaseTagV2 $(GitVersion.NuGetPreReleaseTagV2)
         pwsh: true
 
     - task: PowerShell@2
@@ -53,7 +70,7 @@
       inputs:
         testRunner: NUnit
         testResultsFiles: $(Pester.TestOutput)
-        testRunTitle: Pester Unit Tests
+        testRunTitle: Pester Unit Tests $(os)
         failTaskOnFailedTests: true
       displayName: Publish Pester Unit Test Results
       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
@@ -73,3 +90,4 @@
     - publish: $(Repository.ArtifactPath)
       artifact: $(Repository.ArtifactName)
       displayName: Publish $(Repository.ArtifactName) Artifact
+      condition: and(succeeded(), eq(variables.publish, 'true'))

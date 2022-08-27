@@ -13,4 +13,4 @@ $coverageOutput = Join-Path $testOutputFolder Coverage.Pester.xml
 
 $modulePaths = (Get-ChildItem "${modulesFolder}" -Directory -Recurse).FullName -join ';'
 & $reportGenerator "-targetdir:${testOutputFolder}" "-reports:${coverageOutput}" "-sourcedirs:${modulePaths}" -verbosity:warning
-Write-Host "Coverage report written to ${testOutputFolder}\index.htm"
+Write-Host "Coverage report written to ${testOutputFolder}/index.htm"

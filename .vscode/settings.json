@@ -11,14 +11,23 @@
     // disable gutters to make breakpoints usable
     "coverage-gutters.showGutterCoverage": false,
     "coverage-gutters.showLineCoverage": true,
-		"coverage-gutters.coverageFileNames": [
-			"Coverage.Pester.xml"
-	],
+    "coverage-gutters.coverageFileNames": [
+        "Coverage.Pester.xml"
+    ],
 
-    "[plaintext]": {
-        "editor.rulers": [120]
+    "[plaintext][powershell]": {
+        "editor.rulers": [80, 120]
     },
-    "[powershell]": {
-        "editor.rulers": [120]
-    }
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    },
+    "cSpell.enableFiletypes": [
+        "powershell"
+    ],
+    "cSpell.words": [
+        "Daniël",
+        "hashtable",
+        "Winkel",
+        "yamlc"
+    ],
 }

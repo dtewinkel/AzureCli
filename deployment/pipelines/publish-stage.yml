@@ -14,7 +14,7 @@ stages:
       displayName: Publish to ${{ parameters.RepositoryConnection }}
       environment: $(Module.Name)-${{ parameters.RepositoryConnection }}
       pool:
-        vmImage: windows-latest
+        vmImage: ubuntu-latest
       strategy:
         runOnce:
           deploy:

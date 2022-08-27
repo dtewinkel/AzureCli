@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param (
 	[Parameter()]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', "Modules", "AzureCLi")).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' '..', "Modules", "AzureCli")).Path
 )
 
 Describe "ArgumentCompleterResourceGroup" {

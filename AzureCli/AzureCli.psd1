@@ -3,33 +3,32 @@
 #
 
 @{
-
 	# Script module or binary module file associated with this manifest.
-	RootModule        = 'AzureCli.psm1'
+	RootModule           = 'AzureCli.psm1'
 
 	# Version number of this module.
-	ModuleVersion     = '0.0.1'
+	ModuleVersion        = '0.0.1'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
 
 	# ID used to uniquely identify this module
-	GUID              = 'dbe3fe96-136f-4fcb-b265-cd3b778d89b0'
+	GUID                 = 'dbe3fe96-136f-4fcb-b265-cd3b778d89b0'
 
 	# Author of this module
-	Author            = 'Daniël te Winkel'
+	Author               = 'Daniël te Winkel'
 
 	# Company or vendor of this module
-	CompanyName       = 'Daniël te Winkel'
+	CompanyName          = 'Daniël te Winkel'
 
 	# Copyright statement for this module
-	Copyright         = 'Copyright © 2021, Daniël te Winkel. All rights reserved.'
+	Copyright            = 'Copyright © 2022, Daniël te Winkel. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description       = 'Cmdlet and alias to make the use of Azure CLI a bit more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
+	Description          = 'Cmdlet and alias to make the use of Azure CLI more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
-	# PowerShellVersion = '6.0'
+	PowerShellVersion = '6.1.0'
 
 	# Name of the PowerShell host required by this module
 	# PowerShellHostName = ''
@@ -39,6 +38,9 @@
 
 	# Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 	# DotNetFrameworkVersion = ''
+
+	# Supported PSEditions
+	CompatiblePSEditions = 'Core'
 
 	# Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 	# ClrVersion = ''
@@ -62,21 +64,21 @@
 	# FormatsToProcess = @()
 
 	# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-	NestedModules     = @()
+	NestedModules        = @()
 
 	# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-	FunctionsToExport = @(
+	FunctionsToExport    = @(
 		'Invoke-AzCli'
-		)
+	)
 
 	# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-	CmdletsToExport   = @()
+	CmdletsToExport      = @()
 
 	# Variables to export from this module
 	# VariablesToExport = @()
 
 	# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-	AliasesToExport   = @(
+	AliasesToExport      = @(
 		'iaz'
 	)
 
@@ -90,15 +92,15 @@
 	# FileList = @()
 
 	# Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-	PrivateData       = @{
+	PrivateData          = @{
 
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'az', 'cli', 'Azure'
+			Tags         = 'az', 'cli', 'Azure', 'AzureCli', 'Windows', 'Linux', 'Mac', 'PSEdition_Core'
 
 			# A URL to the license for this module.
-			LicenseUri = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/master/AzureCli/license.txt'
+			LicenseUri   = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/main/AzureCli/license.txt'
 
 			# A URL to the main website for this project.
 			ProjectUri   = 'https://github.com/dtewinkel/AzureCli'
@@ -108,6 +110,20 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.4.0
+
+- Add -ConcatenatedArguments to add arguments in the form `--name=value`. This is mainly required if value starts
+  with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
+  where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
+	verbose output if they are of type SecureString.
+- Run build and test on Windows, Ubuntu and MacOS.
+- Be honest on support for supported PowerShell versions: Powershell core >= 6.1.0.
+- Correctly mention support for -NoEnumerate: PowerShell core >= 7.0.0.
+- Improve portability of build and tests.
+- Rename branch master to main.
+- Reduce release notes to versions 2.x.x.
+- Make everything work with strict mode 3.0.
+
 2.3.2
 
 - Fixed issues with argument completion on -Subscription and -ResourceGroup.
@@ -150,42 +166,6 @@
 - Added parameter sets, to make clear which parameters can be used together. This may break existing scripts that use
   parameters together that are not allowed together anymore.
 - Improved test coverage.
-
-1.3.0
-
-- Improved error handling. Now throws on error.
-- Improved locality of restoring color output. Only restore it if we process the Auzure CLI output.
-
-1.2.0
-
-- Improved passing of parameters to az command line, preventing interpretation of parameters by PowerShell.
-- Support more text output or interactive commands:
-  - interactive.
-  - feedback.
-  - version.
-  - upgrade.
-- provide message where to install Auzure CLI from if az command is not found.
-
-1.1.0
-
-- Support raw output for a number of specific command groups and parameters:
-  - Support --version.
-  - Support find.
-  - Support help.
-- Better handle raw output for --output, -o, help and a number of other parameters.
-
-1.0.2
-
-- Fixed restoring color output in some error scenarios.
-
-1.0.1
-
-- Don't change directory to module path on invocation.
-- Improve source project documentation.
-
-1.0.0
-
-- Initial version of this module providing Invoke-AzCli and alias iaz.
 '@
 
 			# Prerelease string of this module
@@ -206,6 +186,4 @@
 
 	# Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 	# DefaultCommandPrefix = ''
-
 }
-
