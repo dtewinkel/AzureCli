@@ -59,16 +59,16 @@ function HandleRawOutputs()
 		$rawOutput = $true
 	}
 
-	if ($Arguments.Length -eq 0)
+	if ($Arguments.Count -eq 0)
 	{
 		$rawOutput = $true
 	}
 
-	if ($Arguments.Length -gt 0)
+	if ($Arguments.Count -gt 0)
 	{
 		foreach($rawCommand in $rawCommands)
 		{
-			if($Arguments.Length -ge $rawCommand.Length)
+			if($Arguments.Count -ge $rawCommand.Count)
 			{
 				$index = 0
 				$allMatch = $true
@@ -88,11 +88,10 @@ function HandleRawOutputs()
 		}
 	}
 
-	if ($Arguments.Length -eq 1 -and $Arguments[0] -eq "--version")
+	if ($Arguments.Count -eq 1 -and $Arguments[0] -eq "--version")
 	{
 		$rawOutput = $true
 	}
 
 	$rawOutput, $additionalArguments
-
 }

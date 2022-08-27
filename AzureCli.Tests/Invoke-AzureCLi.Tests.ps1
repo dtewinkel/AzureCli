@@ -8,13 +8,14 @@ param (
 
 Describe "Invoke-AzCli general handling" {
 
-	$jsonText = '{ "IsAz": true }'
-
 	BeforeAll {
 
-		if($AzCliVerbosityPreference)
+		$jsonText = '{ "IsAz": true }'
+
+		$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
+
+		if($OriginalAzCliVerbosityPreference)
 		{
-			$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
 			Clear-Variable AzCliVerbosityPreference -Scope Global
 		}
 
@@ -83,7 +84,7 @@ Describe "Invoke-AzCli general handling" {
 	It "Mask a SecureString in the verbose output" {
 
 		$plainText = "PlainTextSecret"
-		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertFromSecureStringCompatibleArguments
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertToSecureStringCompatibleArguments
 
 		Invoke-AzCli something --password $secureString -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password`" `"${plainText}`"") } -ModuleName 'AzureCli'
@@ -100,7 +101,7 @@ Describe "Invoke-AzCli general handling" {
 	It "Mask a SecureString in the verbose output for -ConcatenatedArguments" {
 
 		$plainText = "PlainTextSecret"
-		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertFromSecureStringCompatibleArguments
+		$secureString = ConvertTo-SecureString -AsPlainText $plainText @convertToSecureStringCompatibleArguments
 
 		Invoke-AzCli something -ConcatenatedArguments @{ '--password' =  $secureString } -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' ').Contains("`"--password=${plainText}`"") } -ModuleName 'AzureCli'
@@ -131,7 +132,8 @@ Describe "Invoke-AzCli general handling" {
 	Context "With `$AzCliVerbosityPreference set." {
 
 		BeforeAll {
-			$OriginalAzCliVerbosityPreference = $AzCliVerbosityPreference
+			$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
+
 			$global:AzCliVerbosityPreference = 'Default'
 		}
 

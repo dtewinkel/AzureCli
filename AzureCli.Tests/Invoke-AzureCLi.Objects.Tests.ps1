@@ -16,6 +16,7 @@ Describe "Invoke-AzCli With Object Output" {
 
 		Mock az { $jsonText } -ModuleName 'AzureCli'
 
+		$additionalArguments = @{}
 		if ($PSVersionTable.PSVersion.Major -lt 7)
 		{
 			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }

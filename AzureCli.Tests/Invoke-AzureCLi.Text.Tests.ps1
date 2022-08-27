@@ -14,6 +14,7 @@ Describe "Invoke-AzCli with commands that produce text" {
 
 		Mock az { "raw parameters: " + ($args -join " ") } -ModuleName 'AzureCli'
 
+		$additionalArguments = @()
 		if ($PSVersionTable.PSVersion.Major -lt 7)
 		{
 			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }

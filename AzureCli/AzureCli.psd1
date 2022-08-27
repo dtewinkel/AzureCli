@@ -117,11 +117,12 @@
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
 	verbose output if they are of type SecureString.
 - Run build and test on Windows, Ubuntu and MacOS.
-- Be honest on support for supported PowerShell versions: PS core >= 6.1.0.
-- Correctly mention support for -NoEnumerate for PowerShell >= 7.0.0.
+- Be honest on support for supported PowerShell versions: Powershell core >= 6.1.0.
+- Correctly mention support for -NoEnumerate: PowerShell core >= 7.0.0.
 - Improve portability of build and tests.
 - Rename branch master to main.
-- Restrict release notes to versions 2.x.x.
+- Reduce release notes to versions 2.x.x.
+- Make everything work with strict mode 3.0.
 
 2.3.2
 
@@ -185,5 +186,4 @@
 
 	# Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 	# DefaultCommandPrefix = ''
-
 }

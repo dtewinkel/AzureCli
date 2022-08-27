@@ -189,7 +189,7 @@ to pass it to the Azure CLI.
 		#>
 		[Parameter()]
 		[ValidateSet("NoWarnings", "Default", "Verbose", "Debug")]
-		[string] $CliVerbosity = $AzCliVerbosityPreference,
+		[string] $CliVerbosity = (Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue),
 
 		<#
 		Add each item in the hashtable as an argument in the form <name>=<value>. This is mainly required if value starts
@@ -214,7 +214,7 @@ to pass it to the Azure CLI.
 		All the remaining arguments are passed on the Azure CLI.
 		#>
 		[Parameter(ValueFromRemainingArguments)]
-		[object[]] $Arguments
+		[object[]] $Arguments = @()
 	)
 
 	AssertAzPresent
@@ -235,6 +235,7 @@ to pass it to the Azure CLI.
 
 	Write-Verbose "Invoking [az $verboseCommandLine]"
 
+	$result = $null
 	if ($rawOutput)
 	{
 		az @commandLine
