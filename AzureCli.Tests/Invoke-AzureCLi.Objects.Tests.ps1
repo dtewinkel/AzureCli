@@ -15,7 +15,12 @@ Describe "Invoke-AzCli With Object Output" {
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 
 		Mock az { $jsonText } -ModuleName 'AzureCli'
-		Mock ConvertFrom-Json { $convertedObject } -RemoveParameterValidation 'Depth' -ModuleName 'AzureCli'
+
+		if ($PSVersionTable.PSVersion.Major -lt 7)
+		{
+			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }
+		}
+		Mock ConvertFrom-Json { $convertedObject } @additionalArguments -ModuleName 'AzureCli'
 	}
 
 	It "Returns the parsed data from az" {

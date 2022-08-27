@@ -38,7 +38,7 @@ foreach ($psVersion in $Version)
 			Write-Verbose "Downloading [${file}] to [${filePath}] from [${uri}]."
 			Invoke-WebRequest $uri -OutFile $filePath
 			Write-Verbose "Extracting [${filePath}] to [${targetFolder}]."
-			$dir = mkdir $targetFolder -Force
+			$null = mkdir $targetFolder -Force
 			Expand-Archive -Path $filePath -DestinationPath $targetFolder -Force
 		}
 		finally
