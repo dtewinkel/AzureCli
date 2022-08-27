@@ -1,4 +1,4 @@
 ﻿mode: ContinuousDeployment
 assembly-versioning-scheme: Major
 continuous-delivery-fallback-tag: ''
-increment: Patch
+increment: Minor

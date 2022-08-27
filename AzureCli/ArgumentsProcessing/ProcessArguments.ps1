@@ -39,7 +39,14 @@ function ProcessArguments()
 	{
 		if ($argument -is [securestring])
 		{
-			$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
+			if($PSVersionTable.PSVersion.Major -lt 7)
+			{
+				$plainArgument = [System.Net.NetworkCredential]::new("", $argument).Password
+			}
+			else
+			{
+				$plainArgument = ConvertFrom-SecureString $argument -AsPlainText
+			}
 			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
 			$verboseCommandLineArguments += $secretsMask
 		}
@@ -56,10 +63,16 @@ function ProcessArguments()
 		$argumentValue = $argument.Value
 		if ($argumentValue -is [securestring])
 		{
-			$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue -AsPlainText)"
+			if($PSVersionTable.PSVersion.Major -lt 7)
+			{
+				$plainArgument = "${argumentName}=$([System.Net.NetworkCredential]::new('', $argumentValue).Password)"
+			}
+			else
+			{
+				$plainArgument = "${argumentName}=$(ConvertFrom-SecureString $argumentValue -AsPlainText)"
+			}
 
 			$commandLineArguments += EscapeParameter $plainArgument $EscapeHandling
-			Write-Verbose "${argumentName}=${secretsMask}"
 			$verboseCommandLineArguments += EscapeParameter "${argumentName}=${secretsMask}" $EscapeHandling
 		}
 		else

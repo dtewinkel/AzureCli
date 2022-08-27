@@ -14,19 +14,19 @@ function HandleJson()
 
 	if ($NoEnumerate.IsPresent)
 	{
-		$additionalArguments.Add("NoEnumerate", $true)
+		if ($PSVersionTable.PSVersion.Major -ge 7)
+		{
+			$additionalArguments.Add("NoEnumerate", $true)
+		}
+		else
+		{
+			throw "-AsHashtable can only be used on PowerShell 7.0.0 or newer"
+		}
 	}
 
 	if ($AsHashtable.IsPresent)
 	{
-		if ($PSVersionTable.PSVersion -ge [System.Management.Automation.SemanticVersion]"6.0.0")
-		{
-			$additionalArguments.Add("AsHashtable", $true)
-		}
-		else
-		{
-			throw "-AsHashtable can only be used on PowerShell 6.0 or newer"
-		}
+		$additionalArguments.Add("AsHashtable", $true)
 	}
 
 	$additionalArguments

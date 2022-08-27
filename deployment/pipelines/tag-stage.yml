@@ -1,6 +1,6 @@
 stages:
 - stage: tag
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Tag Sources after Release
   jobs:
   - job: tag_build

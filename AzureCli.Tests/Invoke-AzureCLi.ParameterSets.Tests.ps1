@@ -2,17 +2,31 @@
 param (
 	[Parameter()]
 	[string]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCli')).Path
 )
 
 Describe "Invoke-AzCli with Interactive commands" {
 
 	BeforeAll {
 
+		$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
+
+		if($OriginalAzCliVerbosityPreference)
+		{
+			Clear-Variable AzCliVerbosityPreference -Scope Global
+		}
+
 		function az { $jsonText }
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
 		Mock az -ModuleName 'AzureCli'
 		Mock Write-Warning -ModuleName 'AzureCli'
+	}
+
+	AfterAll {
+		if ($OriginalAzCliVerbosityPreference)
+		{
+			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
+		}
 	}
 
 	$combinations = @(
@@ -31,7 +45,7 @@ Describe "Invoke-AzCli with Interactive commands" {
 		@{ first = "AsHashTable"; second = "Output"; secondValue = 'json' }
 		@{ first = "NoEnumerate"; second = "Output"; secondValue = 'json' }
 	)
-	It "Fails with combined parameters: <first>, <second> with message about parameter set" -TestCases $combinations {
+	It "Fails with combined parameters: <first>, <second> <secondValue> with message about parameter set" -TestCases $combinations {
 		param($first, $second, $secondValue)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
@@ -46,7 +60,7 @@ Describe "Invoke-AzCli with Interactive commands" {
 		@{ first = "SuppressCliWarnings"; second = "CliVerbosity"; secondValue = 'Verbose'; exceptionMessage = "-SuppressCliWarnings cannot be used together with -CliVerbosity Verbose" }
 		@{ first = "SuppressCliWarnings"; second = "Verbose"; secondValue = $true; exceptionMessage = "-SuppressCliWarnings cannot be used together with -Verbose" }
 	)
-	It "Fails with combined parameters: <first>, <second> with exception" -TestCases $combinations {
+	It "Fails with combined parameters: <first>, <second> <secondValue> with exception" -TestCases $combinations {
 		param($first, $second, $secondValue, $exceptionMessage)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
@@ -56,7 +70,7 @@ Describe "Invoke-AzCli with Interactive commands" {
 		Should -Not -Invoke az -ModuleName 'AzureCli'
 	}
 
-	It "Fails with combined parameters: <first>, <second> with exception" -TestCases $combinations {
+	It "Fails with combined parameters: <first>, <second> <secondValue> with exception" -TestCases $combinations {
 		param($first, $second, $secondValue, $exceptionMessage)
 
 		$parameters = @{ $first = $true; $second = $secondValue }
@@ -87,7 +101,7 @@ Describe "Invoke-AzCli with Interactive commands" {
 		@{ first = "Verbose"; second = '--only-show-errors' }
 		@{ first = "Debug"; second = '--only-show-errors' }
 	)
-	It "Fails with combined parameters: -CliVerbosity NoWarnings, <parameter> with exception" -TestCases $combinations {
+	It "Fails with combined parameters: -CliVerbosity <first>, <second> with exception" -TestCases $combinations {
 		param($first, $second)
 
 		$exceptionMessage = "-CliVerbosity ${first} cannot be used together with ${second}"
@@ -104,7 +118,7 @@ Describe "Invoke-AzCli with Interactive commands" {
 		@{ first = "ResourceGroup"; firstValue = 'sub'; second = "--resource-group"; secondValue = 'sub' }
 		@{ first = "Query"; firstValue = 'q'; second = "--query"; secondValue = 'q' }
 	)
-	It "Fails with combined parameters: <first>, <second>" -TestCases $combinations {
+	It "Fails with combined parameters: <first> <firstValue>, <second> <secondValue>" -TestCases $combinations {
 		param($first, $firstvalue, $second, $secondValue)
 
 		$firstParameter = @{ $first = $firstvalue }

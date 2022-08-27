@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param (
 	[Parameter()]
-	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCLi')).Path
+	[string] $ModuleFolder = (Resolve-Path (Join-Path $PSScriptRoot '..' 'AzureCli')).Path
 )
 
 Describe "Invoke-AzCli with commands that produce text" {
@@ -9,9 +9,17 @@ Describe "Invoke-AzCli with commands that produce text" {
 	BeforeAll {
 
 		function az { $args }
+
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
+
 		Mock az { "raw parameters: " + ($args -join " ") } -ModuleName 'AzureCli'
-		Mock ConvertFrom-Json {} -ModuleName 'AzureCli'
+
+		$additionalArguments = @()
+		if ($PSVersionTable.PSVersion.Major -lt 7)
+		{
+			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }
+		}
+		Mock ConvertFrom-Json {} -ModuleName 'AzureCli' @additionalArguments
 	}
 
 	It "Returns the raw data for no parameters" {

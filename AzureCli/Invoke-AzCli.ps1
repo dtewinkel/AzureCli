@@ -4,22 +4,23 @@
 
 .SYNOPSIS
 
-Invoke the Azure CLI from PowerShell, converting output to PowerShell custom objects and providing better error handling.
+Invoke the Azure CLI from PowerShell, converting output to PowerShell custom objects and providing better error
+handling.
 
 .DESCRIPTION
 
 Invoke the Azure CLI from PowerShell.
 
-Unless specified otherwise, converts the output from JSON to a custom object (PSCustomObject). This make further
-processing the output in PowerShell much easier.
+Unless specified otherwise, converts the output from JSON to a custom object (PSCustomObject). This makes further
+processing of the output in PowerShell much easier.
 
-Provides better error handling, so that script fails more easily if the Azure CLI fails.
+It provides better error handling, so that a script fails more easily if the Azure CLI fails.
 
 In some scenarios the Azure CLI changes console output colors, but does not change them back to what they were. This may
 happen for errors, verbose output, and in some other cases. Invoke-AzCli fixes the console colors back to what they were
 before calling Azure CLI.
 
-Allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
+It allows to set most of the common or often used Azure CLI parameters through PowerShell parameters:
   - -Output for --output. Setting -Output, --output, or -Raw stops Invoke-AzCli from converting the output of Azure CLI
      to custom objects.
   - -Help for --help.
@@ -65,7 +66,6 @@ List all storage accounts in the current subscription.
 Print the arguments that are sent to the Azure CLI.
 No verbosity from the Azure CLI.
 
-
 .EXAMPLE
 
 Invoke-AzCli storage account list -Query '[].{ name: name }' -NoEnumerate -AsHashtable
@@ -73,6 +73,13 @@ Invoke-AzCli storage account list -Query '[].{ name: name }' -NoEnumerate -AsHas
 List all storage accounts in the current subscription.
 Query to get only the name in an object per storage account.
 Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
+
+.EXAMPLE
+
+Invoke-AzCli ad user update --id user@domain -ConcatenatedArguments @{ '--password' = '-secret123' }
+
+Set the password for user 'user@domain'. Because the password starts with a '-', use -ConcatenatedArguments to be able
+to pass it to the Azure CLI.
 
 #>
 
@@ -129,12 +136,10 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		Converts the output to a HashTable instead of to a PSCustomObject. This is useful in certain scenarios:
 
 		- If the JSON contains a list with keys that only differ in casing. Without the switch, those keys would be seen as
-			identical keys and therefore only the last one would get used.
+		  identical keys and therefore only the last one would get used.
 		- If the JSON contains a key that is an empty string. Without the switch, the cmdlet would throw an error since a
-			PSCustomObject does not allow for that but a hash table does.
+		  PSCustomObject does not allow for that but a hash table does.
 		- Hash tables can be processed faster for certain data structures.
-
-		This switch will can only be used in PowerShell 6.0 or newer.
 		#>
 		[Parameter(ParameterSetName = 'ObjectOutput')]
 		[Switch] $AsHashtable,
@@ -142,6 +147,8 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		<#
 		Specifies that output is not enumerated. Setting this parameter causes arrays to be sent as a single object instead
 		of sending every element separately. This guarantees that JSON can be round-tripped via ConvertTo-Json.
+
+		This switch will can only be used in PowerShell 7.0.0 or newer.
 		#>
 		[Parameter(ParameterSetName = 'ObjectOutput')]
 		[Switch] $NoEnumerate,
@@ -182,7 +189,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		#>
 		[Parameter()]
 		[ValidateSet("NoWarnings", "Default", "Verbose", "Debug")]
-		[string] $CliVerbosity = $AzCliVerbosityPreference,
+		[string] $CliVerbosity = (Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue),
 
 		<#
 		Add each item in the hashtable as an argument in the form <name>=<value>. This is mainly required if value starts
@@ -207,7 +214,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 		All the remaining arguments are passed on the Azure CLI.
 		#>
 		[Parameter(ValueFromRemainingArguments)]
-		[object[]] $Arguments
+		[object[]] $Arguments = @()
 	)
 
 	AssertAzPresent
@@ -228,6 +235,7 @@ Pass -NoEnumerate and -AsHashtable to ConvertFrom-Json.
 
 	Write-Verbose "Invoking [az $verboseCommandLine]"
 
+	$result = $null
 	if ($rawOutput)
 	{
 		az @commandLine

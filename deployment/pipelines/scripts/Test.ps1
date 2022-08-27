@@ -23,6 +23,8 @@ param(
 	[String] $OutputVerbosity = 'Detailed'
 )
 
+Set-StrictMode -Version 3.0
+
 $testOutputFolder =  ([System.IO.Fileinfo]$TestOutput).DirectoryName
 
 $configuration = New-PesterConfiguration
