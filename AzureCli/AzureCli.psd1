@@ -110,7 +110,7 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
-	2.4.0
+2.4.0
 
 - Add -ConcatenatedArguments to add arguments in the form `--name=value`. This is mainly required if value starts
   with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
@@ -126,7 +126,7 @@
 
 2.3.2
 
-	- Fixed issues with argument completion on -Subscription and -ResourceGroup.
+- Fixed issues with argument completion on -Subscription and -ResourceGroup.
 
 2.3.1
 
