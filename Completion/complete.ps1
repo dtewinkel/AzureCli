@@ -1,7 +1,7 @@
 function Complete
 {
 	[CmdletBinding()]
-	param ($Command, $Cursor)
+	param ($Command, $Cursor = -1)
 
 	$cursorPos = $Cursor -eq -1 ? $Command.Length : $Cursor
 	$pos = $Command.IndexOf('-')
