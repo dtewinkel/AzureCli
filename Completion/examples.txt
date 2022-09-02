@@ -1,0 +1,43 @@
+az 
+   ^
+{} (*) => [..]
+
+az account 
+           ^
+{account} (*) => [..]
+
+az account
+          ^
+{} (account*) => [..]
+
+az account --
+             ^
+{account} (--*) => [..]
+
+az account  list
+           ^
+{account} (*) => [..]
+
+az account list
+          ^
+{} (account*) => [..]
+
+az account list
+      ^
+{} (account*) => [..]
+
+az account list
+            ^
+{account} (list*) => [..]
+
+az account --x 123 --
+                     ^
+{account} (--*) => [..]
+
+az account --x 123 --y 
+                       ^
+=> []
+
+az account --x 123 --subscription 
+                                  ^
+subscription => [..]
