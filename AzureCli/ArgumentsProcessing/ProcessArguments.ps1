@@ -29,7 +29,18 @@ function ProcessArguments()
 				$escaped = $Argument
 			}
 		}
-		"`"${escaped}`""
+		switch($PSNativeCommandArgumentPassing)
+		{
+			"Standard"
+			{
+				${escaped}
+			}
+
+			default  # Not set, Windows or Legacy.
+			{
+				"`"${escaped}`""
+			}
+		}
 	}
 
 	$commandLineArguments = @()

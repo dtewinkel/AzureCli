@@ -97,7 +97,7 @@
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags         = 'az', 'cli', 'Azure', 'AzureCli', 'Windows', 'Linux', 'Mac', 'PSEdition_Core'
+			Tags         = 'az', 'cli', 'Azure', 'AzureCli', 'Windows', 'Linux', 'Mac', 'MacOS', 'PSEdition_Core'
 
 			# A URL to the license for this module.
 			LicenseUri   = 'https://raw.githubusercontent.com/dtewinkel/AzureCli/main/AzureCli/license.txt'
@@ -110,6 +110,13 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+2.5.0
+
+- FIX: MacOS compatibility tag.
+- FEATURE: Support Compatibility with PowerShell 7.3 / $PSNativeCommandArgumentPassing.
+  Now checks $PSNativeCommandArgumentPassing and handles accordingly.
+
+
 2.4.0
 
 - Add -ConcatenatedArguments to add arguments in the form `--name=value`. This is mainly required if value starts

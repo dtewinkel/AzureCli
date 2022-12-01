@@ -8,6 +8,9 @@ Describe "Invoke-AzCli with commands that produce text" {
 
 	BeforeAll {
 
+		$old_PSNativeCommandArgumentPassing = $PSNativeCommandArgumentPassing
+		$global:PSNativeCommandArgumentPassing = "Windows"
+
 		function az { $args }
 
 		. $PSScriptRoot/Helpers/LoadModule.ps1 -ModuleFolder $ModuleFolder
@@ -20,6 +23,11 @@ Describe "Invoke-AzCli with commands that produce text" {
 			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }
 		}
 		Mock ConvertFrom-Json {} -ModuleName 'AzureCli' @additionalArguments
+	}
+
+	AfterAll {
+		
+		$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
 	}
 
 	It "Returns the raw data for no parameters" {
