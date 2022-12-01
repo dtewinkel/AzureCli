@@ -115,7 +115,7 @@
 - FIX: MacOS compatibility tag.
 - FEATURE: Support Compatibility with PowerShell 7.3 / $PSNativeCommandArgumentPassing.
   Now checks $PSNativeCommandArgumentPassing and handles accordingly.
-
+	Backward compatible with original behavior, unless $PSNativeCommandArgumentPassing is set to Standard.
 
 2.4.0
 
