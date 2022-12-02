@@ -8,6 +8,9 @@ Describe "Invoke-AzCli With Object Output" {
 
 	BeforeAll {
 
+		$old_PSNativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
+		$global:PSNativeCommandArgumentPassing = "Windows"
+
 		$jsonText = '{ "IsAz": true }'
 		$convertedObject = [PsCustomObject]@{ IsConvertFromJson = $true }
 		function az {}
@@ -22,6 +25,18 @@ Describe "Invoke-AzCli With Object Output" {
 			$additionalArguments = @{ RemoveParameterValidation =  'Depth' }
 		}
 		Mock ConvertFrom-Json { $convertedObject } @additionalArguments -ModuleName 'AzureCli'
+	}
+
+	AfterAll {
+
+		if($old_PSNativeCommandArgumentPassing)
+		{
+			$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		}
+		else
+		{
+			Clear-Variable PSNativeCommandArgumentPassing -Scope Global
+		}
 	}
 
 	It "Returns the parsed data from az" {

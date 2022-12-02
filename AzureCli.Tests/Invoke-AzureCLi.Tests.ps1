@@ -12,6 +12,8 @@ Describe "Invoke-AzCli general handling" {
 
 		$jsonText = '{ "IsAz": true }'
 
+		$old_PSNativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
+
 		$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
 
 		if($OriginalAzCliVerbosityPreference)
@@ -32,7 +34,22 @@ Describe "Invoke-AzCli general handling" {
 		Mock Write-Warning -ModuleName 'AzureCli'
 	}
 
+	BeforeEach {
+
+		# Set it for most tests.
+		$global:PSNativeCommandArgumentPassing = "Windows"
+	}
+
 	AfterAll {
+		if($old_PSNativeCommandArgumentPassing)
+		{
+			$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		}
+		else
+		{
+			Clear-Variable PSNativeCommandArgumentPassing -Scope Global
+		}
+
 		if ($OriginalAzCliVerbosityPreference)
 		{
 			$global:AzCliVerbosityPreference = $OriginalAzCliVerbosityPreference
@@ -185,5 +202,41 @@ Describe "Invoke-AzCli general handling" {
 		Invoke-AzCli vm list -CliVerbosity Debug -Verbose
 		Should -Invoke az -Exactly 1 -ParameterFilter { $args -notcontains '"--verbose"' -and $args -ccontains '"--debug"' } -ModuleName 'AzureCli'
 		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "vm" "list" "--debug"]' } -ModuleName 'AzureCli'
+	}
+
+	It "Does not quote each parameter if PSNativeCommandArgumentPassing is set to Standard" {
+
+		$global:PSNativeCommandArgumentPassing = "Standard"
+
+		Invoke-AzCli vm list --name dummy
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' - ') -eq 'vm - list - --name - dummy' } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az vm list --name dummy]' } -ModuleName 'AzureCli'
+	}
+
+	It "Does quotes each parameter if PSNativeCommandArgumentPassing is set to Windows" {
+
+		$global:PSNativeCommandArgumentPassing = "Windows"
+
+		Invoke-AzCli vm list --name dummy
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' - ') -eq '"vm" - "list" - "--name" - "dummy"' } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "vm" "list" "--name" "dummy"]' } -ModuleName 'AzureCli'
+	}
+
+	It "Does quotes each parameter if PSNativeCommandArgumentPassing is set to Legacy" {
+
+		$global:PSNativeCommandArgumentPassing = "Legacy"
+
+		Invoke-AzCli vm list --name dummy
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' - ') -eq '"vm" - "list" - "--name" - "dummy"' } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "vm" "list" "--name" "dummy"]' } -ModuleName 'AzureCli'
+	}
+
+	It "Does quotes each parameter if PSNativeCommandArgumentPassing is not set" {
+
+		Remove-Variable -name $PSNativeCommandArgumentPassing -Scope global -ErrorAction SilentlyContinue
+
+		Invoke-AzCli vm list --name dummy
+		Should -Invoke az -Exactly 1 -ParameterFilter { ($args -join ' - ') -eq '"vm" - "list" - "--name" - "dummy"' } -ModuleName 'AzureCli'
+		Should -Invoke Write-Verbose -ParameterFilter { $Message -eq 'Invoking [az "vm" "list" "--name" "dummy"]' } -ModuleName 'AzureCli'
 	}
 }

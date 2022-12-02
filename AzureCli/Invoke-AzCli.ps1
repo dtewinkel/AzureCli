@@ -46,6 +46,9 @@ The commands configure, feedback, and interactive are interactive and do not pro
 By default -Verbose will output verbose information about the command-line used to call Azure CLI. Unless the
 -CliVerbosity is specified this will also result in verbose output from the Azure CLI.
 
+Command-line passing to az CLI is compatible with PowerShell 7.3+ and adheres to $PSNativeCommandArgumentPassing.
+Invoke-AzCli checks $PSNativeCommandArgumentPassing and handles accordingly.
+
 .EXAMPLE
 
 Invoke-AzCli storage account list -Subscription "My Subscription"

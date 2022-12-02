@@ -24,12 +24,29 @@ function ProcessArguments()
 				$escaped = "$Argument" -replace '(["\\])', '\$0'
 			}
 
-			"Never"
+			default
 			{
 				$escaped = $Argument
 			}
 		}
-		"`"${escaped}`""
+
+		$NativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
+		if(-not $NativeCommandArgumentPassing)
+		{
+			$NativeCommandArgumentPassing = "Legacy"
+		}
+		switch($NativeCommandArgumentPassing)
+		{
+			"Standard"
+			{
+				$escaped
+			}
+
+			default  # Windows or Legacy.
+			{
+				"`"${escaped}`""
+			}
+		}
 	}
 
 	$commandLineArguments = @()
