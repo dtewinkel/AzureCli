@@ -12,7 +12,7 @@ Describe "Invoke-AzCli general handling" {
 
 		$jsonText = '{ "IsAz": true }'
 
-		$old_PSNativeCommandArgumentPassing = $PSNativeCommandArgumentPassing
+		$old_PSNativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
 
 		$OriginalAzCliVerbosityPreference = Get-Variable -Name AzCliVerbosityPreference -ValueOnly -ErrorAction SilentlyContinue
 
@@ -41,7 +41,14 @@ Describe "Invoke-AzCli general handling" {
 	}
 
 	AfterAll {
-		$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		if($old_PSNativeCommandArgumentPassing)
+		{
+			$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		}
+		else
+		{
+			Clear-Variable PSNativeCommandArgumentPassing -Scope Global
+		}
 
 		if ($OriginalAzCliVerbosityPreference)
 		{

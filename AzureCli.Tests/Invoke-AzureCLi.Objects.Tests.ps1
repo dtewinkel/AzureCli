@@ -8,7 +8,7 @@ Describe "Invoke-AzCli With Object Output" {
 
 	BeforeAll {
 
-		$old_PSNativeCommandArgumentPassing = $PSNativeCommandArgumentPassing
+		$old_PSNativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
 		$global:PSNativeCommandArgumentPassing = "Windows"
 
 		$jsonText = '{ "IsAz": true }'
@@ -29,7 +29,14 @@ Describe "Invoke-AzCli With Object Output" {
 
 	AfterAll {
 
-		$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		if($old_PSNativeCommandArgumentPassing)
+		{
+			$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		}
+		else
+		{
+			Clear-Variable PSNativeCommandArgumentPassing -Scope Global
+		}
 	}
 
 	It "Returns the parsed data from az" {

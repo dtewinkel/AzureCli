@@ -8,7 +8,7 @@ Describe "Invoke-AzCli with commands that produce text" {
 
 	BeforeAll {
 
-		$old_PSNativeCommandArgumentPassing = $PSNativeCommandArgumentPassing
+		$old_PSNativeCommandArgumentPassing = Get-Variable -Name PSNativeCommandArgumentPassing -ValueOnly -ErrorAction SilentlyContinue
 		$global:PSNativeCommandArgumentPassing = "Windows"
 
 		function az { $args }
@@ -26,8 +26,15 @@ Describe "Invoke-AzCli with commands that produce text" {
 	}
 
 	AfterAll {
-		
-		$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+
+		if($old_PSNativeCommandArgumentPassing)
+		{
+			$global:PSNativeCommandArgumentPassing = $old_PSNativeCommandArgumentPassing
+		}
+		else
+		{
+			Clear-Variable PSNativeCommandArgumentPassing -Scope Global
+		}
 	}
 
 	It "Returns the raw data for no parameters" {
