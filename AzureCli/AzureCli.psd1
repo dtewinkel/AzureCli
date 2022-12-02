@@ -28,7 +28,7 @@
 	Description          = 'Cmdlet and alias to make the use of Azure CLI more PowerShell friendly. Process output of Azure CLI from JSON to custom objects.'
 
 	# Minimum version of the PowerShell engine required by this module
-	PowerShellVersion = '6.1.0'
+	PowerShellVersion    = '6.1.0'
 
 	# Name of the PowerShell host required by this module
 	# PowerShellHostName = ''
@@ -115,14 +115,14 @@
 - FIX: MacOS compatibility tag.
 - FEATURE: Support Compatibility with PowerShell 7.3 / $PSNativeCommandArgumentPassing.
   Now checks $PSNativeCommandArgumentPassing and handles accordingly.
-	Backward compatible with original behavior, unless $PSNativeCommandArgumentPassing is set to Standard.
+  Backward compatible with original behavior, unless $PSNativeCommandArgumentPassing is set to Standard.
 
 2.4.0
 
 - Add -ConcatenatedArguments to add arguments in the form `--name=value`. This is mainly required if value starts
   with a - and would otherwise be interpreted as an argument and not a value. For instance '--password "-123"' fails,
   where '--password=-123' succeeds. The values in the hash table of -ConcatenatedArguments parameter will be masked in
-	verbose output if they are of type SecureString.
+  verbose output if they are of type SecureString.
 - Run build and test on Windows, Ubuntu and MacOS.
 - Be honest on support for supported PowerShell versions: Powershell core >= 6.1.0.
 - Correctly mention support for -NoEnumerate: PowerShell core >= 7.0.0.
